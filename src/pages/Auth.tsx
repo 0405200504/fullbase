@@ -195,9 +195,12 @@ const Auth = () => {
                 )}
               </button>
               {isLogin && (
-                <div className="pt-3 border-t border-border/40">
-                  <button type="button" onClick={() => navigate("/pricing")} className="text-[12px] text-muted-foreground hover:text-primary transition-colors">
+                <div className="pt-3 border-t border-border/40 space-y-2">
+                  <button type="button" onClick={() => navigate("/pricing")} className="text-[12px] text-muted-foreground hover:text-primary transition-colors w-full text-center">
                     Ver planos e preços →
+                  </button>
+                  <button type="button" onClick={() => navigate("/superadmin/login")} className="text-[12px] text-muted-foreground hover:text-primary transition-colors w-full text-center">
+                    Acessar Painel Super Admin →
                   </button>
                 </div>
               )}

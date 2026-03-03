@@ -21,6 +21,7 @@ interface RegistrarVendaDialogProps {
 
 export const RegistrarVendaDialog = ({ open, onOpenChange, lead }: RegistrarVendaDialogProps) => {
   const [formData, setFormData] = useState({
+    produto_id: "",
     valor_final: "",
     closer_id: "",
     metodo_pagamento: "pix" as "pix" | "cartao" | "boleto" | "transferencia",
@@ -36,6 +37,7 @@ export const RegistrarVendaDialog = ({ open, onOpenChange, lead }: RegistrarVend
   useEffect(() => {
     if (lead && open) {
       setFormData({
+        produto_id: lead.produto_id || "",
         valor_final: lead.valor_proposta?.toString() || "",
         closer_id: lead.closer_id || "",
         metodo_pagamento: "pix",
@@ -51,10 +53,12 @@ export const RegistrarVendaDialog = ({ open, onOpenChange, lead }: RegistrarVend
 
       if (!effectiveAccountId) throw new Error("Unable to determine user account");
 
+      if (!formData.produto_id) throw new Error("Produto não selecionado");
+
       // Registrar venda
       const { error: vendaError } = await supabase.from("vendas").insert([{
         lead_id: lead.id,
-        produto_id: lead.produto_id,
+        produto_id: formData.produto_id,
         closer_id: data.closer_id,
         valor_final: parseFloat(data.valor_final),
         metodo_pagamento: data.metodo_pagamento,
@@ -105,8 +109,23 @@ export const RegistrarVendaDialog = ({ open, onOpenChange, lead }: RegistrarVend
           </div>
 
           <div>
-            <Label>Produto</Label>
-            <Input value={lead.produtos?.nome || "Sem produto"} disabled />
+            <Label htmlFor="produto_id">Produto *</Label>
+            <Select
+              value={formData.produto_id}
+              onValueChange={(value) => setFormData({ ...formData, produto_id: value })}
+              required
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Selecione o produto" />
+              </SelectTrigger>
+              <SelectContent>
+                {produtos.map((produto) => (
+                  <SelectItem key={produto.id} value={produto.id}>
+                    {produto.nome}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div>
