@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useImpersonate } from "@/contexts/ImpersonateContext";
 
 export interface MappedLead {
   nome: string;
@@ -24,20 +25,18 @@ interface LookupData {
 
 export const useImportLeads = () => {
   const queryClient = useQueryClient();
+  const { effectiveAccountId } = useImpersonate();
 
   return useMutation({
     mutationFn: async ({ leads, lookupData }: { leads: MappedLead[]; lookupData: LookupData }) => {
-      // Get account_id for the current user
-      const { data: accountId, error: accountError } = await supabase.rpc("get_user_account_id");
-      if (accountError) throw accountError;
-      if (!accountId) throw new Error("Unable to determine user account");
+      if (!effectiveAccountId) throw new Error("Unable to determine user account");
 
       // Verificar limite do plano usando função can_add_lead antes de importar
       const { data: canAdd, error: checkError } = await supabase
-        .rpc("can_add_lead", { p_account_id: accountId });
+        .rpc("can_add_lead", { p_account_id: effectiveAccountId });
 
       if (checkError) throw checkError;
-      
+
       if (!canAdd) {
         throw new Error("Limite de leads atingido para o plano atual. Faça upgrade do plano para adicionar mais leads.");
       }
@@ -49,21 +48,21 @@ export const useImportLeads = () => {
           .from("leads")
           .select("id")
           .eq("telefone", lead.telefone)
-          .eq("account_id", accountId)
+          .eq("account_id", effectiveAccountId)
           .maybeSingle();
-        
+
         if (!existingLead) newLeadsCount++;
       }
 
       // Obter plano para verificar espaço disponível
       const { data: planData } = await supabase
-        .rpc("get_account_plan", { p_account_id: accountId });
+        .rpc("get_account_plan", { p_account_id: effectiveAccountId });
       const maxLeads = (planData as any)?.max_leads || 25;
 
       const { count: currentLeadsCount } = await supabase
         .from("leads")
         .select("*", { count: "exact", head: true })
-        .eq("account_id", accountId)
+        .eq("account_id", effectiveAccountId)
         .eq("arquivado", false);
 
       const availableSlots = maxLeads - (currentLeadsCount || 0);
@@ -115,7 +114,7 @@ export const useImportLeads = () => {
             .from("leads")
             .select("id")
             .eq("telefone", lead.telefone)
-            .eq("account_id", accountId)
+            .eq("account_id", effectiveAccountId)
             .maybeSingle();
 
           if (existingLead) {
@@ -154,7 +153,7 @@ export const useImportLeads = () => {
                 renda_mensal: lead.renda_mensal,
                 investimento_disponivel: lead.investimento_disponivel,
                 dificuldades: lead.dificuldades,
-                account_id: accountId
+                account_id: effectiveAccountId
               }]);
 
             if (insertError) throw insertError;
@@ -169,7 +168,7 @@ export const useImportLeads = () => {
     },
     onSuccess: (result) => {
       queryClient.invalidateQueries({ queryKey: ["leads"] });
-      
+
       if (result.errors.length === 0) {
         toast.success(
           `Importação concluída! ${result.imported} leads criados, ${result.updated} atualizados.`

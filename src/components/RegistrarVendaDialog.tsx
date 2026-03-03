@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import type { Lead } from "@/hooks/useLeads";
 import { useProdutos } from "@/hooks/useProdutos";
 import { useProfiles } from "@/hooks/useProfiles";
+import { useImpersonate } from "@/contexts/ImpersonateContext";
 
 interface RegistrarVendaDialogProps {
   open: boolean;
@@ -27,6 +28,7 @@ export const RegistrarVendaDialog = ({ open, onOpenChange, lead }: RegistrarVend
     observacao: "",
   });
 
+  const { effectiveAccountId } = useImpersonate();
   const queryClient = useQueryClient();
   const { data: produtos = [] } = useProdutos();
   const { data: closers = [] } = useProfiles("closer");
@@ -47,10 +49,7 @@ export const RegistrarVendaDialog = ({ open, onOpenChange, lead }: RegistrarVend
     mutationFn: async (data: typeof formData) => {
       if (!lead) throw new Error("Lead não selecionado");
 
-      // Get account_id for the current user
-      const { data: accountId, error: accountError } = await supabase.rpc("get_user_account_id");
-      if (accountError) throw accountError;
-      if (!accountId) throw new Error("Unable to determine user account");
+      if (!effectiveAccountId) throw new Error("Unable to determine user account");
 
       // Registrar venda
       const { error: vendaError } = await supabase.from("vendas").insert([{
@@ -61,7 +60,7 @@ export const RegistrarVendaDialog = ({ open, onOpenChange, lead }: RegistrarVend
         metodo_pagamento: data.metodo_pagamento,
         data_fechamento: data.data_fechamento,
         observacao: data.observacao || null,
-        account_id: accountId,
+        account_id: effectiveAccountId,
       }]);
 
       if (vendaError) throw vendaError;

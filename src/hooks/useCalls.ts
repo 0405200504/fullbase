@@ -28,12 +28,12 @@ export const useCalls = (filters?: {
   status?: string;
 }) => {
   const { effectiveAccountId, isImpersonating } = useImpersonate();
-  
+
   return useQuery({
     queryKey: ["calls", filters, effectiveAccountId],
     queryFn: async () => {
       if (!effectiveAccountId) return [];
-      
+
       let query = supabase
         .from("calls")
         .select(`
@@ -98,17 +98,15 @@ interface CreateCallInput {
 
 export const useCreateCall = () => {
   const queryClient = useQueryClient();
+  const { effectiveAccountId } = useImpersonate();
 
   return useMutation({
     mutationFn: async (call: CreateCallInput) => {
-      // Get account_id for the current user
-      const { data: accountId, error: accountError } = await supabase.rpc("get_user_account_id");
-      if (accountError) throw accountError;
-      if (!accountId) throw new Error("Unable to determine user account");
+      if (!effectiveAccountId) throw new Error("Unable to determine user account");
 
       const { data, error } = await supabase
         .from("calls")
-        .insert([{ ...call, account_id: accountId }])
+        .insert([{ ...call, account_id: effectiveAccountId }])
         .select()
         .single();
 
@@ -186,9 +184,9 @@ export const useArchiveCall = () => {
     mutationFn: async (id: string) => {
       const { error } = await supabase
         .from("calls")
-        .update({ 
-          arquivado: true, 
-          data_arquivamento: new Date().toISOString() 
+        .update({
+          arquivado: true,
+          data_arquivamento: new Date().toISOString()
         })
         .eq("id", id);
 
@@ -211,9 +209,9 @@ export const useUnarchiveCall = () => {
     mutationFn: async (id: string) => {
       const { error } = await supabase
         .from("calls")
-        .update({ 
-          arquivado: false, 
-          data_arquivamento: null 
+        .update({
+          arquivado: false,
+          data_arquivamento: null
         })
         .eq("id", id);
 
