@@ -1,0 +1,16 @@
+{
+  "name": "High Leads CRM",
+  "short_name": "High Leads",
+  "description": "Sistema de CRM para gestão de leads e vendas",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1f2e",
+  "theme_color": "#3b82f6",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ]
+}

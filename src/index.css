@@ -1,0 +1,282 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+
+/* Shimmer animation for loading effects */
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@tailwind components;
+@tailwind utilities;
+
+/* High Leads CRM - Premium Design System */
+@layer base {
+  :root {
+    /* Superfícies (Dark Premium Default) */
+    --background: 210 12% 13%;
+    /* #1D2125 */
+    --foreground: 0 0% 100%;
+    /* #FFFFFF */
+
+    --card: 210 10% 16%;
+    --card-foreground: 0 0% 98%;
+
+    /* Cor Principal (Verde Neon) */
+    --primary: 86 100% 50%;
+    /* #8FFF00 */
+    --primary-foreground: 210 12% 13%;
+    /* Dark text for contrast */
+    --primary-hover: 86 100% 45%;
+
+    /* Terciária */
+    --tertiary: 210 20% 25%;
+    --tertiary-foreground: 0 0% 100%;
+
+    /* Secundários e Neutros */
+    --secondary: 210 10% 20%;
+    --secondary-foreground: 0 0% 90%;
+    --muted: 210 10% 20%;
+    --muted-foreground: 210 5% 65%;
+
+    /* Accent (Hover states) */
+    --accent: 210 12% 18%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Destrutivo / Secundário Call To Action (Coral) */
+    --destructive: 359 97% 73%;
+    /* #FD7577 */
+    --destructive-foreground: 0 0% 10%;
+
+    /* Bordas e inputs */
+    --border: 210 10% 22%;
+    --input: 210 10% 20%;
+    --ring: 86 100% 50%;
+    /* Neon ring */
+
+    /* Radius global elevado para estilo pill/glass */
+    --radius: 1.5rem;
+
+    /* Popovers */
+    --popover: 210 10% 16%;
+    --popover-foreground: 0 0% 98%;
+
+    /* Sidebar - Dark */
+    --sidebar-background: 210 12% 14%;
+    --sidebar-foreground: 0 0% 70%;
+    --sidebar-active: 0 0% 95%;
+    --sidebar-active-foreground: 210 12% 13%;
+    --sidebar-border: 210 10% 20%;
+
+    /* Success */
+    --success: 86 100% 40%;
+    --success-foreground: 210 12% 13%;
+    --success-light: 86 100% 20%;
+
+    /* Warning */
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --warning-light: 38 92% 15%;
+
+    /* Danger */
+    --danger: 359 97% 73%;
+    --danger-foreground: 0 0% 100%;
+    --danger-light: 359 97% 20%;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow: 0 4px 15px -1px rgb(0 0 0 / 0.5);
+    --shadow-md: 0 8px 30px -4px rgb(0 0 0 / 0.6);
+    --shadow-lg: 0 15px 40px -6px rgb(0 0 0 / 0.8), 0 0 20px rgba(143, 255, 0, 0.05);
+    /* neon subtle glow */
+  }
+
+  /* Maintaining dark class same as root to avoid issues if ThemeProvider forces it */
+  .dark {
+    --background: 220 17% 7%;
+    /* #0F1115 */
+    --foreground: 0 0% 98%;
+
+    --card: 210 12% 13%;
+    /* #1D2125 */
+    --card-foreground: 0 0% 98%;
+
+    --popover: 210 12% 13%;
+    /* #1D2125 */
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 82 100% 50%;
+    /* #8FFF00 */
+    --primary-foreground: 0 0% 0%;
+
+    --secondary: 210 12% 13%;
+    /* #1D2125 */
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 210 12% 20%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 82 100% 50%;
+    --accent-foreground: 0 0% 0%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 210 12% 20%;
+    --input: 210 12% 20%;
+    --ring: 82 100% 50%;
+
+    --success: 82 100% 50%;
+    --success-foreground: 0 0% 0%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 48 96% 89%;
+
+    --panel-white: 0 0% 100%;
+    --panel-white-foreground: 220 17% 7%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: -0.011em;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold;
+    letter-spacing: -0.025em;
+  }
+}
+
+@layer components {
+
+  /* Metric Cards */
+  .metric-card {
+    @apply bg-card rounded-xl border border-border/40 p-4 md:p-5 transition-all duration-300;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+
+  .metric-card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.06);
+  }
+
+  .metric-value {
+    @apply text-2xl font-bold tracking-tight;
+  }
+
+  .metric-label {
+    @apply text-[11px] font-medium text-muted-foreground uppercase tracking-wider;
+  }
+
+  /* Premium Button Variants */
+  .btn-premium {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 font-medium rounded-xl px-6 py-2.5 transition-all duration-200;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+
+  .btn-premium:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.06);
+  }
+
+  .btn-success {
+    @apply bg-success text-success-foreground hover:bg-success/90 font-medium rounded-xl px-6 py-2.5 transition-all duration-200;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Data Tables */
+  .data-table {
+    @apply w-full border-collapse bg-card rounded-xl overflow-hidden border border-border/40;
+  }
+
+  .data-table thead {
+    @apply bg-muted/30;
+  }
+
+  .data-table th {
+    @apply px-4 py-3 text-left text-[11px] font-semibold text-muted-foreground uppercase tracking-wider;
+  }
+
+  .data-table td {
+    @apply px-4 py-3 text-[13px] font-medium border-b border-border/20;
+  }
+
+  .data-table tr:hover {
+    @apply bg-secondary/30 transition-colors duration-150;
+  }
+
+  /* Status Badges */
+  .badge-success {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-medium capitalize;
+    background: hsl(152 55% 42% / 0.1);
+    color: hsl(152 55% 42%);
+    border: 1px solid hsl(152 55% 42% / 0.2);
+  }
+
+  .badge-warning {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-medium capitalize;
+    background: hsl(48 96% 53% / 0.1);
+    color: hsl(38 92% 40%);
+    border: 1px solid hsl(48 96% 53% / 0.2);
+  }
+
+  .badge-danger {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-medium capitalize;
+    background: hsl(0 65% 52% / 0.1);
+    color: hsl(0 65% 52%);
+    border: 1px solid hsl(0 65% 52% / 0.2);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Apple-style shadows */
+  .apple-shadow {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+
+  .apple-shadow-lg {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.06);
+  }
+
+  .apple-shadow-xl {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), 0 16px 48px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Glass effects */
+  .glass {
+    @apply bg-background/70 backdrop-blur-xl border border-border/50;
+  }
+
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-xl border border-border/40;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  }
+}
+
+/* Hide Lovable badges and elements */
+a[href*="lovable.dev"],
+iframe[src*="lovable.dev"],
+div[style*="Edit with Lovable"],
+.lovable-badge {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  z-index: -9999 !important;
+}

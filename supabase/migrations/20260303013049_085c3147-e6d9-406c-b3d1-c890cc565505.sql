@@ -1,0 +1,1 @@
+ALTER TABLE public.forms ADD COLUMN IF NOT EXISTS welcome_screen jsonb DEFAULT '{"enabled": false, "title": "", "buttonText": "Começar"}'::jsonb;

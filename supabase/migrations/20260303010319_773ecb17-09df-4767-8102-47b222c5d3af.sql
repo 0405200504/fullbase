@@ -1,0 +1,1 @@
+ALTER TABLE public.forms ADD COLUMN IF NOT EXISTS lead_qualification jsonb DEFAULT '{"enabled": false, "requiredFields": []}'::jsonb;
