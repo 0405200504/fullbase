@@ -10,7 +10,7 @@ import { OnboardingModal } from "@/components/OnboardingModal";
 import { supabase } from "@/integrations/supabase/client";
 import { PasswordStrengthIndicator } from "@/components/PasswordStrengthIndicator";
 import { validatePasswordStrength } from "@/lib/passwordValidation";
-import { ShieldCheck, ArrowRight, Github, Chrome, Mail, Lock, User as UserIcon } from "lucide-react";
+import { ShieldCheck, ArrowRight, Github, Chrome, Mail, Lock, User as UserIcon, Download } from "lucide-react";
 
 const loginSchema = z.object({
   email: z.string().email("Email inválido"),
@@ -28,17 +28,49 @@ const signupSchema = z.object({
     .regex(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/, "Deve conter pelo menos um caractere especial")
 });
 
-const Auth = () => {
+export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nome, setNome] = useState("");
   const [loading, setLoading] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [newUserId, setNewUserId] = useState("");
+  const [newUserId, setNewUserId] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
   const { signIn, signUp, resetPassword } = useAuth();
   const navigate = useNavigate();
+  // PWA Install Prompt State
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: Event) => {
+      // Prevent the mini-infobar from appearing on mobile
+      e.preventDefault();
+      // Stash the event so it can be triggered later.
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    // Show the install prompt
+    deferredPrompt.prompt();
+    // Wait for the user to respond to the prompt
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      console.log('User accepted the install prompt');
+    } else {
+      console.log('User dismissed the install prompt');
+    }
+    // We've used the prompt, and can't use it again, throw it away
+    setDeferredPrompt(null);
+  };
 
   useEffect(() => {
     const mode = searchParams.get("mode");
@@ -128,8 +160,19 @@ const Auth = () => {
       <div className="light min-h-screen flex items-center justify-center p-6 bg-background transition-colors duration-300">
         <div className="w-full max-w-[420px] relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
           {/* Logo Section */}
-          <div className="flex flex-col items-center mb-10 text-center">
+          <div className="flex flex-col items-center mb-10 text-center relative">
             <img src="/images/fullbase_logo.png" alt="FullBase Logo" className="h-10 w-auto object-contain transition-all duration-500 hover:scale-105" />
+            {deferredPrompt && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleInstallClick}
+                className="absolute -right-4 top-0 bg-primary/10 hover:bg-primary/20 text-primary border-primary/20 rounded-full shadow-sm animate-in fade-in zoom-in duration-500"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Baixar App
+              </Button>
+            )}
           </div>
 
           {/* Solid Card */}
@@ -231,6 +274,4 @@ const Auth = () => {
       {showOnboarding && <OnboardingModal open={showOnboarding} userId={newUserId} nome={nome} email={email} />}
     </>
   );
-};
-
-export default Auth;
+}
