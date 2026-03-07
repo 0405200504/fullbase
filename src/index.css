@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 
@@ -12,93 +12,92 @@
 @tailwind components;
 @tailwind utilities;
 
-/* High Leads CRM - Premium Design System */
+/* High Leads CRM - Ultra Minimalist / Oxford-tier Design System */
 @layer base {
   :root {
-    /* Paleta FullBase - Clean & Professional (Light Mode Default) */
+    /* Base: Pure bright minimalism */
     --background: 0 0% 100%;
-    /* #FFFFFF */
-    --foreground: 220 20% 12%;
-    /* #14171B - Mais denso para contraste */
+    --foreground: 0 0% 9%;
 
-    --card: 210 20% 99%;
-    /* #F9FAFB */
-    --card-foreground: 220 20% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 9%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 12%;
+    --popover-foreground: 0 0% 9%;
 
-    /* Cor Principal (Azul FullBase - Premium & Vibrante) */
-    --primary: 221 95% 53%;
-    /* #1677FF - Mais saturado e vivo */
-    --primary-foreground: 0 0% 100%;
+    /* Primary: Very dark, almost black for extreme elegance */
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: 210 20% 97%;
-    /* #F3F4F6 */
-    --secondary-foreground: 220 20% 12%;
+    /* Secondary: Extremely subtle gray */
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 9%;
 
-    --muted: 210 20% 96%;
-    --muted-foreground: 220 10% 40%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 221 95% 53%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 9%;
 
-    --destructive: 0 90% 60%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
 
-    /* Bordas e inputs (Cores mais sutis) */
-    --border: 220 13% 91%;
-    /* #E5E7EB */
-    --input: 220 13% 91%;
-    --ring: 221 83% 53%;
+    /* Borders: Almost invisible */
+    --border: 0 0% 92%;
+    --input: 0 0% 92%;
+    --ring: 0 0% 9%;
 
-    /* Arredondamento Profissional (8px focus) */
-    --radius: 0.5rem;
+    --radius: 0.35rem;
+    /* Sharper, more technical look */
 
-    /* Status */
-    --success: 142.1 76.2% 36.3%;
+    /* Subdued Status Colors */
+    --success: 152 55% 42%;
     --success-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
     --danger: 0 84.2% 60.2%;
     --danger-foreground: 0 0% 100%;
 
-    /* Shadow Rígida e Discreta (Business Style) */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    /* Ultra-diffuse, premium shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.02);
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.02);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.03);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.05), 0 4px 12px rgba(0, 0, 0, 0.03);
   }
 
   .dark {
-    --background: 222 47% 11%;
-    /* #0B1120 */
-    --foreground: 210 40% 98%;
+    /* Base: Deepest minimal black/dark gray */
+    --background: 0 0% 4%;
+    --foreground: 0 0% 94%;
 
-    --card: 217 32% 17%;
-    --card-foreground: 210 40% 98%;
+    /* Cards slightly elevated from pure black */
+    --card: 0 0% 6%;
+    --card-foreground: 0 0% 94%;
 
-    --popover: 222 47% 11%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 0% 94%;
 
-    --primary: 217 91% 60%;
-    --primary-foreground: 222 47% 11%;
+    /* Primary: Bright white for extreme contrast in dark mode */
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
 
-    --secondary: 217 32% 17%;
-    --secondary-foreground: 210 40% 98%;
+    /* Secondary: Very deep gray */
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 217 32% 17%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 60%;
 
-    --accent: 217 91% 60%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 0 0% 12%;
+    --accent-foreground: 0 0% 98%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 217 32% 17%;
-    --input: 217 32% 17%;
-    --ring: 224.3 76.3% 48%;
+    /* Borders: Extremely faint */
+    --border: 0 0% 14%;
+    --input: 0 0% 14%;
+    --ring: 0 0% 80%;
   }
 }
 
@@ -108,9 +107,14 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground font-sans antialiased selection:bg-primary/10 selection:text-primary;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
-    letter-spacing: -0.011em;
+    letter-spacing: -0.015em;
+  }
+
+  /* Global Icon Styling for Ultra Minimalist Feel */
+  .lucide {
+    stroke-width: 1.25 !important;
   }
 
   h1,
@@ -120,7 +124,9 @@
   h5,
   h6 {
     @apply font-semibold;
-    letter-spacing: -0.025em;
+    font-family: 'Inter', sans-serif;
+    /* Fallback entirely to Inter for maximum clean look */
+    letter-spacing: -0.03em;
   }
 }
 

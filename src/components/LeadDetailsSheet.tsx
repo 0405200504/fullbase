@@ -172,11 +172,10 @@ export const LeadDetailsSheet = ({ lead, open, onOpenChange }: LeadDetailsSheetP
                   <Button
                     variant="outline"
                     size="icon"
+                    className={cn("h-9 w-9 transition-colors", lead.is_mql && "bg-amber-100 dark:bg-amber-500/10 border-amber-300 dark:border-amber-500/20 text-amber-700 dark:text-amber-400")}
                     onClick={handleToggleMQL}
-                    className={cn("h-9 w-9", lead.is_mql && "bg-amber-50 border-amber-200 text-amber-600")}
-                  >
-                    <Star className={cn("h-4 w-4", lead.is_mql && "fill-current")} />
-                  </Button>
+                    title={lead.is_mql ? "Remover de MQL" : "Marcar como MQL"}
+                  ><Star className={cn("h-4 w-4", lead.is_mql && "fill-current")} /></Button>
                   <Button variant="outline" size="icon" onClick={() => setEditDialogOpen(true)} className="h-9 w-9">
                     <Edit className="h-4 w-4" />
                   </Button>
@@ -431,7 +430,7 @@ export const LeadDetailsSheet = ({ lead, open, onOpenChange }: LeadDetailsSheetP
                   </Button>
                   <Button
                     onClick={() => setRegistrarVendaOpen(true)}
-                    className="w-full gap-2 h-11 font-bold bg-primary hover:bg-primary/90 text-white shadow-sm"
+                    className="w-full gap-2 h-11 font-bold shadow-sm"
                   >
                     <DollarSign className="h-4 w-4" />
                     Registrar Venda

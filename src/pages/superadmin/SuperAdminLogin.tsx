@@ -60,44 +60,44 @@ const SuperAdminLogin = () => {
     }
   };
   return <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-[#111827]">
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-radial from-primary/10 via-transparent to-transparent" />
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse" style={{
+    <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-radial from-primary/10 via-transparent to-transparent" />
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse" style={{
         animationDuration: '10s'
       }} />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" style={{
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" style={{
         animationDuration: '12s',
         animationDelay: '1s'
       }} />
-      </div>
+    </div>
 
-      <div className="w-full max-w-[420px] relative z-10">
-        <div className="rounded-2xl shadow-2xl p-8 border border-primary bg-primary-hover">
-          <div className="text-center mb-8">
-            <div className="flex justify-center mb-6">
-              <img alt="HighLeads Logo" className="h-16 w-auto" src="/lovable-uploads/ce724086-b62d-4fe1-b0ba-5fb6acb73489.png" />
-            </div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">Super Admin</h1>
-            <p className="text-primary-foreground">Acesso Restrito</p>
+    <div className="w-full max-w-[420px] relative z-10">
+      <div className="rounded-2xl shadow-2xl p-8 border border-primary bg-primary-hover">
+        <div className="text-center mb-10">
+          <div className="flex justify-center mb-8">
+            <img alt="FullBase Logo" className="h-14 w-auto object-contain" src="/logo/logo fullbase.png" />
+          </div>
+          <h1 className="text-2xl font-black tracking-tight text-white mb-1">Super Admin</h1>
+          <p className="text-primary-foreground/60 text-sm font-medium">Acesso Restrito ao Sistema</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required disabled={loading} className="mt-1" />
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required disabled={loading} className="mt-1" />
-            </div>
+          <div>
+            <Label htmlFor="password">Senha</Label>
+            <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} required disabled={loading} className="mt-1" />
+          </div>
 
-            <div>
-              <Label htmlFor="password">Senha</Label>
-              <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} required disabled={loading} className="mt-1" />
-            </div>
-
-            <Button type="submit" className="w-full btn-premium" disabled={loading}>
-              {loading ? "Aguarde..." : "Entrar"}
-            </Button>
-          </form>
-        </div>
+          <Button type="submit" className="w-full btn-premium" disabled={loading}>
+            {loading ? "Aguarde..." : "Entrar"}
+          </Button>
+        </form>
       </div>
-    </div>;
+    </div>
+  </div>;
 };
 export default SuperAdminLogin;

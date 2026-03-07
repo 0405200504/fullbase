@@ -21,19 +21,19 @@ export interface Venda {
 
 export const useVendas = (dataInicio?: string, dataFim?: string, incluirReembolsadas = false) => {
   const { effectiveAccountId, isImpersonating } = useImpersonate();
-  
+
   return useQuery({
     queryKey: ["vendas", dataInicio, dataFim, incluirReembolsadas, effectiveAccountId],
     queryFn: async () => {
       if (!effectiveAccountId) return [];
-      
+
       let query = supabase
         .from("vendas")
         .select(`
           *,
           leads(nome, fonte_trafego),
           produtos(nome),
-          profiles(nome)
+          profiles:closer_id(nome)
         `)
         .eq("account_id", effectiveAccountId)
         .order("data_fechamento", { ascending: false });

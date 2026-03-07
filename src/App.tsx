@@ -14,13 +14,13 @@ import { useCallNotifications } from "@/hooks/useCallNotifications";
 import { useLeadStagnationNotifications } from "@/hooks/useLeadStagnationNotifications";
 import { lazy, Suspense, ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { 
-  DashboardSkeleton, 
-  PipelineSkeleton, 
-  TableSkeleton, 
-  ProfileSkeleton, 
+import {
+  DashboardSkeleton,
+  PipelineSkeleton,
+  TableSkeleton,
+  ProfileSkeleton,
   PerformanceSkeleton,
-  CardGridSkeleton 
+  CardGridSkeleton
 } from "@/components/skeletons";
 
 // Lazy load all pages
@@ -52,7 +52,7 @@ const SuperAdminSettings = lazy(() => import("./pages/superadmin/SuperAdminSetti
 const SuperAdminPlans = lazy(() => import("./pages/superadmin/SuperAdminPlans"));
 const StripeWebhookTest = lazy(() => import("./pages/superadmin/StripeWebhookTest"));
 const RevenueRanking = lazy(() => import("./pages/superadmin/RevenueRanking"));
-const Pricing = lazy(() => import("./pages/Pricing"));
+
 const CheckoutSuccess = lazy(() => import("./pages/CheckoutSuccess"));
 const Subscription = lazy(() => import("./pages/Subscription"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -104,19 +104,19 @@ const AppRoutes = () => {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         {/* Public Routes */}
-        <Route path="/pricing" element={<motion.div initial="initial" animate="in" exit="out" variants={pageVariants} transition={pageTransition}><Suspense fallback={<CardGridSkeleton cards={3} />}><Pricing /></Suspense></motion.div>} />
+
         <Route path="/checkout/success" element={<motion.div initial="initial" animate="in" exit="out" variants={pageVariants} transition={pageTransition}><Suspense fallback={<DashboardSkeleton />}><CheckoutSuccess /></Suspense></motion.div>} />
-        
+
         {/* Form Runner (public) */}
         <Route path="/f/:slug" element={<motion.div initial="initial" animate="in" exit="out" variants={pageVariants} transition={pageTransition}><Suspense fallback={<div className="min-h-screen" />}><FormRunner /></Suspense></motion.div>} />
-        
+
         {/* Subscription */}
         <Route path="/subscription" element={<ProtectedRoute><Layout><AnimatedPage skeleton={<CardGridSkeleton cards={3} />}><Subscription /></AnimatedPage></Layout></ProtectedRoute>} />
-        
+
         {/* Auth Routes */}
         <Route path="/auth" element={<motion.div initial="initial" animate="in" exit="out" variants={pageVariants} transition={pageTransition}><Suspense fallback={<div className="min-h-screen flex items-center justify-center"><DashboardSkeleton /></div>}><Auth /></Suspense></motion.div>} />
         <Route path="/reset-password" element={<motion.div initial="initial" animate="in" exit="out" variants={pageVariants} transition={pageTransition}><Suspense fallback={<div className="min-h-screen flex items-center justify-center"><DashboardSkeleton /></div>}><ResetPassword /></Suspense></motion.div>} />
-        
+
         {/* Super Admin Routes */}
         <Route path="/superadmin/login" element={<motion.div initial="initial" animate="in" exit="out" variants={pageVariants} transition={pageTransition}><Suspense fallback={<DashboardSkeleton />}><SuperAdminLogin /></Suspense></motion.div>} />
         <Route path="/superadmin/dashboard" element={<SuperAdminRoute><SuperAdminLayout><AnimatedPage skeleton={<DashboardSkeleton />}><SuperAdminDashboard /></AnimatedPage></SuperAdminLayout></SuperAdminRoute>} />
@@ -145,11 +145,11 @@ const AppRoutes = () => {
         <Route path="/equipe" element={<ProtectedRoute><Layout><AnimatedPage skeleton={<CardGridSkeleton cards={6} />}><Equipe /></AnimatedPage></Layout></ProtectedRoute>} />
         <Route path="/produtos" element={<ProtectedRoute><Layout><AnimatedPage skeleton={<CardGridSkeleton cards={6} />}><Produtos /></AnimatedPage></Layout></ProtectedRoute>} />
         <Route path="/configuracoes" element={<ProtectedRoute><Layout><AnimatedPage skeleton={<CardGridSkeleton cards={4} />}><Configuracoes /></AnimatedPage></Layout></ProtectedRoute>} />
-        
+
         {/* Legacy redirects */}
         <Route path="/sales" element={<ProtectedRoute><Layout><AnimatedPage skeleton={<PerformanceSkeleton />}><Relatorios /></AnimatedPage></Layout></ProtectedRoute>} />
         <Route path="/performance" element={<ProtectedRoute><Layout><AnimatedPage skeleton={<PerformanceSkeleton />}><Relatorios /></AnimatedPage></Layout></ProtectedRoute>} />
-        
+
         <Route path="*" element={<motion.div initial="initial" animate="in" exit="out" variants={pageVariants} transition={pageTransition}><Suspense fallback={<DashboardSkeleton />}><NotFound /></Suspense></motion.div>} />
       </Routes>
     </AnimatePresence>

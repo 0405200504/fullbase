@@ -39,7 +39,7 @@ export const useCalls = (filters?: {
         .select(`
           *,
           leads(nome, telefone, produtos(nome)),
-          profiles(nome)
+          profiles:closer_id(nome)
         `)
         .eq("account_id", effectiveAccountId)
         .eq("arquivado", false)
@@ -77,7 +77,7 @@ export const useCallsByLead = (leadId: string) => {
         .from("calls")
         .select(`
           *,
-          profiles(nome)
+          profiles:closer_id(nome)
         `)
         .eq("lead_id", leadId)
         .order("data_hora_agendada", { ascending: false });

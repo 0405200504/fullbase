@@ -71,48 +71,48 @@ const Layout = ({ children }: LayoutProps) => {
         {!isMobile && (
           <aside className="w-64 border-r border-border bg-card flex flex-col sticky top-0 h-screen shadow-[1px_0_0_rgba(0,0,0,0.02)] transition-colors duration-300">
             {/* Logo Section */}
-            <div className="p-8 border-b border-border/60 flex items-center gap-3">
+            <div className="p-8 pb-10 flex items-center gap-3">
               <div className="flex-shrink-0 flex items-center justify-center">
-                <img src="/images/fullbase_logo.png" alt="FullBase Logo" className="h-[28px] w-[28px] object-contain brightness-0 invert" />
+                <img
+                  src="/logo/logo fullbase.png"
+                  alt="FullBase Logo"
+                  className="h-10 w-auto object-contain transition-transform duration-300 hover:scale-105"
+                />
               </div>
-              <span className="text-xl font-[900] tracking-tighter text-foreground uppercase leading-none">
-                Full<span className="text-primary italic">Base</span>
-              </span>
             </div>
 
-            {/* Nav Items */}
-            <nav className="flex-1 overflow-y-auto p-4 space-y-1.5">
+            <nav className="flex-1 overflow-y-auto px-4 py-4 space-y-1">
               {navItems.map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
                   end={item.to === "/"}
-                  className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-[13px] font-bold text-muted-foreground hover:text-foreground hover:bg-primary/10 transition-all duration-200"
-                  activeClassName="bg-primary text-white shadow-lg shadow-primary/20 hover:bg-primary hover:text-white"
+                  className="group flex items-center gap-3 px-3 py-2.5 rounded-md text-[13px] font-medium text-muted-foreground transition-all duration-200 hover:text-foreground"
+                  activeClassName="text-foreground font-semibold"
                   onMouseEnter={() => handlePrefetch(item.to)}
                   onFocus={() => handlePrefetch(item.to)}
                 >
-                  <item.icon className="w-[18px] h-[18px]" strokeWidth={2.5} />
+                  <item.icon className="w-[18px] h-[18px] opacity-70 group-hover:opacity-100 transition-opacity" strokeWidth={1.5} />
                   <span>{item.label}</span>
                 </NavLink>
               ))}
             </nav>
 
             {/* Footer / User Profile */}
-            <div className="p-6 border-t border-border/60 space-y-5 bg-muted/20">
+            <div className="p-6 border-t border-border/40 space-y-5 bg-transparent">
               <div className="px-1 flex items-center justify-between">
                 <button
                   onClick={toggleTheme}
-                  className="w-9 h-9 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-background hover:shadow-sm border border-transparent hover:border-border transition-all"
+                  className="w-8 h-8 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all"
                   title={isDark ? "Modo claro" : "Modo escuro"}
                 >
                   {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                 </button>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
                   <NotificationBell />
                   <button
                     onClick={signOut}
-                    className="w-9 h-9 flex items-center justify-center rounded-lg text-muted-foreground hover:text-danger hover:bg-danger/10 transition-all"
+                    className="w-8 h-8 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all"
                     title="Sair"
                   >
                     <LogOut className="w-4 h-4" />
@@ -120,15 +120,11 @@ const Layout = ({ children }: LayoutProps) => {
                 </div>
               </div>
               <div className="flex items-center gap-3 px-1">
-                <div className="w-9 h-9 rounded-xl bg-primary text-white flex items-center justify-center font-black text-xs shadow-md shadow-primary/10">
+                <div className="w-8 h-8 rounded-full border border-border flex items-center justify-center font-medium text-xs text-muted-foreground">
                   {user?.email?.charAt(0).toUpperCase() || "U"}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-black text-foreground truncate uppercase tracking-tight">{user?.email?.split('@')[0]}</p>
-                  <div className="flex items-center gap-1">
-                    <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></div>
-                    <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Acesso Master</p>
-                  </div>
+                  <p className="text-[13px] font-medium text-foreground truncate">{user?.email?.split('@')[0]}</p>
                 </div>
               </div>
             </div>
@@ -152,12 +148,7 @@ const Layout = ({ children }: LayoutProps) => {
             >
               <div className="flex items-center justify-between px-8 py-8 border-b border-border/60">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 flex items-center justify-center">
-                    <img src="/images/fullbase_logo.png" alt="FullBase Logo" className="h-7 w-7 object-contain brightness-0 invert" />
-                  </div>
-                  <span className="text-xl font-black tracking-tighter text-foreground uppercase pt-0.5">
-                    Full<span className="text-primary italic">Base</span>
-                  </span>
+                  <img src="/logo/logo fullbase.png" alt="FullBase Logo" className="h-8 w-auto object-contain" />
                 </div>
                 <button onClick={() => setMobileOpen(false)} className="w-10 h-10 flex items-center justify-center rounded-xl bg-muted/30 hover:bg-muted text-foreground transition-colors">
                   <X className="w-5 h-5" />
@@ -171,7 +162,7 @@ const Layout = ({ children }: LayoutProps) => {
                     to={item.to}
                     end={item.to === "/"}
                     className="flex items-center gap-4 px-4 py-3.5 rounded-xl text-[15px] font-bold text-muted-foreground hover:text-foreground hover:bg-primary/10 transition-all duration-200"
-                    activeClassName="bg-primary text-white shadow-xl shadow-primary/20"
+                    activeClassName="bg-primary text-primary-foreground shadow-xl shadow-primary/20"
                     onClick={() => setMobileOpen(false)}
                   >
                     <item.icon className="w-5 h-5" strokeWidth={2.5} />
@@ -202,12 +193,7 @@ const Layout = ({ children }: LayoutProps) => {
                 <Menu className="w-6 h-6" />
               </button>
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 flex items-center justify-center">
-                  <img src="/images/fullbase_logo.png" alt="FullBase Logo" className="h-6 w-6 object-contain brightness-0 invert" />
-                </div>
-                <span className="text-lg font-black tracking-tighter text-foreground uppercase">
-                  Full<span className="text-primary italic">Base</span>
-                </span>
+                <img src="/logo/logo fullbase.png" alt="FullBase Logo" className="h-7 w-auto object-contain" />
               </div>
               <div className="w-10 h-10 flex items-center justify-center">
                 <NotificationBell />

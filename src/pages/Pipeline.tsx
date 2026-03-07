@@ -49,13 +49,13 @@ const LeadCard = ({ lead, precisaFollowup, diasParado, upcomingCall, onToggleMQL
   onToggleMQL?: (e: React.MouseEvent) => void;
 }) => {
   return (
-    <Card className="group relative border-border/60 shadow-sm hover:border-primary/40 hover:shadow-md transition-all duration-200 overflow-visible bg-white">
+    <Card className="group relative border border-border bg-transparent shadow-none hover:border-foreground hover:bg-muted/10 transition-all duration-200 overflow-visible rounded-none">
       {precisaFollowup && (
         <div
-          className="absolute -top-2 -right-2 bg-danger rounded-full p-1.5 shadow-lg z-10 animate-pulse"
+          className="absolute -top-1.5 -right-1.5 bg-foreground rounded-none p-1 shadow-none z-10"
           title={`Parado há ${diasParado} dias - Precisa follow-up!`}
         >
-          <Flame className="h-3.5 w-3.5 text-white" />
+          <Flame className="h-3 w-3 text-background" strokeWidth={1.5} />
         </div>
       )}
 
@@ -92,19 +92,19 @@ const LeadCard = ({ lead, precisaFollowup, diasParado, upcomingCall, onToggleMQL
           <WhatsAppButton telefone={lead.telefone} size="sm" className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity" />
         </div>
 
-        <div className="flex flex-wrap gap-1.5 pt-1 border-t border-border/40">
+        <div className="flex flex-wrap gap-1.5 pt-1 border-t border-border mt-1">
           {(lead as any).contatado ? (
-            <Badge variant="outline" className="bg-success/5 text-success border-success/20 text-[9px] font-bold uppercase tracking-tighter px-1.5 py-0">
+            <Badge variant="outline" className="rounded-none border-foreground text-foreground text-[9px] font-bold px-1.5 py-0 uppercase tracking-widest">
               Contatado
             </Badge>
           ) : (
-            <Badge variant="outline" className="bg-muted/30 text-muted-foreground border-border/60 text-[9px] font-bold uppercase tracking-tighter px-1.5 py-0">
+            <Badge variant="outline" className="rounded-none border-border text-muted-foreground text-[9px] font-bold px-1.5 py-0 uppercase tracking-widest">
               Novo Lead
             </Badge>
           )}
           {lead.sdr_profile && (
-            <div className="text-[9px] font-semibold text-muted-foreground/60 uppercase flex items-center gap-1 ml-auto">
-              <UserPlus className="h-2.5 w-2.5" />
+            <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1 ml-auto">
+              <UserPlus className="h-3 w-3" strokeWidth={1.25} />
               {lead.sdr_profile.nome.split(' ')[0]}
             </div>
           )}
@@ -175,16 +175,16 @@ const DroppableColumn = ({
   });
 
   return (
-    <div className="flex flex-col h-full min-w-[280px] max-w-[320px] bg-muted/20 rounded-xl border border-border/40">
-      <div className="p-4 border-b border-border/40">
-        <div className="flex items-center justify-between">
+    <div className="flex flex-col h-full min-w-[280px] max-w-[320px] bg-transparent border-t-[3px] border-border pt-1">
+      <div className="py-3 px-1">
+        <div className="flex items-center justify-between border-b border-border pb-2">
           <div className="flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full" style={{ backgroundColor: stageColor }} />
-            <h3 className="font-bold text-sm text-foreground tracking-tight">{stageName}</h3>
+            <div className="h-2 w-2 rounded-none" style={{ backgroundColor: stageColor }} />
+            <h3 className="font-bold text-[13px] uppercase tracking-widest text-foreground">{stageName}</h3>
           </div>
-          <Badge variant="secondary" className="bg-white border-border/60 text-[10px] h-5 min-w-[20px] justify-center px-1 font-bold">
+          <span className="text-[11px] font-bold text-muted-foreground">
             {leads.length}
-          </Badge>
+          </span>
         </div>
       </div>
 
@@ -474,15 +474,15 @@ const Pipeline = () => {
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
           <Button
             onClick={() => setDialogOpen(true)}
-            className="bg-primary hover:bg-primary/90 text-white font-bold h-10 gap-2 px-5"
+            className="font-bold h-10 gap-2 px-5"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-4 w-4" strokeWidth={2} />
             Novo Lead
           </Button>
 
           <Button
             variant="outline"
-            className={cn("h-10 gap-2 font-semibold", showOnlyMQL && "bg-amber-50 border-amber-200 text-amber-600")}
+            className={cn("h-10 gap-2 font-semibold transition-colors", showOnlyMQL && "bg-amber-100 dark:bg-amber-500/10 border-amber-300 dark:border-amber-500/20 text-amber-700 dark:text-amber-400")}
             onClick={() => setShowOnlyMQL(!showOnlyMQL)}
           >
             <Star className={cn("h-4 w-4", showOnlyMQL && "fill-current")} />
@@ -490,7 +490,7 @@ const Pipeline = () => {
           </Button>
 
           <Select value={captureFilter} onValueChange={setCaptureFilter}>
-            <SelectTrigger className="h-10 w-[200px] border-border/60 bg-white font-medium">
+            <SelectTrigger className="h-10 w-[200px] border-border/60 bg-background font-medium">
               <SelectValue placeholder="Filtro de Captura" />
             </SelectTrigger>
             <SelectContent>
@@ -514,7 +514,7 @@ const Pipeline = () => {
               variant={viewMode === "kanban" ? "secondary" : "ghost"}
               size="sm"
               onClick={() => handleViewModeChange("kanban")}
-              className={cn("h-8 gap-2 border-none px-4", viewMode === "kanban" && "bg-white shadow-sm")}
+              className={cn("h-8 gap-2 border-none px-4", viewMode === "kanban" && "bg-background shadow-sm")}
             >
               <LayoutGrid className="h-4 w-4" />
               Kanban
@@ -523,7 +523,7 @@ const Pipeline = () => {
               variant={viewMode === "list" ? "secondary" : "ghost"}
               size="sm"
               onClick={() => handleViewModeChange("list")}
-              className={cn("h-8 gap-2 border-none px-4", viewMode === "list" && "bg-white shadow-sm")}
+              className={cn("h-8 gap-2 border-none px-4", viewMode === "list" && "bg-background shadow-sm")}
             >
               <List className="h-4 w-4" />
               Lista
@@ -597,43 +597,22 @@ const Pipeline = () => {
             closers={closers}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="border-border/60">
-              <CardContent className="p-4 flex items-center gap-4">
-                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                  <UserPlus className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Total Leads</p>
-                  <p className="text-xl font-bold">{filteredLeads.length}</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="border-border/60">
-              <CardContent className="p-4 flex items-center gap-4">
-                <div className="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
-                  <Star className="h-5 w-5 fill-current" />
-                </div>
-                <div>
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">MQLs</p>
-                  <p className="text-xl font-bold">{filteredLeads.filter(l => l.is_mql).length}</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="border-border/60">
-              <CardContent className="p-4 flex items-center gap-4">
-                <div className="h-10 w-10 rounded-full bg-success/10 flex items-center justify-center text-success">
-                  <DollarSign className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Pipeline Value</p>
-                  <p className="text-xl font-bold">R$ {filteredLeads.reduce((sum, lead) => sum + (lead.valor_proposta || 0), 0).toLocaleString('pt-BR')}</p>
-                </div>
-              </CardContent>
-            </Card>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-b border-border mb-6">
+            <div className="p-4 flex flex-col justify-center border-r-0 md:border-r border-border">
+              <p className="text-[11px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Total Leads</p>
+              <p className="text-3xl font-extrabold">{filteredLeads.length}</p>
+            </div>
+            <div className="p-4 flex flex-col justify-center border-r-0 md:border-r border-border">
+              <p className="text-[11px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Leads MQL</p>
+              <p className="text-3xl font-extrabold text-foreground">{filteredLeads.filter(l => l.is_mql).length}</p>
+            </div>
+            <div className="p-4 flex flex-col justify-center">
+              <p className="text-[11px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Valor em Pipeline</p>
+              <p className="text-3xl font-extrabold">R$ {filteredLeads.reduce((sum, lead) => sum + (lead.valor_proposta || 0), 0).toLocaleString('pt-BR')}</p>
+            </div>
           </div>
 
-          <div className="bg-white border border-border/60 rounded-xl overflow-hidden shadow-sm">
+          <div className="bg-card border border-border/60 rounded-xl overflow-hidden shadow-sm">
             <table className="w-full text-sm text-left">
               <thead className="bg-muted/30 border-b border-border/60">
                 <tr>

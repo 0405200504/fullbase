@@ -86,7 +86,7 @@ const Subscription = () => {
                 <p className="text-2xl font-bold">{currentPlan?.max_users === 999 ? "Ilimitado" : currentPlan?.max_users}</p>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-3 p-4 rounded-lg border bg-card">
               <Database className="h-8 w-8 text-primary" />
               <div>
@@ -94,7 +94,7 @@ const Subscription = () => {
                 <p className="text-2xl font-bold">{currentPlan?.max_leads === 999999 ? "Ilimitado" : currentPlan?.max_leads}</p>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-3 p-4 rounded-lg border bg-card">
               <Calendar className="h-8 w-8 text-primary" />
               <div>
@@ -102,7 +102,7 @@ const Subscription = () => {
                 <p className="text-2xl font-bold">{currentPlan?.history_days} dias</p>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-3 p-4 rounded-lg border bg-card">
               <TrendingUp className="h-8 w-8 text-primary" />
               <div>
@@ -119,7 +119,7 @@ const Subscription = () => {
                 <span className="text-sm text-muted-foreground">Ciclo de Pagamento</span>
                 <span className="font-medium">{subscription.billing_cycle === "yearly" ? "Anual" : "Mensal"}</span>
               </div>
-              
+
               {subscription.current_period_end && (
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-muted-foreground">
@@ -143,18 +143,18 @@ const Subscription = () => {
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-3">
             {isFreePlan ? (
-              <Button onClick={() => navigate("/pricing")} className="w-full md:w-auto">
+              <Button onClick={() => toast.info("Entre em contato com o suporte para fazer upgrade.")} className="w-full md:w-auto">
                 Fazer Upgrade
               </Button>
             ) : (
               <>
-                <Button onClick={() => navigate("/pricing")} variant="outline" className="w-full md:w-auto">
+                <Button onClick={() => toast.info("Entre em contato com o suporte para mudar de plano.")} variant="outline" className="w-full md:w-auto">
                   {subscription?.status === "active" ? "Mudar Plano" : "Ver Planos"}
                 </Button>
-                
+
                 {subscription?.status === "active" && subscription?.stripe_customer_id && (
                   <>
-                    <Button 
+                    <Button
                       onClick={async () => {
                         try {
                           const { data, error } = await supabase.functions.invoke("create-customer-portal");
@@ -171,7 +171,7 @@ const Subscription = () => {
                     >
                       Gerenciar Pagamento
                     </Button>
-                    
+
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button variant="destructive" className="w-full md:w-auto">

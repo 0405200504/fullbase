@@ -226,33 +226,33 @@ const Leads = () => {
 
       {/* Stats Summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="px-6 py-4 bg-muted/30 rounded-lg border border-border flex items-center justify-between">
+        <div className="px-5 py-4 bg-card rounded-lg border border-border shadow-sm flex items-center justify-between">
           <span className="text-sm font-medium text-muted-foreground">Total de Leads</span>
-          <span className="text-xl font-bold">{filteredLeads.length}</span>
+          <span className="text-2xl font-bold">{filteredLeads.length}</span>
         </div>
-        <div className="px-6 py-4 bg-primary/[0.03] rounded-lg border border-primary/10 flex items-center justify-between">
-          <span className="text-sm font-medium text-primary">Leads MQL</span>
-          <span className="text-xl font-bold text-primary">{filteredLeads.filter(l => l.is_mql).length}</span>
+        <div className="px-5 py-4 bg-card rounded-lg border border-border shadow-sm flex items-center justify-between">
+          <span className="text-sm font-medium text-primary/80">Leads MQL</span>
+          <span className="text-2xl font-bold text-primary">{filteredLeads.filter(l => l.is_mql).length}</span>
         </div>
-        <div className="px-6 py-4 bg-success/[0.03] rounded-lg border border-success/10 flex items-center justify-between">
-          <span className="text-sm font-medium text-success">Potencial de Vendas</span>
-          <span className="text-xl font-bold text-success">
+        <div className="px-5 py-4 bg-card rounded-lg border border-border shadow-sm flex items-center justify-between">
+          <span className="text-sm font-medium text-success/80">Potencial de Vendas</span>
+          <span className="text-2xl font-bold text-success">
             {formatCurrency(filteredLeads.reduce((sum, lead) => sum + (lead.valor_proposta || 0), 0))}
           </span>
         </div>
       </div>
 
       {/* Filters Bar */}
-      <Card className="border-border/60">
-        <CardContent className="p-4">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+      <Card className="border-border shadow-sm overflow-visible">
+        <CardContent className="p-3">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
             <div className="lg:col-span-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Buscar leads..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9"
+                className="pl-9 bg-background h-10 shadow-none border-border focus-visible:ring-primary/20"
               />
             </div>
 
@@ -295,23 +295,23 @@ const Leads = () => {
       </Card>
 
       {/* Tabela de Leads */}
-      <Card className="overflow-hidden border-border/60">
+      <Card className="overflow-hidden border-border shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
             <thead>
-              <tr className="bg-muted/50 border-b border-border">
-                <th className="px-4 py-4 w-10 text-center">
+              <tr className="bg-muted/30 border-b border-border">
+                <th className="px-4 py-3 w-10 text-center">
                   <Checkbox
                     checked={selectedLeadIds.length === filteredLeads.length && filteredLeads.length > 0}
                     onCheckedChange={handleSelectAll}
                   />
                 </th>
-                <th className="px-4 py-4 font-bold text-muted-foreground uppercase tracking-wider text-[11px]">Lead</th>
-                <th className="px-4 py-4 font-bold text-muted-foreground uppercase tracking-wider text-[11px]">Etapa do Funil</th>
-                <th className="px-4 py-4 font-bold text-muted-foreground uppercase tracking-wider text-[11px]">Produto / Valor</th>
-                <th className="px-4 py-4 font-bold text-muted-foreground uppercase tracking-wider text-[11px]">Time</th>
-                <th className="px-4 py-4 font-bold text-muted-foreground uppercase tracking-wider text-[11px]">Criado</th>
-                <th className="px-4 py-4 font-bold text-muted-foreground uppercase tracking-wider text-[11px] text-right">Ações</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground text-xs">Lead</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground text-xs">Etapa do Funil</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground text-xs">Produto / Valor</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground text-xs">Time</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground text-xs">Criado</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground text-xs text-right">Ações</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border/50">
@@ -346,7 +346,7 @@ const Leads = () => {
                           </button>
                           <div>
                             <div className="flex items-center gap-2">
-                              <span className="font-bold text-foreground">{lead.nome}</span>
+                              <span className="font-semibold text-foreground text-[14px]">{lead.nome}</span>
                               {leadComAlerta?.precisaFollowup && !showArchived && (
                                 <Badge variant="destructive" className="h-5 px-1 bg-danger text-white border-none animate-pulse">
                                   <Flame className="w-3 h-3" />
@@ -360,7 +360,7 @@ const Leads = () => {
                       <td className="px-4 py-4">
                         <Badge
                           variant="outline"
-                          className="font-semibold uppercase text-[10px] tracking-wide"
+                          className="font-medium text-xs px-2 py-0.5 border"
                           style={{
                             color: lead.etapas_funil?.cor || 'inherit',
                             borderColor: (lead.etapas_funil?.cor || 'currentColor') + '40',

@@ -115,7 +115,7 @@ const Auth = () => {
             await signIn(email, password);
             sessionStorage.removeItem("selectedPlanId");
             sessionStorage.removeItem("selectedBillingCycle");
-            navigate(`/pricing?auto_checkout=${selectedPlanId}&cycle=${selectedBillingCycle}`);
+            navigate(`/`);
             return;
           }
           setNewUserId(result.userId);
@@ -130,115 +130,103 @@ const Auth = () => {
   return (
     <>
       <div className="min-h-screen flex items-center justify-center p-6 bg-background transition-colors duration-300">
-        {/* Subtle decorative background */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-[0.05] dark:opacity-[0.02]">
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(hsl(var(--foreground))_1px,transparent_1px)] [background-size:32px_32px]" />
-        </div>
-
-        <div className="w-full max-w-[440px] relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="w-full max-w-[420px] relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
           {/* Logo Section */}
-          <div className="flex flex-col items-center mb-10 text-center gap-3">
-            <div className="flex items-center justify-center">
-              <img src="/images/fullbase_logo.png" alt="FullBase Logo" className="h-[48px] w-[48px] object-contain brightness-0 invert" />
-            </div>
-            <h2 className="text-3xl font-[900] tracking-tighter text-foreground uppercase leading-none">
-              Full<span className="text-primary italic">Base</span>
-            </h2>
-            <p className="text-sm text-muted-foreground font-medium mt-1">Sua central de leads profissional.</p>
+          <div className="flex flex-col items-center mb-10 text-center">
+            <img src="/logo/logo fullbase.png" alt="FullBase Logo" className="h-10 w-auto object-contain transition-all duration-500 hover:scale-105" />
           </div>
 
           {/* Solid Card */}
-          <div className="bg-card rounded-[32px] border border-border/60 shadow-[0_20px_50px_rgba(0,0,0,0.05)] p-10 backdrop-blur-sm transition-colors duration-300">
-            <div className="mb-8">
-              <h1 className="text-xl font-bold text-foreground">
-                {isLogin ? "Acessar Plataforma" : "Criar Nova Conta"}
+          <div className="bg-card rounded-xl border border-border shadow-sm p-8 md:p-10 transition-all duration-300">
+            <div className="mb-8 text-center space-y-2">
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                {isLogin ? "Acesse sua conta" : "Crie sua conta"}
               </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                {isLogin ? "Insira suas credenciais corporativas." : "Junte-se a milhares de closers no FullBase."}
+              <p className="text-sm text-muted-foreground">
+                {isLogin ? "Bem-vindo de volta ao FullBase" : "Comece a gerenciar seus leads"}
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-5">
               {!isLogin && (
                 <div className="space-y-1.5">
-                  <Label htmlFor="nome" className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Nome Completo</Label>
+                  <Label htmlFor="nome" className="text-xs font-semibold text-foreground">Nome Completo</Label>
                   <div className="relative">
-                    <UserIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground/40" />
-                    <Input id="nome" type="text" value={nome} onChange={e => setNome(e.target.value)} required disabled={loading} className="pl-10 h-11 border-border/60 focus:ring-primary/20 bg-muted/20" placeholder="Ex: João Silva" />
+                    <UserIcon className="absolute left-3.5 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input id="nome" type="text" value={nome} onChange={e => setNome(e.target.value)} required disabled={loading} className="pl-10 h-10 border-border bg-background focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0 rounded-md shadow-sm transition-all" placeholder="Ex: João Silva" />
                   </div>
                 </div>
               )}
 
               <div className="space-y-1.5">
-                <Label htmlFor="email" className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">E-mail Corporativo</Label>
+                <Label htmlFor="email" className="text-xs font-semibold text-foreground">E-mail corporativo</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground/40" />
-                  <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required disabled={loading} className="pl-10 h-11 border-border/60 focus:ring-primary/20 bg-muted/20" placeholder="voce@empresa.com" />
+                  <Mail className="absolute left-3.5 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required disabled={loading} className="pl-10 h-10 border-border bg-background focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0 rounded-md shadow-sm transition-all" placeholder="voce@empresa.com" />
                 </div>
               </div>
 
               <div className="space-y-1.5">
                 <div className="flex justify-between items-center">
-                  <Label htmlFor="password" className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Senha</Label>
+                  <Label htmlFor="password" className="text-xs font-semibold text-foreground">Senha</Label>
                   {isLogin && (
-                    <button type="button" onClick={handleForgotPassword} className="text-[11px] font-bold text-primary hover:underline" disabled={loading}>
-                      Recuperar
+                    <button type="button" onClick={handleForgotPassword} className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors" disabled={loading}>
+                      Esqueceu a senha?
                     </button>
                   )}
                 </div>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground/40" />
-                  <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} required disabled={loading} className="pl-10 h-11 border-border/60 focus:ring-primary/20 bg-muted/20" placeholder="••••••••" />
+                  <Lock className="absolute left-3.5 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} required disabled={loading} className="pl-10 h-10 border-border bg-background focus-visible:ring-1 focus-visible:ring-primary focus-visible:ring-offset-0 rounded-md shadow-sm transition-all" placeholder="••••••••" />
                 </div>
                 {!isLogin && <PasswordStrengthIndicator password={password} />}
               </div>
 
               <Button
                 type="submit"
-                className="w-full rounded-xl text-sm font-bold h-12 mt-4 bg-primary hover:bg-primary/90 text-white transition-all shadow-lg shadow-primary/20 gap-2"
+                className="w-full rounded-md text-[13px] font-medium h-10 mt-6 bg-primary hover:bg-primary/90 text-primary-foreground transition-all shadow-sm"
                 disabled={loading || (!isLogin && password && validatePasswordStrength(password).score < 5)}
               >
-                {loading ? "Processando..." : isLogin ? "Fazer Login" : "Criar Conta"}
-                {!loading && <ArrowRight className="h-4 w-4" />}
+                {loading ? "Processando..." : isLogin ? "Entrar" : "Criar Conta"}
               </Button>
             </form>
 
-            <div className="relative my-8 text-center">
+            <div className="relative my-6 text-center">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-border/60"></div>
+                <div className="w-full border-t border-border"></div>
               </div>
-              <span className="relative px-4 bg-card text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Ou continue com</span>
+              <span className="relative px-3 bg-card text-xs text-muted-foreground">Ou continue com</span>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <Button variant="outline" className="rounded-xl border-border/60 h-11 text-xs font-bold gap-2 text-muted-foreground hover:bg-muted/30" disabled>
+              <Button variant="outline" className="rounded-md border-border h-10 text-[13px] font-medium gap-2 text-foreground shadow-sm bg-background" disabled>
                 <Chrome className="h-4 w-4" />
                 Google
               </Button>
-              <Button variant="outline" className="rounded-xl border-border/60 h-11 text-xs font-bold gap-2 text-muted-foreground hover:bg-muted/30" disabled>
+              <Button variant="outline" className="rounded-md border-border h-10 text-[13px] font-medium gap-2 text-foreground shadow-sm bg-background" disabled>
                 <Github className="h-4 w-4" />
                 GitHub
               </Button>
             </div>
 
-            <p className="mt-8 text-center text-xs text-muted-foreground font-medium">
-              {isLogin ? "Não possui uma licença?" : "Já possui acesso?"}
+            <p className="mt-6 text-center text-[13px] text-muted-foreground">
+              {isLogin ? "Ainda não possui uma conta?" : "Já possui conta?"}
               <button
                 type="button"
                 onClick={() => setIsLogin(!isLogin)}
-                className="ml-1 text-primary font-bold hover:underline"
+                className="ml-1 text-foreground font-medium hover:text-primary transition-colors"
                 disabled={loading}
               >
-                {isLogin ? "Solicitar Agora" : "Fazer Login"}
+                {isLogin ? "Criar conta" : "Fazer login"}
               </button>
             </p>
           </div>
 
-          <div className="mt-8 flex items-center justify-between text-[11px] font-bold text-muted-foreground/50 uppercase tracking-widest px-4">
-            <span>© {new Date().getFullYear()} FullBase System</span>
+          <div className="mt-8 flex items-center justify-between text-[11px] font-medium text-muted-foreground px-2">
+            <span>© {new Date().getFullYear()} FullBase</span>
             <div className="flex gap-4">
-              <button onClick={() => navigate("/pricing")} className="hover:text-primary transition-colors">Planos</button>
-              <button onClick={() => navigate("/superadmin/login")} className="hover:text-primary transition-colors">Admin</button>
+
+              <button onClick={() => navigate("/superadmin/login")} className="hover:text-foreground transition-colors">Administração</button>
             </div>
           </div>
         </div>

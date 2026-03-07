@@ -417,25 +417,25 @@ const Dashboard = () => {
 
       {/* Meta Progress Card */}
       {metaAtual && progressoMeta ? (
-        <Card className="overflow-hidden border-primary/20 bg-primary/[0.02]">
-          <CardContent className="p-8">
+        <Card className="overflow-hidden border-border bg-card shadow-sm hover:shadow-md transition-all duration-300">
+          <CardContent className="p-6 md:p-8">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 font-bold uppercase tracking-wider text-[10px]">
+                  <Badge variant="outline" className="font-bold text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-none border-foreground text-foreground">
                     Meta Ativa
                   </Badge>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-sm text-muted-foreground font-medium">
                     {progressoMeta.diasUteisDecorridos} de {progressoMeta.diasUteisNoMes} dias úteis ({progressoMeta.diasUteisRestantes} restantes)
                   </span>
                 </div>
-                <h2 className="text-2xl font-bold">{metaAtual.nome}</h2>
-                <div className="flex items-baseline gap-2">
+                <h2 className="text-2xl font-bold tracking-tight text-foreground">{metaAtual.nome}</h2>
+                <div className="flex items-baseline gap-2.5">
                   <span className="text-4xl font-extrabold tracking-tight text-foreground">
                     R$ {faturamentoMesAtual.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                   </span>
-                  <span className="text-muted-foreground font-medium">
-                    de R$ {metaAtual.valor_mensal.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
+                  <span className="text-sm text-muted-foreground font-medium">
+                    objetivo: R$ {metaAtual.valor_mensal.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
                   </span>
                 </div>
               </div>
@@ -445,20 +445,20 @@ const Dashboard = () => {
                   <span>Progresso Geral</span>
                   <span className="text-primary">{((faturamentoMesAtual / metaAtual.valor_mensal) * 100).toFixed(1)}%</span>
                 </div>
-                <div className="h-3 bg-muted rounded-full overflow-hidden border border-border/50">
+                <div className="h-1 bg-secondary overflow-hidden">
                   <div
-                    className="h-full bg-primary transition-all duration-1000 ease-out"
+                    className="h-full bg-foreground transition-all duration-1000 ease-out"
                     style={{ width: `${Math.min(100, (faturamentoMesAtual / metaAtual.valor_mensal) * 100)}%` }}
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4 pt-2">
-                  <div className="p-3 bg-card rounded-md border border-border/50">
-                    <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest">Meta Diária</p>
-                    <p className="text-lg font-bold text-foreground">R$ {progressoMeta.metaDiariaOriginal.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}</p>
+                <div className="grid grid-cols-2 gap-4 pt-4">
+                  <div className="border-t border-border pt-3">
+                    <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-1">Meta Diária</p>
+                    <p className="text-xl font-extrabold text-foreground">R$ {progressoMeta.metaDiariaOriginal.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}</p>
                   </div>
-                  <div className="p-3 bg-primary/5 rounded-md border border-primary/10">
-                    <p className="text-[10px] uppercase font-bold text-primary tracking-widest">Ajustada (Restante)</p>
-                    <p className="text-lg font-bold text-primary">R$ {progressoMeta.metaDiariaRedistribuida.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}</p>
+                  <div className="border-t border-foreground pt-3">
+                    <p className="text-[11px] font-bold text-foreground uppercase tracking-wider mb-1">Ajustada</p>
+                    <p className="text-xl font-extrabold text-foreground">R$ {progressoMeta.metaDiariaRedistribuida.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}</p>
                   </div>
                 </div>
               </div>
@@ -588,30 +588,30 @@ const Dashboard = () => {
         {/* Action Items / Follow-ups */}
         <div className="space-y-6">
           <div className="grid grid-cols-1 gap-4">
-            <div className="p-6 bg-card rounded-lg border border-border shadow-sm">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-orange-100 text-orange-600 rounded-md">
-                  <Clock className="w-5 h-5" />
+            <div className="p-6 bg-card rounded-none border border-border flex flex-col justify-between hover:border-foreground transition-all">
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <Clock className="w-5 h-5 text-muted-foreground" strokeWidth={1.25} />
+                  <h4 className="font-semibold text-sm uppercase tracking-wider">Follow-ups</h4>
                 </div>
-                <h4 className="font-bold">Follow-ups Pendentes</h4>
+                <p className="text-4xl font-extrabold tracking-tight">{leadsMetrics.followupsHoje}</p>
+                <p className="text-[13px] text-muted-foreground mt-1">Leads aguardando contato hoje</p>
               </div>
-              <p className="text-3xl font-extrabold">{leadsMetrics.followupsHoje}</p>
-              <p className="text-xs text-muted-foreground mt-1">Leads aguardando contato hoje</p>
-              <Button variant="outline" size="sm" className="w-full mt-4" asChild>
+              <Button variant="outline" size="sm" className="w-full mt-6 rounded-none border-border hover:bg-foreground hover:text-background transition-colors" asChild>
                 <a href="/leads">Ver Leads</a>
               </Button>
             </div>
 
-            <div className="p-6 bg-card rounded-lg border border-border shadow-sm">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-blue-100 text-blue-600 rounded-md">
-                  <FileText className="w-5 h-5" />
+            <div className="p-6 bg-card rounded-none border border-border flex flex-col justify-between hover:border-foreground transition-all">
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <FileText className="w-5 h-5 text-muted-foreground" strokeWidth={1.25} />
+                  <h4 className="font-semibold text-sm uppercase tracking-wider">Propostas</h4>
                 </div>
-                <h4 className="font-bold">Propostas em Aberto</h4>
+                <p className="text-4xl font-extrabold tracking-tight">{leadsMetrics.propostasEnviadas}</p>
+                <p className="text-[13px] text-muted-foreground mt-1">Aguardando fechamento</p>
               </div>
-              <p className="text-3xl font-extrabold">{leadsMetrics.propostasEnviadas}</p>
-              <p className="text-xs text-muted-foreground mt-1">Aguardando fechamento</p>
-              <Button variant="outline" size="sm" className="w-full mt-4" asChild>
+              <Button variant="outline" size="sm" className="w-full mt-6 rounded-none border-border hover:bg-foreground hover:text-background transition-colors" asChild>
                 <a href="/pipeline">Ir para Pipeline</a>
               </Button>
             </div>
@@ -632,31 +632,26 @@ const Dashboard = () => {
         </div>
 
         {callsHoje.length === 0 ? (
-          <Card className="border-dashed">
+          <Card className="border-border bg-transparent shadow-none rounded-none">
             <CardContent className="py-12 text-center text-muted-foreground italic">
               Nenhuma call agendada para o dia de hoje.
             </CardContent>
           </Card>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-0">
             {callsHoje.map(call => (
-              <div key={call.id} className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 bg-card border border-border rounded-lg hover:border-primary/30 transition-all hover:bg-muted/30">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-md bg-muted flex flex-col items-center justify-center border border-border">
-                    <span className="text-[10px] uppercase font-bold text-muted-foreground">Hora</span>
-                    <span className="text-sm font-bold">{format(new Date(call.data_hora_agendada), "HH:mm")}</span>
+              <div key={call.id} className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 bg-transparent border-b border-border hover:bg-secondary/20 transition-all duration-300">
+                <div className="flex items-center gap-6">
+                  <div className="flex flex-col items-start justify-center min-w-[60px]">
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Hora</span>
+                    <span className="text-lg font-extrabold text-foreground">{format(new Date(call.data_hora_agendada), "HH:mm")}</span>
                   </div>
-                  <div>
-                    <h4 className="font-bold text-foreground">{call.leads?.nome}</h4>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Users className="w-3 h-3" />
-                      <span>Closer: {call.profiles?.nome}</span>
+                  <div className="space-y-1 border-l border-border pl-6">
+                    <h4 className="font-bold text-foreground text-sm tracking-tight">{call.leads?.nome}</h4>
+                    <div className="flex items-center gap-3 text-[12px] font-medium text-muted-foreground uppercase tracking-wider">
+                      <span className="flex items-center gap-1.5"><Users className="w-3.5 h-3.5 opacity-70" strokeWidth={1.25} /> {call.profiles?.nome}</span>
                       {call.leads?.produtos?.nome && (
-                        <>
-                          <span className="mx-1">•</span>
-                          <Package className="w-3 h-3" />
-                          <span>{call.leads.produtos.nome}</span>
-                        </>
+                        <span className="flex items-center gap-1.5"><Package className="w-3.5 h-3.5 opacity-70" strokeWidth={1.25} /> {call.leads.produtos.nome}</span>
                       )}
                     </div>
                   </div>

@@ -23,7 +23,7 @@ export const MetaProgressCard = ({
   const progressoCapped = Math.min(progresso, 100);
   const acimaDaMeta = progresso >= 100;
   const acimaDoEsperado = progressoEsperado ? valorAtual >= progressoEsperado : false;
-  
+
   // Determinar o status de performance
   const getPerformanceStatus = () => {
     if (acimaDaMeta) {
@@ -35,7 +35,7 @@ export const MetaProgressCard = ({
         borderColor: "border-success/20"
       };
     }
-    
+
     if (progressoEsperado !== undefined) {
       if (acimaDoEsperado) {
         return {
@@ -63,7 +63,7 @@ export const MetaProgressCard = ({
         };
       }
     }
-    
+
     return {
       icon: Activity,
       color: "text-primary",
@@ -72,48 +72,47 @@ export const MetaProgressCard = ({
       borderColor: "border-primary/20"
     };
   };
-  
+
   const status = getPerformanceStatus();
   const StatusIcon = status.icon;
 
   return (
-    <div className={`bg-card rounded-xl p-4 shadow-md hover:shadow-lg transition-all border-2 ${status.borderColor}`}>
-      <div className="flex items-start justify-between mb-3">
+    <div className={`bg-card rounded-xl p-5 shadow-sm hover:shadow-md transition-all border ${status.borderColor} relative overflow-hidden group`}>
+      <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <p className="text-sm font-medium text-muted-foreground">{titulo}</p>
-            <Badge variant="outline" className={`${status.color} ${status.bgColor} border-current text-xs`}>
-              <StatusIcon className="h-3 w-3 mr-1" />
+          <div className="flex items-center gap-2 mb-1.5">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{titulo}</p>
+            <Badge variant="outline" className={`${status.color} ${status.bgColor} border-current text-[10px] font-bold px-1.5 h-5`}>
               {status.label}
             </Badge>
           </div>
-          {subtitulo && <p className="text-xs text-muted-foreground/70 mt-0.5">{subtitulo}</p>}
-          <p className="text-lg font-bold mt-1">
+          {subtitulo && <p className="text-[11px] text-muted-foreground/60 mt-1 italic">{subtitulo}</p>}
+          <p className="text-2xl font-bold tracking-tight mt-1">
             R$ {valorAtual.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </p>
         </div>
         <div className="text-right">
-          <p className="text-xs text-muted-foreground">Meta {periodo}</p>
-          <p className="text-sm font-semibold">
+          <p className="text-[10px] uppercase font-bold text-muted-foreground/50 tracking-widest">Meta {periodo}</p>
+          <p className="text-sm font-bold text-foreground/80">
             R$ {valorMeta.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </p>
         </div>
       </div>
 
-      <div className="space-y-2">
-        <Progress 
-          value={progressoCapped} 
-          className={`h-2.5 ${acimaDaMeta ? 'bg-success/20' : 'bg-muted'}`}
+      <div className="space-y-2.5">
+        <Progress
+          value={progressoCapped}
+          className={`h-1.5 ${acimaDaMeta ? 'bg-success/20' : 'bg-secondary'}`}
         />
-        
+
         <div className="flex items-center justify-between">
-          <span className={`text-sm font-semibold ${status.color}`}>
-            {progresso.toFixed(1)}%
+          <span className={`text-xs font-bold ${status.color}`}>
+            {progresso.toFixed(1)}% concluído
           </span>
-          
+
           {progressoEsperado !== undefined && (
-            <span className="text-xs text-muted-foreground">
-              Esperado: R$ {progressoEsperado.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
+            <span className="text-[10px] font-medium text-muted-foreground">
+              Projeção: R$ {progressoEsperado.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
             </span>
           )}
         </div>

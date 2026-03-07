@@ -61,7 +61,7 @@ export const ConfigurarMetaDialog = ({ open, onOpenChange }: ConfigurarMetaDialo
   const handlePeriodoChange = (value: string) => {
     setPeriodo(value);
     const hoje = new Date();
-    
+
     switch (value) {
       case "este_mes":
         setStartDate(startOfMonth(hoje));
@@ -103,7 +103,7 @@ export const ConfigurarMetaDialog = ({ open, onOpenChange }: ConfigurarMetaDialo
       });
       return;
     }
-    
+
     try {
       await createMeta.mutateAsync({
         nome: formData.nome,
@@ -122,10 +122,19 @@ export const ConfigurarMetaDialog = ({ open, onOpenChange }: ConfigurarMetaDialo
 
       onOpenChange(false);
     } catch (error: any) {
-      console.error("Erro ao criar meta:", error);
+      console.error("Erro detalhado ao criar meta:", error);
+
+      let errorMessage = "Ocorreu um erro inesperado ao salvar sua meta.";
+
+      if (error.message?.includes("new row violates row level security policy")) {
+        errorMessage = "Erro de permissão: Você não tem autorização para criar metas para esta conta. Verifique seu nível de acesso ou modo de impersonação.";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
       toast({
         title: "Erro ao configurar meta",
-        description: error.message || "Verifique se você tem permissão de administrador.",
+        description: errorMessage,
         variant: "destructive"
       });
     }

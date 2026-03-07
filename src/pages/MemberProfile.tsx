@@ -81,20 +81,20 @@ const MemberProfile = () => {
   const sdrEvolutionData = useMemo(() => {
     const months = [];
     const now = new Date();
-    
+
     for (let i = 5; i >= 0; i--) {
       const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const monthKey = date.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' });
-      
+
       const leadsNoMes = leadsAsSDR.filter((l: any) => {
         const leadDate = new Date(l.created_at);
-        return leadDate.getMonth() === date.getMonth() && 
-               leadDate.getFullYear() === date.getFullYear();
+        return leadDate.getMonth() === date.getMonth() &&
+          leadDate.getFullYear() === date.getFullYear();
       });
-      
+
       const callsAgendadas = leadsNoMes.filter((l: any) => l.data_agendamento_call).length;
       const compareceram = leadsNoMes.filter((l: any) => l.status_call === 'compareceu').length;
-      
+
       months.push({
         mes: monthKey,
         leads: leadsNoMes.length,
@@ -104,7 +104,7 @@ const MemberProfile = () => {
         taxaComparecimento: callsAgendadas > 0 ? (compareceram / callsAgendadas * 100) : 0,
       });
     }
-    
+
     return months;
   }, [leadsAsSDR]);
 
@@ -112,28 +112,28 @@ const MemberProfile = () => {
   const closerEvolutionData = useMemo(() => {
     const months = [];
     const now = new Date();
-    
+
     for (let i = 5; i >= 0; i--) {
       const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const monthKey = date.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' });
-      
+
       const vendasNoMes = vendas.filter((v: any) => {
         const vendaDate = new Date(v.data_fechamento);
-        return vendaDate.getMonth() === date.getMonth() && 
-               vendaDate.getFullYear() === date.getFullYear();
+        return vendaDate.getMonth() === date.getMonth() &&
+          vendaDate.getFullYear() === date.getFullYear();
       });
 
       const callsNoMes = callsData.filter((c: any) => {
         const callDate = new Date(c.data_hora_agendada);
-        return callDate.getMonth() === date.getMonth() && 
-               callDate.getFullYear() === date.getFullYear();
+        return callDate.getMonth() === date.getMonth() &&
+          callDate.getFullYear() === date.getFullYear();
       });
 
       const callsComparecidas = callsNoMes.filter((c: any) => c.resultado === 'compareceu' || c.status === 'compareceu').length;
-      
+
       const faturamentoMes = vendasNoMes.reduce((sum: number, v: any) => sum + v.valor_final, 0);
       const ticketMes = vendasNoMes.length > 0 ? faturamentoMes / vendasNoMes.length : 0;
-      
+
       months.push({
         mes: monthKey,
         vendas: vendasNoMes.length,
@@ -144,7 +144,7 @@ const MemberProfile = () => {
         taxaConversao: callsComparecidas > 0 ? (vendasNoMes.length / callsComparecidas * 100) : 0,
       });
     }
-    
+
     return months;
   }, [vendas, callsData]);
 
@@ -205,7 +205,7 @@ const MemberProfile = () => {
         </Button>
 
         <div className="flex items-center gap-4">
-          <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center text-white text-3xl font-bold">
+          <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-3xl font-bold">
             {member.nome.charAt(0).toUpperCase()}
           </div>
           <div>
@@ -289,12 +289,12 @@ const MemberProfile = () => {
                 <AreaChart data={sdrEvolutionData}>
                   <defs>
                     <linearGradient id="colorLeadsSDR" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="colorAgendamentos" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--success))" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="hsl(var(--success))" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="hsl(var(--success))" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="hsl(var(--success))" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -395,8 +395,8 @@ const MemberProfile = () => {
                 <AreaChart data={closerEvolutionData}>
                   <defs>
                     <linearGradient id="colorFaturamento" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--success))" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="hsl(var(--success))" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="hsl(var(--success))" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="hsl(var(--success))" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />

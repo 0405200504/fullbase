@@ -104,38 +104,38 @@ const Configuracoes = () => {
   return (
     <div className="space-y-8 max-w-5xl mx-auto pb-10">
       <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-extrabold tracking-tight text-foreground">Configurações do Sistema</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">Configurações do Sistema</h1>
         <p className="text-muted-foreground">Gerencie sua identidade, segurança e preferências de conta.</p>
       </div>
 
       <Tabs defaultValue="perfil" className="space-y-6">
-        <TabsList className="bg-muted/50 p-1.5 h-12 border border-border/40 gap-1 rounded-xl">
-          <TabsTrigger value="perfil" className="tab-trigger-clean gap-2 px-6">
+        <TabsList className="bg-muted/30 p-1.5 h-12 border border-border/40 gap-1 rounded-lg">
+          <TabsTrigger value="perfil" className="tab-trigger-clean gap-2 px-6 font-medium">
             <User className="h-4 w-4" />
             Perfil
           </TabsTrigger>
-          <TabsTrigger value="seguranca" className="tab-trigger-clean gap-2 px-6">
+          <TabsTrigger value="seguranca" className="tab-trigger-clean gap-2 px-6 font-medium">
             <ShieldCheck className="h-4 w-4" />
             Segurança
           </TabsTrigger>
-          <TabsTrigger value="notificacoes" className="tab-trigger-clean gap-2 px-6">
+          <TabsTrigger value="notificacoes" className="tab-trigger-clean gap-2 px-6 font-medium">
             <Bell className="h-4 w-4" />
             Notificações
           </TabsTrigger>
-          <TabsTrigger value="historico" className="tab-trigger-clean gap-2 px-6">
+          <TabsTrigger value="historico" className="tab-trigger-clean gap-2 px-6 font-medium">
             <History className="h-4 w-4" />
             Acessos
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="perfil" className="space-y-6 outline-none">
-          <Card className="border-border/60 shadow-sm overflow-hidden">
-            <CardHeader className="bg-muted/10 border-b border-border/40 pb-6">
+          <Card className="border-border shadow-sm overflow-hidden bg-card">
+            <CardHeader className="bg-transparent border-b border-border/40 pb-6 pt-6">
               <div className="flex items-center gap-3 mb-1">
-                <div className="p-2 rounded-lg bg-primary/10 text-primary">
-                  <User className="h-5 w-5" />
+                <div className="p-2.5 rounded-md bg-primary/10 text-primary">
+                  <User className="h-5 w-5" strokeWidth={1.5} />
                 </div>
-                <CardTitle className="text-xl">Informações Pessoais</CardTitle>
+                <CardTitle className="text-xl font-bold">Informações Pessoais</CardTitle>
               </div>
               <CardDescription>
                 Seus dados básicos de identificação na plataforma FullBase.
@@ -192,13 +192,13 @@ const Configuracoes = () => {
         </TabsContent>
 
         <TabsContent value="seguranca" className="space-y-6 outline-none">
-          <Card className="border-border/60 shadow-sm overflow-hidden">
-            <CardHeader className="bg-muted/10 border-b border-border/40 pb-6">
+          <Card className="border-border shadow-sm overflow-hidden bg-card">
+            <CardHeader className="bg-transparent border-b border-border/40 pb-6 pt-6">
               <div className="flex items-center gap-3 mb-1">
-                <div className="p-2 rounded-lg bg-danger/10 text-danger">
-                  <KeyRound className="h-5 w-5" />
+                <div className="p-2.5 rounded-md bg-danger/10 text-danger">
+                  <KeyRound className="h-5 w-5" strokeWidth={1.5} />
                 </div>
-                <CardTitle className="text-xl">Alteração de Senha</CardTitle>
+                <CardTitle className="text-xl font-bold">Alteração de Senha</CardTitle>
               </div>
               <CardDescription>
                 Mantenha sua conta protegida com uma senha forte e complexa.

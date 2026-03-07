@@ -114,8 +114,8 @@ const CheckoutSuccess = () => {
             <div className="p-4 bg-muted/30 rounded-lg border border-border/40 text-sm text-muted-foreground italic">
               "{error}"
             </div>
-            <Button onClick={() => navigate("/pricing")} className="w-full h-12 font-bold bg-foreground hover:bg-foreground/90">
-              Tentar Novamente ou Escolher Plano
+            <Button onClick={() => navigate("/")} className="w-full h-12 font-bold bg-foreground hover:bg-foreground/90">
+              Ir para o Dashboard e contatar suporte
             </Button>
           </CardContent>
         </Card>

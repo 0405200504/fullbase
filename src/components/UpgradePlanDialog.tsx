@@ -10,8 +10,8 @@ interface UpgradePlanDialogProps {
   maxLeads?: number;
 }
 
-export const UpgradePlanDialog = ({ 
-  open, 
+export const UpgradePlanDialog = ({
+  open,
   onOpenChange,
   currentPlan = "Free",
   maxLeads = 25
@@ -20,7 +20,8 @@ export const UpgradePlanDialog = ({
 
   const handleUpgrade = () => {
     onOpenChange(false);
-    navigate("/pricing");
+    // Replace navigate to pricing with a toast or direct support link
+    window.dispatchEvent(new CustomEvent('open-support-chat'));
   };
 
   return (
@@ -40,15 +41,15 @@ export const UpgradePlanDialog = ({
             </p>
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="flex flex-col gap-2 pt-4">
           <Button onClick={handleUpgrade} className="w-full btn-premium gap-2">
             <TrendingUp className="h-4 w-4" />
-            Ver Planos e Fazer Upgrade
+            Solicitar Upgrade no Suporte
           </Button>
-          <Button 
-            onClick={() => onOpenChange(false)} 
-            variant="outline" 
+          <Button
+            onClick={() => onOpenChange(false)}
+            variant="outline"
             className="w-full"
           >
             Agora Não

@@ -15,19 +15,19 @@ interface MetricCardProps {
 const MetricCard = ({ label, value, icon: Icon, trend, colorClass: _colorClass, highlight = false }: MetricCardProps) => {
   if (highlight) {
     return (
-      <div className="rounded-lg bg-primary text-primary-foreground p-6 shadow-md transition-all">
+      <div className="rounded-lg bg-primary text-primary-foreground p-6 shadow-sm border border-primary/20 transition-all hover:shadow-md">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <p className="text-xs font-semibold uppercase tracking-wider text-primary-foreground/80 mb-1">{label}</p>
-            <p className="text-3xl font-bold tracking-tight">{value}</p>
+            <p className="text-sm font-medium text-primary-foreground/70 mb-2">{label}</p>
+            <p className="text-4xl font-extrabold tracking-tight">{value}</p>
             {trend && (
-              <p className="text-sm font-medium mt-2 text-primary-foreground/90 flex items-center gap-1">
+              <p className="text-xs font-medium mt-2 text-primary-foreground/90 flex items-center gap-1">
                 {trend.isPositive ? '↑' : '↓'} {trend.value}
               </p>
             )}
           </div>
-          <div className="p-3 rounded-md bg-white/10">
-            <Icon className="w-5 h-5" />
+          <div>
+            <Icon className="w-5 h-5 text-primary-foreground/80 opacity-60" strokeWidth={1.25} />
           </div>
         </div>
       </div>
@@ -35,21 +35,21 @@ const MetricCard = ({ label, value, icon: Icon, trend, colorClass: _colorClass, 
   }
 
   return (
-    <div className="metric-card group hover:border-primary/30">
+    <div className="metric-card bg-card rounded-md border-b-[3px] border-l-0 border-r-0 border-t-0 p-6 shadow-sm hover:border-b-primary hover:shadow transition-all duration-300 group">
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <p className="metric-label mb-1">{label}</p>
+          <p className="text-[13px] uppercase tracking-wider font-semibold text-muted-foreground mb-3">{label}</p>
           <div className="flex items-baseline gap-2">
-            <p className="metric-value">{value}</p>
+            <p className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">{value}</p>
             {trend && (
-              <span className={`text-xs font-bold leading-none py-1 px-1.5 rounded-sm ${trend.isPositive ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'}`}>
+              <span className={`text-[11px] font-bold flex items-center gap-0.5 ${trend.isPositive ? 'text-success' : 'text-danger'}`}>
                 {trend.isPositive ? '↑' : '↓'} {trend.value}
               </span>
             )}
           </div>
         </div>
-        <div className="p-3 rounded-md bg-muted/50 group-hover:bg-primary/5 transition-colors">
-          <Icon className="w-5 h-5 text-muted-foreground transition-colors group-hover:text-primary" />
+        <div>
+          <Icon className="w-6 h-6 text-muted-foreground/40 group-hover:text-foreground transition-colors" strokeWidth={1.25} />
         </div>
       </div>
     </div>

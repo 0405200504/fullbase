@@ -28,7 +28,7 @@ import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import type { DateRange } from "react-day-picker";
 
-const COLORS = ['hsl(217,91%,60%)', 'hsl(152,55%,42%)', 'hsl(280,67%,55%)', 'hsl(48,96%,53%)', 'hsl(0,65%,52%)'];
+const COLORS = ['hsl(221,83%,53%)', 'hsl(152,55%,42%)', 'hsl(280,67%,55%)', 'hsl(38,92%,50%)', 'hsl(0,84%,60%)'];
 
 const Relatorios = () => {
   const navigate = useNavigate();
@@ -292,26 +292,26 @@ const Relatorios = () => {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
-        <div className="metric-card">
-          <p className="metric-label mb-1">Faturamento</p>
-          <p className="text-xl md:text-2xl font-bold">{formatCurrency(metrics.totalFaturamento)}</p>
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="metric-card bg-card border-border shadow-sm">
+          <p className="metric-label mb-1.5 uppercase tracking-widest text-[9px] font-bold">Faturamento</p>
+          <p className="text-xl md:text-2xl font-extrabold tracking-tight">{formatCurrency(metrics.totalFaturamento)}</p>
         </div>
-        <div className="metric-card">
-          <p className="metric-label mb-1">Vendas</p>
-          <p className="text-xl md:text-2xl font-bold">{metrics.totalVendas}</p>
+        <div className="metric-card bg-card border-border shadow-sm">
+          <p className="metric-label mb-1.5 uppercase tracking-widest text-[9px] font-bold">Vendas</p>
+          <p className="text-xl md:text-2xl font-extrabold tracking-tight">{metrics.totalVendas}</p>
         </div>
-        <div className="metric-card">
-          <p className="metric-label mb-1">Ticket Médio</p>
-          <p className="text-xl md:text-2xl font-bold">{formatCurrency(metrics.ticketMedio)}</p>
+        <div className="metric-card bg-card border-border shadow-sm">
+          <p className="metric-label mb-1.5 uppercase tracking-widest text-[9px] font-bold">Ticket Médio</p>
+          <p className="text-xl md:text-2xl font-extrabold tracking-tight">{formatCurrency(metrics.ticketMedio)}</p>
         </div>
-        <div className="metric-card">
-          <p className="metric-label mb-1">Reembolsos</p>
-          <p className="text-xl md:text-2xl font-bold text-destructive">{formatCurrency(metrics.totalReembolsos)}</p>
+        <div className="metric-card bg-card border-border shadow-sm">
+          <p className="metric-label mb-1.5 uppercase tracking-widest text-[9px] font-bold text-danger/70">Reembolsos</p>
+          <p className="text-xl md:text-2xl font-extrabold tracking-tight text-danger">{formatCurrency(metrics.totalReembolsos)}</p>
         </div>
-        <div className="metric-card">
-          <p className="metric-label mb-1">Líquido</p>
-          <p className="text-xl md:text-2xl font-bold text-success">{formatCurrency(metrics.totalFaturamento - metrics.totalReembolsos)}</p>
+        <div className="metric-card bg-primary text-primary-foreground border-primary shadow-md">
+          <p className="text-[9px] uppercase tracking-widest font-bold text-primary-foreground/70 mb-1.5">Líquido</p>
+          <p className="text-xl md:text-2xl font-extrabold tracking-tight">{formatCurrency(metrics.totalFaturamento - metrics.totalReembolsos)}</p>
         </div>
       </div>
 
@@ -340,29 +340,47 @@ const Relatorios = () => {
           {/* Meta Progress */}
           {metaAtual && progressoMeta && (
             <>
-              <div className="bg-primary rounded-xl p-5 text-primary-foreground apple-shadow-lg">
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <h3 className="text-lg font-bold">{metaAtual.nome}</h3>
-                    <p className="text-primary-foreground/70 text-[12px]">Progresso de hoje</p>
+              <div className="bg-card border border-border rounded-xl p-8 shadow-sm relative overflow-hidden group">
+                <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                  <Target className="w-32 h-32" />
+                </div>
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 font-bold uppercase tracking-widest text-[10px] px-2 h-5">
+                        Performance de Hoje
+                      </Badge>
+                      <h3 className="text-lg font-bold text-foreground">{metaAtual.nome}</h3>
+                    </div>
+                    <div>
+                      <p className="text-5xl font-black tracking-tighter text-foreground mb-1">
+                        R$ {faturamentoHoje.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </p>
+                      <p className="text-sm font-medium text-muted-foreground">
+                        Meta diária balanceada: <span className="text-foreground font-bold">R$ {progressoMeta.metaDiaria.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex gap-2">
-                    <Button variant="secondary" size="sm" className="gap-1.5 text-[11px] h-7" onClick={() => setMetaDialogOpen(true)}>
-                      <Edit className="h-3 w-3" /> Alterar meta
-                    </Button>
-                    <Button variant="secondary" size="sm" className="gap-1.5 text-[11px] h-7" onClick={() => setHistoricoMetasOpen(true)}>
-                      <History className="h-3 w-3" /> Histórico
-                    </Button>
+
+                  <div className="flex flex-col items-center md:items-end gap-2">
+                    <div className="text-5xl font-black text-primary tracking-tighter">
+                      {progressoMeta.metaDiaria > 0 ? ((faturamentoHoje / progressoMeta.metaDiaria) * 100).toFixed(0) : 0}%
+                    </div>
+                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Atingido</p>
+                    <div className="flex gap-2 mt-4">
+                      <Button variant="outline" size="sm" className="h-8 text-[11px] font-bold rounded-lg gap-2" onClick={() => setMetaDialogOpen(true)}>
+                        <Edit className="h-3.5 w-3.5" /> Ajustar Meta
+                      </Button>
+                      <Button variant="outline" size="sm" className="h-8 text-[11px] font-bold rounded-lg gap-2" onClick={() => setHistoricoMetasOpen(true)}>
+                        <History className="h-3.5 w-3.5" /> Histórico
+                      </Button>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-end justify-between">
-                  <div>
-                    <p className="text-3xl font-bold">R$ {faturamentoHoje.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
-                    <p className="text-primary-foreground/70 text-[12px] mt-1">Meta diária: R$ {progressoMeta.metaDiaria.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
-                  </div>
-                  <p className="text-3xl font-bold">{progressoMeta.metaDiaria > 0 ? ((faturamentoHoje / progressoMeta.metaDiaria) * 100).toFixed(0) : 0}%</p>
-                </div>
-                <Progress value={Math.min(progressoMeta.metaDiaria > 0 ? (faturamentoHoje / progressoMeta.metaDiaria) * 100 : 0, 100)} className="h-1.5 mt-3 bg-primary-foreground/20" />
+                <Progress
+                  value={Math.min(progressoMeta.metaDiaria > 0 ? (faturamentoHoje / progressoMeta.metaDiaria) * 100 : 0, 100)}
+                  className="h-2 mt-8 bg-secondary"
+                />
               </div>
 
               {/* Toggle button for detailed metas */}
