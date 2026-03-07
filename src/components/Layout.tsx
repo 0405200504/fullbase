@@ -72,10 +72,10 @@ const Layout = ({ children }: LayoutProps) => {
           <aside className="w-64 border-r border-border bg-card flex flex-col sticky top-0 h-screen shadow-[1px_0_0_rgba(0,0,0,0.02)] transition-colors duration-300">
             {/* Logo Section */}
             <div className="p-8 border-b border-border/60 flex items-center gap-3">
-              <div className="w-9 h-9 flex items-center justify-center">
-                <img src="/images/fullbase_logo.png" alt="FullBase Logo" className="h-8 w-8 object-contain brightness-0 invert" />
+              <div className="w-8 h-8 flex items-center justify-center">
+                <img src="/images/fullbase_logo.png" alt="FullBase Logo" className="h-[26px] w-[26px] object-contain brightness-0 invert object-center" />
               </div>
-              <span className="text-xl font-black tracking-tighter text-foreground uppercase">
+              <span className="text-xl font-black tracking-tighter text-foreground uppercase pt-0.5">
                 Full<span className="text-primary italic">Base</span>
               </span>
             </div>
@@ -155,7 +155,7 @@ const Layout = ({ children }: LayoutProps) => {
                   <div className="w-8 h-8 flex items-center justify-center">
                     <img src="/images/fullbase_logo.png" alt="FullBase Logo" className="h-7 w-7 object-contain brightness-0 invert" />
                   </div>
-                  <span className="text-xl font-black tracking-tighter text-foreground uppercase">
+                  <span className="text-xl font-black tracking-tighter text-foreground uppercase pt-0.5">
                     Full<span className="text-primary italic">Base</span>
                   </span>
                 </div>
