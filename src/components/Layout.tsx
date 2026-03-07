@@ -72,10 +72,10 @@ const Layout = ({ children }: LayoutProps) => {
           <aside className="w-64 border-r border-border bg-card flex flex-col sticky top-0 h-screen shadow-[1px_0_0_rgba(0,0,0,0.02)] transition-colors duration-300">
             {/* Logo Section */}
             <div className="p-8 border-b border-border/60 flex items-center gap-3">
-              <div className="w-8 h-8 flex items-center justify-center">
-                <img src="/images/fullbase_logo.png" alt="FullBase Logo" className="h-[26px] w-[26px] object-contain brightness-0 invert object-center" />
+              <div className="flex-shrink-0 flex items-center justify-center">
+                <img src="/images/fullbase_logo.png" alt="FullBase Logo" className="h-[28px] w-[28px] object-contain brightness-0 invert" />
               </div>
-              <span className="text-xl font-black tracking-tighter text-foreground uppercase pt-0.5">
+              <span className="text-xl font-[900] tracking-tighter text-foreground uppercase leading-none">
                 Full<span className="text-primary italic">Base</span>
               </span>
             </div>

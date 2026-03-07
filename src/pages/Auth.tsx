@@ -137,11 +137,11 @@ const Auth = () => {
 
         <div className="w-full max-w-[440px] relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
           {/* Logo Section */}
-          <div className="flex flex-col items-center mb-10 text-center">
-            <div className="w-16 h-16 flex items-center justify-center mb-2">
-              <img src="/images/fullbase_logo.png" alt="FullBase Logo" className="h-12 w-12 object-contain brightness-0 invert" />
+          <div className="flex flex-col items-center mb-10 text-center gap-3">
+            <div className="flex items-center justify-center">
+              <img src="/images/fullbase_logo.png" alt="FullBase Logo" className="h-[48px] w-[48px] object-contain brightness-0 invert" />
             </div>
-            <h2 className="text-3xl font-black tracking-tighter text-foreground uppercase">
+            <h2 className="text-3xl font-[900] tracking-tighter text-foreground uppercase leading-none">
               Full<span className="text-primary italic">Base</span>
             </h2>
             <p className="text-sm text-muted-foreground font-medium mt-1">Sua central de leads profissional.</p>
