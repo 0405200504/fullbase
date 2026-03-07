@@ -83,13 +83,8 @@ const Auth = () => {
         }
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
+          // Allow super_admins to log in as regular users as requested
           const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", user.id);
-          const isSuperAdmin = roles?.some(r => r.role === "super_admin");
-          if (isSuperAdmin) {
-            await supabase.auth.signOut();
-            toast.error("Super administradores devem usar o login em /superadmin/login");
-            return;
-          }
         }
         toast.success("Login realizado com sucesso!");
         navigate("/");

@@ -127,22 +127,12 @@ export const OnboardingModal = ({ open, userId, nome, email }: OnboardingModalPr
 
   return (
     <Dialog open={open} modal={true}>
-      <DialogContent 
-        className="max-w-full h-screen max-h-screen p-0 gap-0 bg-[#111827] border-none"
+      <DialogContent
+        className="max-w-full h-screen max-h-screen p-0 gap-0 bg-background border-none"
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
-        {/* Aurora Background Effect */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute inset-0 bg-gradient-radial from-blue-900/20 via-transparent to-transparent animate-pulse" 
-               style={{ animationDuration: '8s' }} />
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" 
-               style={{ animationDuration: '12s', animationDelay: '0s' }} />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" 
-               style={{ animationDuration: '15s', animationDelay: '2s' }} />
-        </div>
-
-        <div className="relative z-10 flex flex-col h-full">
+        <div className="relative z-10 flex flex-col h-full overflow-y-auto">
           {/* Progress Bar */}
           <div className="px-8 pt-8 pb-4">
             <Progress value={progress} className="h-2" />
@@ -152,42 +142,42 @@ export const OnboardingModal = ({ open, userId, nome, email }: OnboardingModalPr
           <div className="flex-1 flex items-center justify-center px-4 pb-8">
             <div className="w-full max-w-[500px]">
               {step === 1 && (
-                <div className="space-y-6 animate-fade-in">
+                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                   <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold text-white mb-2">
+                    <h2 className="text-3xl font-bold text-foreground mb-2">
                       Vamos começar. Crie sua conta.
                     </h2>
                   </div>
 
                   <div className="space-y-4">
                     <div>
-                      <Label htmlFor="displayName" className="text-gray-300">Nome Completo</Label>
+                      <Label htmlFor="displayName" className="text-muted-foreground text-xs font-semibold">Nome Completo</Label>
                       <Input
                         id="displayName"
                         value={nome}
                         disabled
-                        className="mt-1 bg-[#1f2937] border-gray-700 text-white"
+                        className="mt-1 h-11 bg-background border-border text-foreground"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="displayEmail" className="text-gray-300">Email</Label>
+                      <Label htmlFor="displayEmail" className="text-muted-foreground text-xs font-semibold">Email</Label>
                       <Input
                         id="displayEmail"
                         value={email}
                         disabled
-                        className="mt-1 bg-[#1f2937] border-gray-700 text-white"
+                        className="mt-1 h-11 bg-background border-border text-foreground"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="telefone" className="text-gray-300">Telefone *</Label>
+                      <Label htmlFor="telefone" className="text-muted-foreground text-xs font-semibold">Telefone *</Label>
                       <Input
                         id="telefone"
                         value={telefone}
                         onChange={(e) => setTelefone(e.target.value)}
                         placeholder="(00) 00000-0000"
-                        className="mt-1 bg-[#1f2937] border-gray-700 text-white focus:border-blue-500"
+                        className="mt-1 h-11 bg-background border-border text-foreground focus-visible:ring-1 focus-visible:ring-primary shadow-sm"
                       />
                     </div>
                   </div>
@@ -195,32 +185,32 @@ export const OnboardingModal = ({ open, userId, nome, email }: OnboardingModalPr
               )}
 
               {step === 2 && (
-                <div className="space-y-6 animate-fade-in">
+                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                   <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold text-white mb-2">
+                    <h2 className="text-3xl font-bold text-foreground mb-2">
                       Conte-nos sobre sua empresa.
                     </h2>
                   </div>
 
                   <div className="space-y-4">
                     <div>
-                      <Label htmlFor="companyName" className="text-gray-300">Nome da sua empresa *</Label>
+                      <Label htmlFor="companyName" className="text-muted-foreground text-xs font-semibold">Nome da sua empresa *</Label>
                       <Input
                         id="companyName"
                         value={companyName}
                         onChange={(e) => setCompanyName(e.target.value)}
-                        className="mt-1 bg-[#1f2937] border-gray-700 text-white focus:border-blue-500"
+                        className="mt-1 h-11 bg-background border-border text-foreground focus-visible:ring-1 focus-visible:ring-primary shadow-sm"
                         placeholder="Ex: Minha Empresa LTDA"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="niche" className="text-gray-300">Nicho de mercado *</Label>
+                      <Label htmlFor="niche" className="text-muted-foreground text-xs font-semibold">Nicho de mercado *</Label>
                       <select
                         id="niche"
                         value={niche}
                         onChange={(e) => setNiche(e.target.value)}
-                        className="mt-1 w-full h-10 rounded-md border border-gray-700 bg-[#1f2937] px-3 py-2 text-white focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="mt-1 w-full h-11 rounded-md border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary shadow-sm text-sm"
                       >
                         <option value="">Selecione...</option>
                         {nicheOptions.map((option) => (
@@ -230,18 +220,17 @@ export const OnboardingModal = ({ open, userId, nome, email }: OnboardingModalPr
                     </div>
 
                     <div>
-                      <Label className="text-gray-300 mb-3 block">Tamanho da equipe *</Label>
+                      <Label className="text-muted-foreground text-xs font-semibold mb-3 block">Tamanho da equipe *</Label>
                       <div className="grid grid-cols-2 gap-3">
                         {teamSizes.map((size) => (
                           <button
                             key={size.value}
                             type="button"
                             onClick={() => setTeamSize(size.value)}
-                            className={`p-3 rounded-lg border transition-all ${
-                              teamSize === size.value
-                                ? "border-blue-500 bg-blue-500/10 text-blue-400"
-                                : "border-gray-700 bg-[#1f2937] text-gray-300 hover:border-gray-600"
-                            }`}
+                            className={`p-3 rounded-lg border transition-all text-sm font-medium ${teamSize === size.value
+                                ? "border-primary bg-primary/5 text-foreground shadow-sm"
+                                : "border-border bg-card text-muted-foreground hover:border-foreground/20 hover:text-foreground"
+                              }`}
                           >
                             {size.label}
                           </button>
@@ -250,18 +239,17 @@ export const OnboardingModal = ({ open, userId, nome, email }: OnboardingModalPr
                     </div>
 
                     <div>
-                      <Label className="text-gray-300 mb-3 block">Faturamento mensal médio *</Label>
+                      <Label className="text-muted-foreground text-xs font-semibold mb-3 block">Faturamento mensal médio *</Label>
                       <div className="grid grid-cols-2 gap-3">
                         {revenueRanges.map((range) => (
                           <button
                             key={range.value}
                             type="button"
                             onClick={() => setMonthlyRevenue(range.value)}
-                            className={`p-3 rounded-lg border transition-all ${
-                              monthlyRevenue === range.value
-                                ? "border-blue-500 bg-blue-500/10 text-blue-400"
-                                : "border-gray-700 bg-[#1f2937] text-gray-300 hover:border-gray-600"
-                            }`}
+                            className={`p-3 rounded-lg border transition-all text-sm font-medium ${monthlyRevenue === range.value
+                                ? "border-primary bg-primary/5 text-foreground shadow-sm"
+                                : "border-border bg-card text-muted-foreground hover:border-foreground/20 hover:text-foreground"
+                              }`}
                           >
                             {range.label}
                           </button>
@@ -273,44 +261,43 @@ export const OnboardingModal = ({ open, userId, nome, email }: OnboardingModalPr
               )}
 
               {step === 3 && (
-                <div className="space-y-6 animate-fade-in">
+                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                   <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold text-white mb-2">
-                      Como o HighLeads pode te ajudar?
+                    <h2 className="text-3xl font-bold text-foreground mb-2">
+                      Como o FullBase pode te ajudar?
                     </h2>
                   </div>
 
                   <div className="space-y-4">
                     <div>
-                      <Label className="text-gray-300 mb-3 block">Qual seu principal objetivo? *</Label>
+                      <Label className="text-muted-foreground text-xs font-semibold mb-3 block">Qual seu principal objetivo? *</Label>
                       <div className="space-y-3">
                         {mainGoals.map((goal) => (
                           <button
                             key={goal.value}
                             type="button"
                             onClick={() => setMainGoal(goal.value)}
-                            className={`w-full p-4 rounded-lg border transition-all text-left flex items-center gap-3 ${
-                              mainGoal === goal.value
-                                ? "border-blue-500 bg-blue-500/10 text-blue-400"
-                                : "border-gray-700 bg-[#1f2937] text-gray-300 hover:border-gray-600"
-                            }`}
+                            className={`w-full p-4 rounded-xl border transition-all text-left flex items-center gap-4 ${mainGoal === goal.value
+                                ? "border-primary bg-primary/5 shadow-sm text-foreground"
+                                : "border-border bg-card text-muted-foreground hover:border-foreground/20 hover:text-foreground"
+                              }`}
                           >
-                            <span className="text-2xl">{goal.icon}</span>
-                            <span>{goal.label}</span>
+                            <span className="text-2xl opacity-80">{goal.icon}</span>
+                            <span className="font-medium text-sm">{goal.label}</span>
                           </button>
                         ))}
                       </div>
                     </div>
 
                     <div>
-                      <Label htmlFor="mainChallenge" className="text-gray-300">
+                      <Label htmlFor="mainChallenge" className="text-muted-foreground text-xs font-semibold">
                         Qual seu maior desafio em vendas hoje?
                       </Label>
                       <Textarea
                         id="mainChallenge"
                         value={mainChallenge}
                         onChange={(e) => setMainChallenge(e.target.value)}
-                        className="mt-1 bg-[#1f2937] border-gray-700 text-white focus:border-blue-500 min-h-[100px]"
+                        className="mt-1 bg-background border-border text-foreground focus-visible:ring-1 focus-visible:ring-primary min-h-[100px] resize-none shadow-sm"
                         placeholder="Ex: Perco muitos leads por falta de follow-up..."
                       />
                     </div>
@@ -319,12 +306,12 @@ export const OnboardingModal = ({ open, userId, nome, email }: OnboardingModalPr
               )}
 
               {step === 4 && (
-                <div className="space-y-6 animate-fade-in text-center">
-                  <Loader2 className="w-16 h-16 animate-spin text-blue-500 mx-auto" />
-                  <h2 className="text-2xl font-bold text-white">
+                <div className="space-y-6 animate-in fade-in duration-500 text-center">
+                  <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto opacity-80" />
+                  <h2 className="text-2xl font-bold text-foreground tracking-tight">
                     Configurando seu workspace...
                   </h2>
-                  <p className="text-gray-400">Aguarde enquanto preparamos tudo para você</p>
+                  <p className="text-sm text-muted-foreground">Aguarde enquanto preparamos tudo para você</p>
                 </div>
               )}
             </div>
@@ -332,14 +319,14 @@ export const OnboardingModal = ({ open, userId, nome, email }: OnboardingModalPr
 
           {/* Actions */}
           {step < 4 && (
-            <div className="px-8 pb-8">
+            <div className="px-8 pb-8 pt-6 border-t border-border mt-auto">
               <div className="max-w-[500px] mx-auto flex gap-4">
                 {step > 1 && (
                   <Button
                     variant="outline"
                     onClick={handleBack}
                     disabled={loading}
-                    className="bg-transparent border-gray-700 text-gray-300 hover:bg-gray-800"
+                    className="h-11 px-6 shadow-sm"
                   >
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Voltar
@@ -348,7 +335,7 @@ export const OnboardingModal = ({ open, userId, nome, email }: OnboardingModalPr
                 <Button
                   onClick={handleNext}
                   disabled={loading}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                  className="flex-1 h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-medium shadow-sm transition-all"
                 >
                   {step === 3 ? "Finalizar Cadastro" : "Continuar"}
                 </Button>
