@@ -24,6 +24,7 @@ const signupSchema = z.object({
     .regex(/[A-Z]/, "Deve conter pelo menos uma letra maiúscula")
     .regex(/[a-z]/, "Deve conter pelo menos uma letra minúscula")
     .regex(/[0-9]/, "Deve conter pelo menos um número")
+    // eslint-disable-next-line no-useless-escape
     .regex(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/, "Deve conter pelo menos um caractere especial")
 });
 

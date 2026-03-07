@@ -128,23 +128,23 @@ export const OnboardingModal = ({ open, userId, nome, email }: OnboardingModalPr
   return (
     <Dialog open={open} modal={true}>
       <DialogContent
-        className="max-w-full h-screen max-h-screen p-0 gap-0 bg-background border-none"
+        className="max-w-full h-[100dvh] max-h-[100dvh] p-0 gap-0 bg-background border-none w-full sm:max-w-md md:max-w-2xl"
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
         <div className="relative z-10 flex flex-col h-full overflow-y-auto">
           {/* Progress Bar */}
-          <div className="px-8 pt-8 pb-4">
+          <div className="px-4 md:px-8 pt-6 md:pt-8 pb-4">
             <Progress value={progress} className="h-2" />
           </div>
 
           {/* Content */}
-          <div className="flex-1 flex items-center justify-center px-4 pb-8">
+          <div className="flex-1 flex items-center justify-center px-4 md:px-8 pb-6 md:pb-8">
             <div className="w-full max-w-[500px]">
               {step === 1 && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                  <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold text-foreground mb-2">
+                  <div className="text-center mb-6 md:mb-8">
+                    <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
                       Vamos começar. Crie sua conta.
                     </h2>
                   </div>
@@ -186,8 +186,8 @@ export const OnboardingModal = ({ open, userId, nome, email }: OnboardingModalPr
 
               {step === 2 && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                  <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold text-foreground mb-2">
+                  <div className="text-center mb-6 md:mb-8">
+                    <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
                       Conte-nos sobre sua empresa.
                     </h2>
                   </div>
@@ -221,15 +221,15 @@ export const OnboardingModal = ({ open, userId, nome, email }: OnboardingModalPr
 
                     <div>
                       <Label className="text-muted-foreground text-xs font-semibold mb-3 block">Tamanho da equipe *</Label>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3">
                         {teamSizes.map((size) => (
                           <button
                             key={size.value}
                             type="button"
                             onClick={() => setTeamSize(size.value)}
-                            className={`p-3 rounded-lg border transition-all text-sm font-medium ${teamSize === size.value
-                                ? "border-primary bg-primary/5 text-foreground shadow-sm"
-                                : "border-border bg-card text-muted-foreground hover:border-foreground/20 hover:text-foreground"
+                            className={`p-2.5 md:p-3 rounded-lg border transition-all text-sm font-medium ${teamSize === size.value
+                              ? "border-primary bg-primary/5 text-foreground shadow-sm"
+                              : "border-border bg-card text-muted-foreground hover:border-foreground/20 hover:text-foreground"
                               }`}
                           >
                             {size.label}
@@ -240,15 +240,15 @@ export const OnboardingModal = ({ open, userId, nome, email }: OnboardingModalPr
 
                     <div>
                       <Label className="text-muted-foreground text-xs font-semibold mb-3 block">Faturamento mensal médio *</Label>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3">
                         {revenueRanges.map((range) => (
                           <button
                             key={range.value}
                             type="button"
                             onClick={() => setMonthlyRevenue(range.value)}
-                            className={`p-3 rounded-lg border transition-all text-sm font-medium ${monthlyRevenue === range.value
-                                ? "border-primary bg-primary/5 text-foreground shadow-sm"
-                                : "border-border bg-card text-muted-foreground hover:border-foreground/20 hover:text-foreground"
+                            className={`p-2.5 md:p-3 rounded-lg border transition-all text-sm font-medium ${monthlyRevenue === range.value
+                              ? "border-primary bg-primary/5 text-foreground shadow-sm"
+                              : "border-border bg-card text-muted-foreground hover:border-foreground/20 hover:text-foreground"
                               }`}
                           >
                             {range.label}
@@ -262,8 +262,8 @@ export const OnboardingModal = ({ open, userId, nome, email }: OnboardingModalPr
 
               {step === 3 && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                  <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold text-foreground mb-2">
+                  <div className="text-center mb-6 md:mb-8">
+                    <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
                       Como o FullBase pode te ajudar?
                     </h2>
                   </div>
@@ -271,19 +271,19 @@ export const OnboardingModal = ({ open, userId, nome, email }: OnboardingModalPr
                   <div className="space-y-4">
                     <div>
                       <Label className="text-muted-foreground text-xs font-semibold mb-3 block">Qual seu principal objetivo? *</Label>
-                      <div className="space-y-3">
+                      <div className="space-y-2 md:space-y-3">
                         {mainGoals.map((goal) => (
                           <button
                             key={goal.value}
                             type="button"
                             onClick={() => setMainGoal(goal.value)}
-                            className={`w-full p-4 rounded-xl border transition-all text-left flex items-center gap-4 ${mainGoal === goal.value
+                            className={`w-full p-3 md:p-4 rounded-xl border transition-all text-left flex items-center gap-3 md:gap-4 ${mainGoal === goal.value
                                 ? "border-primary bg-primary/5 shadow-sm text-foreground"
                                 : "border-border bg-card text-muted-foreground hover:border-foreground/20 hover:text-foreground"
                               }`}
                           >
-                            <span className="text-2xl opacity-80">{goal.icon}</span>
-                            <span className="font-medium text-sm">{goal.label}</span>
+                            <span className="text-xl md:text-2xl opacity-80">{goal.icon}</span>
+                            <span className="font-medium text-[13px] md:text-sm">{goal.label}</span>
                           </button>
                         ))}
                       </div>
@@ -319,23 +319,23 @@ export const OnboardingModal = ({ open, userId, nome, email }: OnboardingModalPr
 
           {/* Actions */}
           {step < 4 && (
-            <div className="px-8 pb-8 pt-6 border-t border-border mt-auto">
-              <div className="max-w-[500px] mx-auto flex gap-4">
+            <div className="px-4 md:px-8 pb-6 md:pb-8 pt-4 md:pt-6 border-t border-border mt-auto shrink-0">
+              <div className="max-w-[500px] mx-auto flex gap-3 md:gap-4">
                 {step > 1 && (
                   <Button
                     variant="outline"
                     onClick={handleBack}
                     disabled={loading}
-                    className="h-11 px-6 shadow-sm"
+                    className="h-10 md:h-11 px-4 md:px-6 shadow-sm text-sm"
                   >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    <ArrowLeft className="w-4 h-4 mr-1 md:mr-2" />
                     Voltar
                   </Button>
                 )}
                 <Button
                   onClick={handleNext}
                   disabled={loading}
-                  className="flex-1 h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-medium shadow-sm transition-all"
+                  className="flex-1 h-10 md:h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-medium shadow-sm transition-all text-sm"
                 >
                   {step === 3 ? "Finalizar Cadastro" : "Continuar"}
                 </Button>
