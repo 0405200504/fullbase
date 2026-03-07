@@ -72,8 +72,8 @@ const Layout = ({ children }: LayoutProps) => {
           <aside className="w-64 border-r border-border bg-card flex flex-col sticky top-0 h-screen shadow-[1px_0_0_rgba(0,0,0,0.02)] transition-colors duration-300">
             {/* Logo Section */}
             <div className="p-8 border-b border-border/60 flex items-center gap-3">
-              <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
-                <ShieldCheck className="h-5 w-5 text-white" />
+              <div className="w-9 h-9 flex items-center justify-center">
+                <img src="/images/fullbase_logo.png" alt="FullBase Logo" className="h-8 w-8 object-contain brightness-0 invert" />
               </div>
               <span className="text-xl font-black tracking-tighter text-foreground uppercase">
                 Full<span className="text-primary italic">Base</span>
@@ -152,8 +152,8 @@ const Layout = ({ children }: LayoutProps) => {
             >
               <div className="flex items-center justify-between px-8 py-8 border-b border-border/60">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
-                    <ShieldCheck className="h-5 w-5" />
+                  <div className="w-8 h-8 flex items-center justify-center">
+                    <img src="/images/fullbase_logo.png" alt="FullBase Logo" className="h-7 w-7 object-contain brightness-0 invert" />
                   </div>
                   <span className="text-xl font-black tracking-tighter text-foreground uppercase">
                     Full<span className="text-primary italic">Base</span>
@@ -202,8 +202,8 @@ const Layout = ({ children }: LayoutProps) => {
                 <Menu className="w-6 h-6" />
               </button>
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center text-white">
-                  <ShieldCheck className="h-4 w-4" />
+                <div className="w-7 h-7 flex items-center justify-center">
+                  <img src="/images/fullbase_logo.png" alt="FullBase Logo" className="h-6 w-6 object-contain brightness-0 invert" />
                 </div>
                 <span className="text-lg font-black tracking-tighter text-foreground uppercase">
                   Full<span className="text-primary italic">Base</span>
