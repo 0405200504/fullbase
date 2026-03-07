@@ -4,7 +4,26 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { Phone, Mail, Calendar, User, Edit, Trash2, Archive, ArchiveRestore, Clock, DollarSign, Star, TrendingUp, AlertCircle, FileText, CheckCircle2, MessageSquare } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Phone,
+  Mail,
+  Calendar,
+  User,
+  Edit,
+  Trash2,
+  Archive,
+  ArchiveRestore,
+  Clock,
+  DollarSign,
+  Star,
+  TrendingUp,
+  AlertCircle,
+  FileText,
+  CheckCircle2,
+  MessageSquare,
+  ChevronRight
+} from "lucide-react";
 import { Lead, useUpdateLead } from "@/hooks/useLeads";
 import { toast } from "sonner";
 import { useCallsByLead } from "@/hooks/useCalls";
@@ -17,6 +36,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { cn } from "@/lib/utils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -45,11 +65,11 @@ export const LeadDetailsSheet = ({ lead, open, onOpenChange }: LeadDetailsSheetP
   useEffect(() => {
     setObservacoesSdr((lead as any)?.observacoes_sdr || "");
   }, [lead]);
+
   const deleteLead = useDeleteLead();
   const updateLead = useUpdateLead();
   const { data: calls = [] } = useCallsByLead(lead?.id || "");
 
-  // Fetch form responses linked to this lead
   const { data: formResponses = [] } = useQuery({
     queryKey: ["lead-form-responses", lead?.id],
     queryFn: async () => {
@@ -113,394 +133,359 @@ export const LeadDetailsSheet = ({ lead, open, onOpenChange }: LeadDetailsSheetP
     }
   };
 
+  const formatCurrency = (val: number) => {
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+  };
+
   return (
     <>
       <Sheet open={open} onOpenChange={onOpenChange} modal={false}>
-        <SheetContent className="sm:max-w-[600px] overflow-y-auto" onOpenAutoFocus={(e) => e.preventDefault()}>
-          <SheetHeader>
-            <div className="flex items-center justify-between">
-              <SheetTitle className="text-2xl flex items-center gap-2 flex-wrap">
-                {lead.nome}
-                {lead.is_mql && (
-                  <Badge variant="default" className="bg-amber-500 hover:bg-amber-600 text-white">
-                    <Star className="h-3 w-3 mr-1 fill-current" />
-                    MQL
-                  </Badge>
-                )}
-                {(lead as any).contatado ? (
-                  <Badge variant="default" className="bg-emerald-500 hover:bg-emerald-600 text-white">
-                    <CheckCircle2 className="h-3 w-3 mr-1" />
-                    Contatado
-                  </Badge>
-                ) : (
-                  <Badge variant="outline" className="text-muted-foreground border-muted-foreground/30">
-                    Aguardando contato
-                  </Badge>
-                )}
-              </SheetTitle>
-              <Button
-                variant={lead.is_mql ? "outline" : "default"}
-                size="sm"
-                onClick={handleToggleMQL}
-                className={lead.is_mql ? "" : "bg-amber-500 hover:bg-amber-600 text-white"}
-              >
-                <Star className={`h-4 w-4 ${lead.is_mql ? "" : "fill-current"}`} />
-              </Button>
-            </div>
-          </SheetHeader>
-
-          <Tabs defaultValue="detalhes" className="mt-6">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="detalhes">Detalhes</TabsTrigger>
-              <TabsTrigger value="formulario">Formulário</TabsTrigger>
-              <TabsTrigger value="calls">Calls</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="detalhes" className="space-y-6 mt-4">
-              {/* Status e Valor */}
-              <div className="flex items-center justify-between">
-                <Badge variant="secondary" className="text-sm">
-                  {lead.etapas_funil?.nome || "Sem etapa"}
-                </Badge>
-                {lead.valor_proposta && (
-                  <div className="text-right">
-                    <p className="text-2xl font-bold text-success">
-                      R$ {lead.valor_proposta.toLocaleString('pt-BR')}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {lead.produtos?.nome}
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {/* Contato */}
-              <div className="space-y-3">
-                <h3 className="font-semibold">Contato</h3>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Phone className="h-4 w-4 text-muted-foreground" />
-                    <span>{lead.telefone}</span>
-                  </div>
-                  {lead.email && (
-                    <div className="flex items-center gap-2 text-sm">
-                      <Mail className="h-4 w-4 text-muted-foreground" />
-                      <span>{lead.email}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Informações de Qualificação */}
-              {(lead.renda_mensal || lead.investimento_disponivel || lead.dificuldades) && (
-                <div className="space-y-3 bg-primary/5 p-4 rounded-lg border border-primary/20">
-                  <h3 className="font-semibold flex items-center gap-2 text-primary">
-                    <TrendingUp className="h-4 w-4" />
-                    Informações de Qualificação
-                  </h3>
-                  <div className="space-y-3 text-sm">
-                    {lead.renda_mensal && (
-                      <div>
-                        <p className="text-muted-foreground">Renda/Faturamento Mensal</p>
-                        <p className="font-medium text-success">
-                          R$ {lead.renda_mensal.toLocaleString('pt-BR')}
-                        </p>
-                      </div>
+        <SheetContent className="sm:max-w-[550px] p-0 border-l border-border bg-background" onOpenAutoFocus={(e) => e.preventDefault()}>
+          <div className="h-full flex flex-col">
+            {/* Header Area */}
+            <div className="p-6 border-b border-border bg-muted/20">
+              <div className="flex items-start justify-between mb-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-2xl font-bold tracking-tight text-foreground">{lead.nome}</h2>
+                    {lead.is_mql && (
+                      <Star className="h-5 w-5 fill-amber-400 text-amber-400" />
                     )}
-                    {lead.investimento_disponivel && (
-                      <div>
-                        <p className="text-muted-foreground">Investimento Disponível</p>
-                        <p className="font-medium text-success">
-                          R$ {lead.investimento_disponivel.toLocaleString('pt-BR')}
-                        </p>
-                      </div>
-                    )}
-                    {lead.dificuldades && (
-                      <div>
-                        <p className="text-muted-foreground flex items-center gap-1">
-                          <AlertCircle className="h-3 w-3" />
-                          Dificuldades/Gargalos
-                        </p>
-                        <p className="font-medium whitespace-pre-wrap">{lead.dificuldades}</p>
-                      </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="bg-white border-border/80 font-semibold text-[10px] uppercase tracking-wider">
+                      {lead.etapas_funil?.nome || "Sem Etapa"}
+                    </Badge>
+                    {(lead as any).contatado ? (
+                      <Badge variant="default" className="bg-success text-white border-none text-[10px] uppercase tracking-wider">
+                        Contatado
+                      </Badge>
+                    ) : (
+                      <Badge variant="secondary" className="text-[10px] uppercase tracking-wider">
+                        Aguardando
+                      </Badge>
                     )}
                   </div>
                 </div>
-              )}
 
-              {/* Informações Adicionais */}
-              <div className="space-y-3">
-                <h3 className="font-semibold">Informações</h3>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  {lead.fonte_trafego && (
-                    <div>
-                      <p className="text-muted-foreground">Fonte de Tráfego</p>
-                      <p className="font-medium">{lead.fonte_trafego}</p>
-                    </div>
-                  )}
-                  <div>
-                    <p className="text-muted-foreground">Data de Criação</p>
-                    <p className="font-medium">
-                      {new Date(lead.created_at).toLocaleDateString('pt-BR')}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground">Follow-ups Realizados</p>
-                    <p className="font-medium">{lead.contador_followups}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Equipe Responsável */}
-              <div className="space-y-3">
-                <h3 className="font-semibold">Equipe</h3>
-                <div className="space-y-2">
-                  {lead.sdr_profile && (
-                    <div className="flex items-center gap-2 text-sm">
-                      <User className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">SDR:</span>
-                      <span className="font-medium">{lead.sdr_profile.nome}</span>
-                    </div>
-                  )}
-                  {lead.closer_profile && (
-                    <div className="flex items-center gap-2 text-sm">
-                      <User className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">Closer:</span>
-                      <span className="font-medium">{lead.closer_profile.nome}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Anotações do SDR */}
-              <div className="space-y-3">
-                <h3 className="font-semibold flex items-center gap-2">
-                  <MessageSquare className="h-4 w-4" />
-                  Anotações do SDR
-                </h3>
-                <Textarea
-                  value={observacoesSdr}
-                  onChange={(e) => setObservacoesSdr(e.target.value)}
-                  placeholder="Adicione informações úteis para o closer..."
-                  className="min-h-[80px] resize-none"
-                />
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={handleSaveObservacoes}
-                  disabled={savingNotes || observacoesSdr === ((lead as any)?.observacoes_sdr || "")}
-                >
-                  {savingNotes ? "Salvando..." : "Salvar anotações"}
-                </Button>
-              </div>
-
-              {/* Ações */}
-              <div className="space-y-2 pt-4 border-t">
-                <Button
-                  onClick={handleToggleContatado}
-                  variant={(lead as any).contatado ? "outline" : "default"}
-                  className={`w-full gap-2 ${!(lead as any).contatado ? 'bg-emerald-500 hover:bg-emerald-600 text-white' : ''}`}
-                >
-                  <CheckCircle2 className="h-4 w-4" />
-                  {(lead as any).contatado ? "Desmarcar Contato" : "Marcar como Contatado"}
-                </Button>
-                <div className="flex gap-2">
+                <div className="flex items-center gap-2">
                   <Button
-                    onClick={() => setAgendarCallOpen(true)}
-                    className="flex-1 gap-2"
+                    variant="outline"
+                    size="icon"
+                    onClick={handleToggleMQL}
+                    className={cn("h-9 w-9", lead.is_mql && "bg-amber-50 border-amber-200 text-amber-600")}
                   >
-                    <Phone className="h-4 w-4" />
-                    Agendar Call
+                    <Star className={cn("h-4 w-4", lead.is_mql && "fill-current")} />
+                  </Button>
+                  <Button variant="outline" size="icon" onClick={() => setEditDialogOpen(true)} className="h-9 w-9">
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center gap-2 py-2 px-3 bg-white rounded-md border border-border/50 text-sm">
+                  <Phone className="h-4 w-4 text-muted-foreground" />
+                  <span className="font-medium text-foreground">{lead.telefone}</span>
+                </div>
+                {lead.email && (
+                  <div className="flex items-center gap-2 py-2 px-3 bg-white rounded-md border border-border/50 text-sm overflow-hidden">
+                    <Mail className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium text-foreground truncate">{lead.email}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Navigation Tabs */}
+            <Tabs defaultValue="detalhes" className="flex-1 flex flex-col">
+              <div className="px-6 border-b border-border bg-background">
+                <TabsList className="h-12 w-full justify-start rounded-none bg-transparent p-0 gap-6">
+                  <TabsTrigger value="detalhes" className="tab-trigger-clean">Detalhes</TabsTrigger>
+                  <TabsTrigger value="formulario" className="tab-trigger-clean">Formulário</TabsTrigger>
+                  <TabsTrigger value="calls" className="tab-trigger-clean">Calls</TabsTrigger>
+                </TabsList>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                <TabsContent value="detalhes" className="m-0 space-y-6">
+                  {/* Destaque Financeiro */}
+                  {lead.valor_proposta && (
+                    <div className="p-4 rounded-lg bg-primary/[0.03] border border-primary/10 flex items-center justify-between">
+                      <div>
+                        <p className="text-[11px] font-bold text-primary uppercase tracking-wider mb-1">Valor da Proposta</p>
+                        <p className="text-2xl font-bold text-foreground">
+                          {formatCurrency(lead.valor_proposta)}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-1">Produto</p>
+                        <p className="font-semibold text-foreground">{lead.produtos?.nome || "N/A"}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Qualificação do Lead */}
+                  {(lead.renda_mensal || lead.investimento_disponivel || lead.dificuldades) && (
+                    <Card className="border-border/60 shadow-sm overflow-hidden">
+                      <CardHeader className="py-3 px-4 bg-muted/30 border-b border-border/60">
+                        <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                          <TrendingUp className="h-3.5 w-3.5 text-primary" />
+                          Qualificação e Perfil
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-4 space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                          {lead.renda_mensal && (
+                            <div>
+                              <p className="text-[10px] text-muted-foreground font-bold uppercase mb-1">Faturamento Mensal</p>
+                              <p className="text-sm font-bold text-foreground">{formatCurrency(lead.renda_mensal)}</p>
+                            </div>
+                          )}
+                          {lead.investimento_disponivel && (
+                            <div>
+                              <p className="text-[10px] text-muted-foreground font-bold uppercase mb-1">Investimento Disponível</p>
+                              <p className="text-sm font-bold text-foreground">{formatCurrency(lead.investimento_disponivel)}</p>
+                            </div>
+                          )}
+                        </div>
+                        {lead.dificuldades && (
+                          <div className="pt-3 border-t border-border/50">
+                            <p className="text-[10px] text-muted-foreground font-bold uppercase mb-2 flex items-center gap-1">
+                              <AlertCircle className="h-3 w-3" />
+                              Dificuldades e Gargalos
+                            </p>
+                            <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap italic bg-muted/20 p-3 rounded-md border border-border/30">
+                              "{lead.dificuldades}"
+                            </p>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* Informações de Origem e Time */}
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Origem</h4>
+                      <div className="space-y-3">
+                        <div>
+                          <p className="text-[10px] text-muted-foreground">Fonte</p>
+                          <p className="text-sm font-medium">{lead.fonte_trafego || "Orgânico / Direto"}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-muted-foreground">Criado em</p>
+                          <p className="text-sm font-medium">{format(new Date(lead.created_at), "dd 'de' MMMM, yyyy", { locale: ptBR })}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Responsáveis</h4>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-[10px] font-bold">
+                            {lead.sdr_profile?.nome?.[0] || "?"}
+                          </div>
+                          <div>
+                            <p className="text-[10px] text-muted-foreground leading-none">SDR</p>
+                            <p className="text-sm font-medium leading-tight">{lead.sdr_profile?.nome || "Não atribuído"}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="h-7 w-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold">
+                            {lead.closer_profile?.nome?.[0] || "?"}
+                          </div>
+                          <div>
+                            <p className="text-[10px] text-muted-foreground leading-none">Closer</p>
+                            <p className="text-sm font-medium leading-tight">{lead.closer_profile?.nome || "Não atribuído"}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Anotações do SDR */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                        <MessageSquare className="h-3.5 w-3.5" />
+                        Anotações Estratégicas
+                      </h4>
+                      {savingNotes && <span className="text-[10px] text-primary animate-pulse">Salvando...</span>}
+                    </div>
+                    <Textarea
+                      value={observacoesSdr}
+                      onChange={(e) => setObservacoesSdr(e.target.value)}
+                      onBlur={handleSaveObservacoes}
+                      placeholder="Informações cruciais para o fechamento..."
+                      className="min-h-[100px] bg-muted/20 border-border/60 focus:bg-white transition-all text-sm leading-relaxed"
+                    />
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="formulario" className="m-0 space-y-4">
+                  {formResponses.length === 0 ? (
+                    <div className="text-center py-20 bg-muted/10 rounded-lg border border-dashed border-border/60 text-muted-foreground">
+                      <FileText className="h-12 w-12 mx-auto mb-3 opacity-20" />
+                      <p className="text-sm">Nenhuma resposta de formulário encontrada</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {formResponses.map((fr: any) => (
+                        <Card key={fr.id} className="border-border/60 shadow-none overflow-hidden">
+                          <CardHeader className="py-3 px-4 bg-muted/30 border-b border-border/60 flex flex-row items-center justify-between space-y-0">
+                            <CardTitle className="text-xs font-bold text-foreground">
+                              {fr.forms?.title || "Lead Origin"}
+                            </CardTitle>
+                            <span className="text-[10px] font-medium text-muted-foreground">
+                              {format(new Date(fr.created_at), "dd/MM/yy 'às' HH:mm", { locale: ptBR })}
+                            </span>
+                          </CardHeader>
+                          <CardContent className="p-0">
+                            {fr.mapped_data && (
+                              <div className="divide-y divide-border/50">
+                                {Object.entries(fr.mapped_data as Record<string, string>).map(([key, value]) => (
+                                  <div key={key} className="px-4 py-3 flex items-start justify-between gap-4 last:border-0 hover:bg-muted/10 transition-colors">
+                                    <p className="text-[11px] text-muted-foreground font-semibold uppercase tracking-tight min-w-[100px] pt-0.5">
+                                      {key.replace(/_/g, ' ')}
+                                    </p>
+                                    <p className="text-sm font-medium text-foreground text-right">{value}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
+                </TabsContent>
+
+                <TabsContent value="calls" className="m-0 space-y-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="text-sm font-bold text-foreground">Histórico de Agendas</h4>
+                    <Button onClick={() => setAgendarCallOpen(true)} size="sm" variant="outline" className="h-8 gap-1.5 text-xs">
+                      <Calendar className="h-3.5 w-3.5" />
+                      Agendar Call
+                    </Button>
+                  </div>
+
+                  {calls.length === 0 ? (
+                    <div className="text-center py-16 bg-muted/10 rounded-lg border border-dashed border-border/60">
+                      <Clock className="h-10 w-10 mx-auto mb-3 opacity-20" />
+                      <p className="text-sm text-muted-foreground mb-4">Sem agendas cadastradas</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {calls.map((call) => (
+                        <div key={call.id} className="group relative p-4 border border-border/60 rounded-lg hover:border-primary/40 hover:bg-muted/10 transition-all">
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex items-start gap-3">
+                              <div className="mt-1 p-2 rounded bg-muted/50 group-hover:bg-primary/5">
+                                <Phone className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                              </div>
+                              <div>
+                                <p className="font-bold text-foreground leading-none mb-1">
+                                  {format(new Date(call.data_hora_agendada), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
+                                </p>
+                                <p className="text-[11px] font-medium text-muted-foreground">Responsável: {call.profiles?.nome}</p>
+                              </div>
+                            </div>
+                            <Badge variant="outline" className="text-[10px] uppercase font-bold tracking-wider">
+                              {call.status}
+                            </Badge>
+                          </div>
+
+                          {call.resultado && (
+                            <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-muted/30 w-fit text-xs font-medium text-muted-foreground mb-3">
+                              <ChevronRight className="h-3 w-3" />
+                              Resultado: <span className="text-foreground capitalize">{call.resultado.replace(/_/g, " ")}</span>
+                            </div>
+                          )}
+
+                          {call.notas && (
+                            <div className="text-xs text-muted-foreground bg-white/50 p-2 rounded border border-border/40 italic">
+                              "{call.notas}"
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </TabsContent>
+              </div>
+
+              {/* Action Footer */}
+              <div className="p-6 border-t border-border bg-muted/5 space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                  <Button
+                    onClick={handleToggleContatado}
+                    variant={(lead as any).contatado ? "outline" : "default"}
+                    className={cn(
+                      "w-full gap-2 h-11 font-bold",
+                      !(lead as any).contatado && "bg-success hover:bg-success/90 text-white shadow-sm"
+                    )}
+                  >
+                    <CheckCircle2 className="h-4 w-4" />
+                    {(lead as any).contatado ? "Desmarcar Contato" : "Confirmar Contato"}
                   </Button>
                   <Button
                     onClick={() => setRegistrarVendaOpen(true)}
-                    className="flex-1 gap-2 btn-success"
+                    className="w-full gap-2 h-11 font-bold bg-primary hover:bg-primary/90 text-white shadow-sm"
                   >
                     <DollarSign className="h-4 w-4" />
                     Registrar Venda
                   </Button>
                 </div>
-                
-                <div className="flex gap-2">
-                  <Button
-                    onClick={() => setEditDialogOpen(true)}
-                    variant="outline"
-                    className="flex-1 gap-2"
-                  >
-                    <Edit className="h-4 w-4" />
-                    Editar
-                  </Button>
+
+                <div className="grid grid-cols-3 gap-3">
                   <Button
                     onClick={handleArchive}
                     variant="outline"
-                    className="flex-1 gap-2"
+                    className="flex-1 gap-1 text-[11px] font-bold uppercase h-9"
                   >
-                    {lead.arquivado ? (
-                      <>
-                        <ArchiveRestore className="h-4 w-4" />
-                        Restaurar
-                      </>
-                    ) : (
-                      <>
-                        <Archive className="h-4 w-4" />
-                        Arquivar
-                      </>
-                    )}
+                    {lead.arquivado ? <ArchiveRestore className="h-3.5 w-3.5" /> : <Archive className="h-3.5 w-3.5" />}
+                    {lead.arquivado ? "Ativar" : "Arquivar"}
+                  </Button>
+                  <Button
+                    onClick={() => setEditDialogOpen(true)}
+                    variant="outline"
+                    className="flex-1 gap-1 text-[11px] font-bold uppercase h-9"
+                  >
+                    <Edit className="h-3.5 w-3.5" />
+                    Editar
                   </Button>
                   <Button
                     onClick={() => setDeleteDialogOpen(true)}
-                    variant="outline"
-                    className="gap-2 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                    variant="ghost"
+                    className="h-9 gap-1 text-[11px] font-bold uppercase text-danger hover:bg-danger/5 hover:text-danger"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="h-3.5 w-3.5" />
+                    Excluir
                   </Button>
                 </div>
               </div>
-            </TabsContent>
-
-            <TabsContent value="formulario" className="space-y-4 mt-4">
-              {formResponses.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <FileText className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                  <p>Nenhuma resposta de formulário vinculada</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {formResponses.map((fr: any) => (
-                    <div key={fr.id} className="border border-border rounded-lg p-4 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <h4 className="font-semibold text-sm">{fr.forms?.title || "Formulário"}</h4>
-                        <span className="text-[11px] text-muted-foreground">
-                          {format(new Date(fr.created_at), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
-                        </span>
-                      </div>
-
-                      {/* Mapped data */}
-                      {fr.mapped_data && Object.keys(fr.mapped_data).length > 0 && (
-                        <div className="space-y-1.5">
-                          <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Dados Mapeados</p>
-                          <div className="grid grid-cols-2 gap-2 text-sm">
-                            {Object.entries(fr.mapped_data as Record<string, string>).map(([key, value]) => (
-                              <div key={key} className="bg-muted/30 rounded-md px-3 py-1.5">
-                                <p className="text-[10px] text-muted-foreground capitalize">{key.replace(/_/g, ' ')}</p>
-                                <p className="font-medium text-[13px]">{value}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      <Separator />
-
-                      {/* Raw answers */}
-                      {fr.answers && (fr.answers as any[]).length > 0 && (
-                        <div className="space-y-1.5">
-                          <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Respostas Completas</p>
-                          <div className="space-y-2 text-sm">
-                            {(fr.answers as any[]).map((a: any, i: number) => (
-                              <div key={i} className="border-l-2 border-primary/30 pl-3">
-                                <p className="text-[11px] text-muted-foreground">Pergunta {i + 1}</p>
-                                <p className="font-medium">{typeof a.value === "string" ? a.value : Array.isArray(a.value) ? (a.value as string[]).join(", ") : String(a.value || "—")}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </TabsContent>
-
-            <TabsContent value="calls" className="space-y-4 mt-4">
-              {calls.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <Clock className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                  <p>Nenhuma call registrada</p>
-                  <Button
-                    onClick={() => setAgendarCallOpen(true)}
-                    variant="outline"
-                    className="mt-4 gap-2"
-                  >
-                    <Phone className="h-4 w-4" />
-                    Agendar Primeira Call
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {calls.map((call) => (
-                    <div
-                      key={call.id}
-                      className="p-4 border border-border rounded-lg bg-muted/20"
-                    >
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <p className="font-semibold">
-                            {format(new Date(call.data_hora_agendada), "dd/MM/yyyy 'às' HH:mm", {
-                              locale: ptBR,
-                            })}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            {call.profiles?.nome}
-                          </p>
-                        </div>
-                        <Badge variant="outline">{call.status}</Badge>
-                      </div>
-                      
-                      {call.resultado && (
-                        <div className="mt-2 text-sm">
-                          <span className="text-muted-foreground">Resultado: </span>
-                          <span className="font-medium">{call.resultado.replace(/_/g, " ")}</span>
-                        </div>
-                      )}
-                      
-                      {call.notas && (
-                        <div className="mt-2">
-                          <Separator className="my-2" />
-                          <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                            {call.notas}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </TabsContent>
-          </Tabs>
+            </Tabs>
+          </div>
         </SheetContent>
       </Sheet>
 
-      <LeadDialog
-        open={editDialogOpen}
-        onOpenChange={setEditDialogOpen}
-        lead={lead}
-      />
-
-      <AgendarCallDialog
-        open={agendarCallOpen}
-        onOpenChange={setAgendarCallOpen}
-        lead={lead}
-      />
-
-      <RegistrarVendaDialog
-        open={registrarVendaOpen}
-        onOpenChange={setRegistrarVendaOpen}
-        lead={lead}
-      />
+      <LeadDialog open={editDialogOpen} onOpenChange={setEditDialogOpen} lead={lead} />
+      <AgendarCallDialog open={agendarCallOpen} onOpenChange={setAgendarCallOpen} lead={lead} />
+      <RegistrarVendaDialog open={registrarVendaOpen} onOpenChange={setRegistrarVendaOpen} lead={lead} />
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent onOpenAutoFocus={(e) => e.preventDefault()}>
+        <AlertDialogContent className="rounded-lg border-border">
           <AlertDialogHeader>
-            <AlertDialogTitle>Deletar Lead</AlertDialogTitle>
-            <AlertDialogDescription>
-              Tem certeza que deseja deletar o lead "{lead.nome}"? Esta ação não pode ser desfeita.
+            <AlertDialogTitle>Excluir Lead Permanentemente?</AlertDialogTitle>
+            <AlertDialogDescription className="text-muted-foreground">
+              Esta ação removerá todos os dados, vendas e históricos de "{lead.nome}".
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Deletar
+            <AlertDialogCancel className="rounded-md">Voltar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-danger text-white hover:bg-danger/90 rounded-md">
+              Confirmar Exclusão
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

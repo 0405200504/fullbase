@@ -26,6 +26,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
+import { Card, CardContent } from "@/components/ui/card";
 
 const Leads = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -151,170 +153,172 @@ const Leads = () => {
   }
 
   return (
-    <div className="space-y-4 md:space-y-6">
+    <div className="space-y-8 animate-fade-in">
       {/* Header */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-4xl font-bold mb-1 md:mb-2">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
             {showArchived ? "Lixeira de Leads" : "Leads"}
           </h1>
-          <p className="text-sm md:text-base text-muted-foreground">
+          <p className="text-muted-foreground">
             {showArchived
-              ? "Leads arquivados e desqualificados"
-              : "Gerencie todas as informações dos seus leads"}
+              ? "Leads arquivados e desqualificados da sua base."
+              : "Gerencie e acompanhe todos os potenciais clientes."}
           </p>
         </div>
 
-        <div className="flex items-center gap-2 w-full md:w-auto flex-wrap">
+        <div className="flex items-center gap-3 flex-wrap">
           {selectedLeadIds.length > 0 && (
             <Button
               onClick={handleDeleteMultiple}
               variant="destructive"
-              className="gap-2 min-h-[44px]"
               size="sm"
+              className="gap-2"
             >
               <Trash2 className="h-4 w-4" />
-              Deletar ({selectedLeadIds.length})
+              Excluir ({selectedLeadIds.length})
             </Button>
           )}
 
           <Button
-            onClick={() => setDialogOpen(true)}
-            className="gap-2 min-h-[44px] hidden md:flex"
-          >
-            <Plus className="h-4 w-4" />
-            Adicionar Lead
-          </Button>
-
-          <Button
-            onClick={() => setImportDialogOpen(true)}
-            variant="outline"
-            className="gap-2 min-h-[44px] hidden md:flex"
-          >
-            <Upload className="h-4 w-4" />
-            Importar
-          </Button>
-
-          <Button
             variant={showOnlyMQL ? "default" : "outline"}
             onClick={() => setShowOnlyMQL(!showOnlyMQL)}
-            className="gap-2 min-h-[44px]"
             size="sm"
+            className="gap-2"
           >
-            <Star className={`h-4 w-4 ${showOnlyMQL ? 'fill-current' : ''}`} />
-            <span className="hidden sm:inline">MQL</span>
+            <Star className={cn("h-4 w-4", showOnlyMQL && "fill-current")} />
+            Filtrar MQL
           </Button>
 
           <Button
-            variant={showArchived ? "default" : "outline"}
+            variant="outline"
             onClick={() => setShowArchived(!showArchived)}
-            className="gap-2 min-h-[44px] w-full md:w-auto"
             size="sm"
+            className="gap-2"
           >
-            <Archive className="h-4 w-4" />
-            {showArchived ? "Ver Leads Ativos" : "Ver Lixeira"}
+            {showArchived ? <Plus className="h-4 w-4" /> : <Archive className="h-4 w-4" />}
+            {showArchived ? "Ver Ativos" : "Ver Lixeira"}
           </Button>
+
+          {!showArchived && (
+            <>
+              <Button
+                onClick={() => setImportDialogOpen(true)}
+                variant="outline"
+                size="sm"
+                className="gap-2"
+              >
+                <Upload className="h-4 w-4" />
+                Importar
+              </Button>
+              <Button
+                onClick={() => setDialogOpen(true)}
+                size="sm"
+                className="gap-2 shadow-sm"
+              >
+                <Plus className="h-4 w-4" />
+                Novo Lead
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="grid grid-cols-1 gap-3 md:gap-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-          <Input
-            placeholder="Buscar por nome, email, telefone ou fonte..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 h-11 min-h-[48px]"
-          />
+      {/* Stats Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="px-6 py-4 bg-muted/30 rounded-lg border border-border flex items-center justify-between">
+          <span className="text-sm font-medium text-muted-foreground">Total de Leads</span>
+          <span className="text-xl font-bold">{filteredLeads.length}</span>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <Select value={sdrFilter} onValueChange={setSdrFilter}>
-            <SelectTrigger className="min-h-[48px]">
-              <SelectValue placeholder="Filtrar por SDR" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todos">Todos os SDRs</SelectItem>
-              {sdrs.map((sdr) => (
-                <SelectItem key={sdr.id} value={sdr.id}>
-                  {sdr.nome}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select value={closerFilter} onValueChange={setCloserFilter}>
-            <SelectTrigger className="min-h-[48px]">
-              <SelectValue placeholder="Filtrar por Closer" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todos">Todos os Closers</SelectItem>
-              {closers.map((closer) => (
-                <SelectItem key={closer.id} value={closer.id}>
-                  {closer.nome}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select value={captureFilter} onValueChange={setCaptureFilter}>
-            <SelectTrigger className="min-h-[48px]">
-              <SelectValue placeholder="Status de captura" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todos">Todos os leads</SelectItem>
-              <SelectItem value="parcial">Capturado parcialmente</SelectItem>
-              <SelectItem value="concluido">Formulário concluído</SelectItem>
-            </SelectContent>
-          </Select>
+        <div className="px-6 py-4 bg-primary/[0.03] rounded-lg border border-primary/10 flex items-center justify-between">
+          <span className="text-sm font-medium text-primary">Leads MQL</span>
+          <span className="text-xl font-bold text-primary">{filteredLeads.filter(l => l.is_mql).length}</span>
+        </div>
+        <div className="px-6 py-4 bg-success/[0.03] rounded-lg border border-success/10 flex items-center justify-between">
+          <span className="text-sm font-medium text-success">Potencial de Vendas</span>
+          <span className="text-xl font-bold text-success">
+            {formatCurrency(filteredLeads.reduce((sum, lead) => sum + (lead.valor_proposta || 0), 0))}
+          </span>
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-4 text-sm text-white/70 bg-white/5 p-4 rounded-2xl font-bold">
-        <span>Total: <strong className="text-white">{filteredLeads.length}</strong> leads</span>
-        <span className="hidden md:inline">•</span>
-        <span>
-          MQLs: <strong className="text-[#8FFF00]">{filteredLeads.filter(l => l.is_mql).length}</strong>
-        </span>
-        <span className="hidden md:inline">•</span>
-        <span>Valor Total: <strong className="text-emerald-400 tracking-tight">
-          {formatCurrency(filteredLeads.reduce((sum, lead) => sum + (lead.valor_proposta || 0), 0))}
-        </strong></span>
-      </div>
+      {/* Filters Bar */}
+      <Card className="border-border/60">
+        <CardContent className="p-4">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+            <div className="lg:col-span-1 relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Buscar leads..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9"
+              />
+            </div>
 
-      {/* Leads Table/Cards */}
-      {/* Leads Table/Cards */}
-      <div className="bg-white text-black rounded-[40px] shadow-[0_20px_40px_rgba(0,0,0,0.6)] overflow-hidden md:p-6 mt-8">
-        {/* Desktop Table */}
-        <div className="hidden md:block overflow-x-auto rounded-3xl border border-black/10">
-          <table className="w-full text-sm text-left text-black bg-white [&>thead>tr>th]:bg-black/5 [&>thead>tr>th]:text-black [&>thead>tr>th]:font-bold [&>thead>tr>th]:uppercase [&>thead>tr>th]:tracking-wider [&>thead>tr>th]:text-[12px] [&>thead>tr>th]:border-b [&>thead>tr>th]:border-black/10 [&>thead>tr>th]:px-4 [&>thead>tr>th]:py-4 [&>tbody>tr>td]:border-b [&>tbody>tr>td]:border-black/5 [&>tbody>tr>td]:px-4 [&>tbody>tr>td]:py-4">
+            <Select value={sdrFilter} onValueChange={setSdrFilter}>
+              <SelectTrigger>
+                <SelectValue placeholder="SDR Responsável" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos os SDRs</SelectItem>
+                {sdrs.map((sdr) => (
+                  <SelectItem key={sdr.id} value={sdr.id}>{sdr.nome}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={closerFilter} onValueChange={setCloserFilter}>
+              <SelectTrigger>
+                <SelectValue placeholder="Closer Responsável" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos os Closers</SelectItem>
+                {closers.map((closer) => (
+                  <SelectItem key={closer.id} value={closer.id}>{closer.nome}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={captureFilter} onValueChange={setCaptureFilter}>
+              <SelectTrigger>
+                <SelectValue placeholder="Status de Captura" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos os status</SelectItem>
+                <SelectItem value="parcial">Captura Parcial</SelectItem>
+                <SelectItem value="concluido">Concluído</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Tabela de Leads */}
+      <Card className="overflow-hidden border-border/60">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
             <thead>
-              <tr>
-                <th className="w-12">
+              <tr className="bg-muted/50 border-b border-border">
+                <th className="px-4 py-4 w-10 text-center">
                   <Checkbox
                     checked={selectedLeadIds.length === filteredLeads.length && filteredLeads.length > 0}
                     onCheckedChange={handleSelectAll}
                   />
                 </th>
-                <th>Nome</th>
-                <th>Telefone</th>
-                <th>Etapa</th>
-                <th>Fonte</th>
-                <th>Produto</th>
-                <th>Valor</th>
-                <th>Responsável</th>
-                <th>Criado em</th>
-                <th className="w-16">Contato</th>
-                <th>Ações</th>
+                <th className="px-4 py-4 font-bold text-muted-foreground uppercase tracking-wider text-[11px]">Lead</th>
+                <th className="px-4 py-4 font-bold text-muted-foreground uppercase tracking-wider text-[11px]">Etapa do Funil</th>
+                <th className="px-4 py-4 font-bold text-muted-foreground uppercase tracking-wider text-[11px]">Produto / Valor</th>
+                <th className="px-4 py-4 font-bold text-muted-foreground uppercase tracking-wider text-[11px]">Time</th>
+                <th className="px-4 py-4 font-bold text-muted-foreground uppercase tracking-wider text-[11px]">Criado</th>
+                <th className="px-4 py-4 font-bold text-muted-foreground uppercase tracking-wider text-[11px] text-right">Ações</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-border/50">
               {filteredLeads.length === 0 ? (
                 <tr>
-                  <td colSpan={11} className="text-center py-12 text-black/50 font-medium text-base">
-                    Nenhum lead encontrado
+                  <td colSpan={7} className="px-4 py-20 text-center text-muted-foreground italic">
+                    Nenhum lead encontrado com os filtros atuais.
                   </td>
                 </tr>
               ) : (
@@ -323,108 +327,93 @@ const Leads = () => {
                   return (
                     <tr
                       key={lead.id}
-                      className="cursor-pointer hover:bg-black/5 transition-colors group"
+                      className="group hover:bg-muted/30 transition-colors cursor-pointer"
                       onClick={() => handleLeadClick(lead)}
                     >
-                      <td onClick={(e) => e.stopPropagation()}>
+                      <td className="px-4 py-4 text-center" onClick={(e) => e.stopPropagation()}>
                         <Checkbox
                           checked={selectedLeadIds.includes(lead.id)}
                           onCheckedChange={() => handleSelectLead(lead.id)}
                         />
                       </td>
-                      <td>
-                        <div className="flex items-center gap-2">
-                          {leadComAlerta?.precisaFollowup && !showArchived && (
-                            <span title={`Parado há ${leadComAlerta.diasParado} dias!`}>
-                              <Flame className="h-4 w-4 text-destructive animate-pulse" />
-                            </span>
-                          )}
+                      <td className="px-4 py-4">
+                        <div className="flex items-center gap-3">
                           <button
                             onClick={(e) => handleToggleMQL(lead.id, e)}
-                            className="hover:scale-110 transition-transform"
-                            title={lead.is_mql ? "Remover marcação MQL" : "Marcar como MQL"}
+                            className="text-muted-foreground hover:scale-110 transition-all"
                           >
-                            <Star className={`h-4 w-4 ${lead.is_mql ? 'text-amber-500 fill-amber-500' : 'text-muted-foreground hover:text-amber-500'}`} />
+                            <Star className={cn("h-4 w-4", lead.is_mql ? "fill-amber-400 text-amber-400" : "hover:text-amber-400")} />
                           </button>
                           <div>
-                            <p className="font-semibold">{lead.nome}</p>
-                            {lead.email && (
-                              <p className="text-xs text-muted-foreground">{lead.email}</p>
-                            )}
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-foreground">{lead.nome}</span>
+                              {leadComAlerta?.precisaFollowup && !showArchived && (
+                                <Badge variant="destructive" className="h-5 px-1 bg-danger text-white border-none animate-pulse">
+                                  <Flame className="w-3 h-3" />
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-0.5">{lead.telefone}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="text-sm">{lead.telefone}</td>
-                      <td>
+                      <td className="px-4 py-4">
                         <Badge
-                          variant="secondary"
+                          variant="outline"
+                          className="font-semibold uppercase text-[10px] tracking-wide"
                           style={{
-                            backgroundColor: lead.etapas_funil?.cor
-                              ? lead.etapas_funil.cor + '20'
-                              : undefined,
+                            color: lead.etapas_funil?.cor || 'inherit',
+                            borderColor: (lead.etapas_funil?.cor || 'currentColor') + '40',
+                            backgroundColor: (lead.etapas_funil?.cor || 'currentColor') + '10'
                           }}
                         >
-                          {lead.etapas_funil?.nome || "Sem etapa"}
+                          {lead.etapas_funil?.nome || "Sem Etapa"}
                         </Badge>
                       </td>
-                      <td className="text-sm">
-                        {lead.fonte_trafego ? (
-                          <span className="px-2 py-1 rounded bg-primary/10 text-primary text-xs font-medium">
-                            {lead.fonte_trafego}
-                          </span>
-                        ) : (
-                          <span className="text-muted-foreground">-</span>
-                        )}
+                      <td className="px-4 py-4">
+                        <div className="space-y-1">
+                          <p className="font-medium text-foreground">{lead.produtos?.nome || "---"}</p>
+                          <p className="text-xs text-success font-bold">
+                            {lead.valor_proposta ? formatCurrency(lead.valor_proposta) : "R$ 0,00"}
+                          </p>
+                        </div>
                       </td>
-                      <td className="text-sm">{lead.produtos?.nome || "-"}</td>
-                      <td className="font-bold text-success">
-                        {lead.valor_proposta ? formatCurrency(lead.valor_proposta) : "-"}
-                      </td>
-                      <td className="text-sm">
-                        <div>
+                      <td className="px-4 py-4">
+                        <div className="text-xs space-y-1">
                           {lead.sdr_profile && (
-                            <p className="text-xs">
-                              <span className="text-muted-foreground">SDR:</span> {lead.sdr_profile.nome}
-                            </p>
+                            <p><span className="text-muted-foreground">SDR:</span> <span className="font-medium">{lead.sdr_profile.nome}</span></p>
                           )}
                           {lead.closer_profile && (
-                            <p className="text-xs">
-                              <span className="text-muted-foreground">Closer:</span>{" "}
-                              {lead.closer_profile.nome}
-                            </p>
+                            <p><span className="text-muted-foreground">Closer:</span> <span className="font-medium">{lead.closer_profile.nome}</span></p>
                           )}
                           {!lead.sdr_profile && !lead.closer_profile && (
-                            <span className="text-muted-foreground">-</span>
+                            <span className="text-muted-foreground italic">Sem atribuição</span>
                           )}
                         </div>
                       </td>
-                      <td className="text-sm text-muted-foreground">
+                      <td className="px-4 py-4 text-xs text-muted-foreground font-medium">
                         {formatDate(lead.created_at)}
                       </td>
-                      <td onClick={(e) => e.stopPropagation()}>
-                        <WhatsAppButton telefone={lead.telefone} size="sm" />
-                      </td>
-                      <td>
-                        <div className="flex items-center gap-1">
+                      <td className="px-4 py-4" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center justify-end gap-2">
+                          <WhatsAppButton telefone={lead.telefone} size="sm" />
                           {!showArchived && (
                             <Button
                               variant="ghost"
-                              size="sm"
+                              size="icon"
                               onClick={(e) => handleArchiveLead(lead.id, e)}
-                              className="gap-1"
-                              title="Arquivar lead"
+                              className="w-8 h-8 text-muted-foreground hover:text-foreground"
                             >
-                              <Archive className="h-3 w-3" />
+                              <Archive className="h-4 w-4" />
                             </Button>
                           )}
                           <Button
                             variant="ghost"
-                            size="sm"
+                            size="icon"
                             onClick={(e) => handleDeleteSingle(lead.id, e)}
-                            className="gap-1 text-destructive hover:text-destructive hover:bg-destructive/10"
-                            title="Deletar lead permanentemente"
+                            className="w-8 h-8 text-muted-foreground hover:text-danger hover:bg-danger/10"
                           >
-                            <Trash2 className="h-3 w-3" />
+                            <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
                       </td>
@@ -435,129 +424,7 @@ const Leads = () => {
             </tbody>
           </table>
         </div>
-
-        {/* Mobile Cards */}
-        <div className="md:hidden p-4 space-y-4">
-          {filteredLeads.length === 0 ? (
-            <div className="text-center py-12 text-black/50 font-medium">
-              Nenhum lead encontrado
-            </div>
-          ) : (
-            filteredLeads.map((lead) => {
-              const leadComAlerta = leadsComAlerta.find((l) => l.id === lead.id);
-              return (
-                <div
-                  key={lead.id}
-                  className="bg-black/5 rounded-3xl p-5 space-y-4 border border-black/10 relative hover:bg-black/10 transition-colors"
-                  onClick={() => handleLeadClick(lead)}
-                >
-                  <div className="absolute top-4 left-4" onClick={(e) => e.stopPropagation()}>
-                    <Checkbox
-                      checked={selectedLeadIds.includes(lead.id)}
-                      onCheckedChange={() => handleSelectLead(lead.id)}
-                    />
-                  </div>
-
-                  {leadComAlerta?.precisaFollowup && !showArchived && (
-                    <div
-                      className="absolute -top-2 -right-2 bg-destructive rounded-full p-1.5 shadow-lg animate-pulse"
-                      title={`Parado há ${leadComAlerta.diasParado} dias!`}
-                    >
-                      <Flame className="h-4 w-4 text-white" />
-                    </div>
-                  )}
-
-                  <div className="flex items-start justify-between gap-2 pl-8">
-                    <div className="flex items-center gap-2 flex-1">
-                      <button
-                        onClick={(e) => handleToggleMQL(lead.id, e)}
-                        className="hover:scale-110 transition-transform flex-shrink-0"
-                        title={lead.is_mql ? "Remover marcação MQL" : "Marcar como MQL"}
-                      >
-                        <Star className={`h-5 w-5 ${lead.is_mql ? 'text-amber-500 fill-amber-500' : 'text-muted-foreground hover:text-amber-500'}`} />
-                      </button>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <p className="font-semibold text-base">{lead.nome}</p>
-                          <div onClick={(e) => e.stopPropagation()}>
-                            <WhatsAppButton telefone={lead.telefone} size="sm" />
-                          </div>
-                        </div>
-                        <p className="text-sm text-muted-foreground">{lead.telefone}</p>
-                        {lead.email && (
-                          <p className="text-xs text-muted-foreground">{lead.email}</p>
-                        )}
-                      </div>
-                    </div>
-                    <Badge
-                      variant="secondary"
-                      style={{
-                        backgroundColor: lead.etapas_funil?.cor
-                          ? lead.etapas_funil.cor + '20'
-                          : undefined,
-                      }}
-                      className="text-xs"
-                    >
-                      {lead.etapas_funil?.nome || "Sem etapa"}
-                    </Badge>
-                  </div>
-
-                  <div className="text-sm space-y-1">
-                    {lead.fonte_trafego && (
-                      <p>
-                        <span className="text-muted-foreground">Fonte:</span>{" "}
-                        <span className="px-2 py-0.5 rounded bg-primary/10 text-primary text-xs font-medium">
-                          {lead.fonte_trafego}
-                        </span>
-                      </p>
-                    )}
-                    {lead.produtos?.nome && (
-                      <p><span className="text-muted-foreground">Produto:</span> {lead.produtos.nome}</p>
-                    )}
-                    {lead.sdr_profile && (
-                      <p><span className="text-muted-foreground">SDR:</span> {lead.sdr_profile.nome}</p>
-                    )}
-                    {lead.closer_profile && (
-                      <p><span className="text-muted-foreground">Closer:</span> {lead.closer_profile.nome}</p>
-                    )}
-                  </div>
-
-                  {lead.valor_proposta && (
-                    <div className="pt-2 border-t border-border">
-                      <p className="text-xl font-bold text-success mb-2">
-                        {formatCurrency(lead.valor_proposta)}
-                      </p>
-                    </div>
-                  )}
-
-                  <div className="flex items-center gap-2 pt-2">
-                    {!showArchived && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => handleArchiveLead(lead.id, e)}
-                        className="gap-1 min-h-[44px] flex-1"
-                      >
-                        <Archive className="h-4 w-4" />
-                        Arquivar
-                      </Button>
-                    )}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => handleDeleteSingle(lead.id, e)}
-                      className="gap-1 min-h-[44px] flex-1 text-destructive hover:text-destructive hover:bg-destructive/10"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      Deletar
-                    </Button>
-                  </div>
-                </div>
-              );
-            })
-          )}
-        </div>
-      </div>
+      </Card>
 
       <LeadDialog open={dialogOpen} onOpenChange={setDialogOpen} />
       <ImportLeadsDialog open={importDialogOpen} onOpenChange={setImportDialogOpen} />
@@ -567,7 +434,7 @@ const Leads = () => {
         onOpenChange={setDetailsOpen}
       />
 
-      {/* Floating Action Button (Mobile) */}
+      {/* Mobile FAB */}
       {!showArchived && (
         <Button
           onClick={() => setDialogOpen(true)}
@@ -578,32 +445,26 @@ const Leads = () => {
         </Button>
       )}
 
-      {/* Delete Confirmation Dialog */}
+      {/* Delete Confirmation */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="rounded-lg border-border">
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle>Excluir Lead Permanentemente?</AlertDialogTitle>
+            <AlertDialogDescription className="text-muted-foreground">
               {leadToDelete ? (
-                <>
-                  Tem certeza que deseja deletar este lead permanentemente?
-                  Esta ação não pode ser desfeita e todos os dados relacionados (atividades, calls, vendas) serão removidos.
-                </>
+                "Esta ação é irreversível e removerá todos os dados, vendas e históricos deste lead."
               ) : (
-                <>
-                  Tem certeza que deseja deletar <strong>{selectedLeadIds.length} leads</strong> permanentemente?
-                  Esta ação não pode ser desfeita e todos os dados relacionados serão removidos.
-                </>
+                `Você está prestes a excluir ${selectedLeadIds.length} leads. Todos os dados serão perdidos para sempre.`
               )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel className="rounded-md">Voltar</AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDelete}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="bg-danger text-white hover:bg-danger/90 rounded-md"
             >
-              Deletar Permanentemente
+              Confirmar Exclusão
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

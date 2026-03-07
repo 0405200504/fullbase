@@ -8,10 +8,9 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { OnboardingModal } from "@/components/OnboardingModal";
 import { supabase } from "@/integrations/supabase/client";
-import logoBlack from "@/assets/high-leads-logo.png";
-import logoWhite from "@/assets/high-leads-logo-white.png";
 import { PasswordStrengthIndicator } from "@/components/PasswordStrengthIndicator";
 import { validatePasswordStrength } from "@/lib/passwordValidation";
+import { ShieldCheck, ArrowRight, Github, Chrome, Mail, Lock, User as UserIcon } from "lucide-react";
 
 const loginSchema = z.object({
   email: z.string().email("Email inválido"),
@@ -130,86 +129,118 @@ const Auth = () => {
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center p-4 bg-background">
-        {/* Subtle background pattern */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-primary/10 blur-[120px]" />
+      <div className="min-h-screen flex items-center justify-center p-6 bg-background transition-colors duration-300">
+        {/* Subtle decorative background */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-[0.05] dark:opacity-[0.02]">
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(hsl(var(--foreground))_1px,transparent_1px)] [background-size:32px_32px]" />
         </div>
 
-        <div className="w-full max-w-[400px] relative z-10 animate-fade-in text-center">
-          {/* Logo */}
-          <div className="flex justify-center mb-8">
-            <img alt="HighLeads" className="h-10 w-auto" src={logoWhite} />
+        <div className="w-full max-w-[440px] relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          {/* Logo Section */}
+          <div className="flex flex-col items-center mb-10 text-center">
+            <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center mb-4 shadow-xl shadow-primary/20">
+              <ShieldCheck className="h-7 w-7 text-white" />
+            </div>
+            <h2 className="text-3xl font-black tracking-tighter text-foreground uppercase">
+              Full<span className="text-primary italic">Base</span>
+            </h2>
+            <p className="text-sm text-muted-foreground font-medium mt-1">Sua central de leads profissional.</p>
           </div>
 
-          {/* Card */}
-          <div className="text-left bg-card/60 backdrop-blur-2xl rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.5)] p-8 border border-border/50">
-            <div className="text-center mb-6">
-              <h1 className="text-2xl font-bold text-foreground tracking-tight">
-                {isLogin ? "Bem-vindo de volta" : "Crie sua conta"}
+          {/* Solid Card */}
+          <div className="bg-card rounded-[32px] border border-border/60 shadow-[0_20px_50px_rgba(0,0,0,0.05)] p-10 backdrop-blur-sm transition-colors duration-300">
+            <div className="mb-8">
+              <h1 className="text-xl font-bold text-foreground">
+                {isLogin ? "Acessar Plataforma" : "Criar Nova Conta"}
               </h1>
-              <p className="text-[13px] text-muted-foreground mt-1">
-                {isLogin ? "Entre com suas credenciais" : "Comece sua jornada no HighLeads"}
+              <p className="text-sm text-muted-foreground mt-1">
+                {isLogin ? "Insira suas credenciais corporativas." : "Junte-se a milhares de closers no FullBase."}
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {!isLogin && (
-                <div>
-                  <Label htmlFor="nome" className="text-[12px] font-medium">Nome Completo</Label>
-                  <Input id="nome" type="text" value={nome} onChange={e => setNome(e.target.value)} required disabled={loading} className="mt-1" placeholder="Seu nome" />
+                <div className="space-y-1.5">
+                  <Label htmlFor="nome" className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Nome Completo</Label>
+                  <div className="relative">
+                    <UserIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground/40" />
+                    <Input id="nome" type="text" value={nome} onChange={e => setNome(e.target.value)} required disabled={loading} className="pl-10 h-11 border-border/60 focus:ring-primary/20 bg-muted/20" placeholder="Ex: João Silva" />
+                  </div>
                 </div>
               )}
 
-              <div>
-                <Label htmlFor="email" className="text-[12px] font-medium">Email</Label>
-                <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required disabled={loading} className="mt-1" placeholder="seu@email.com" />
+              <div className="space-y-1.5">
+                <Label htmlFor="email" className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">E-mail Corporativo</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground/40" />
+                  <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required disabled={loading} className="pl-10 h-11 border-border/60 focus:ring-primary/20 bg-muted/20" placeholder="voce@empresa.com" />
+                </div>
               </div>
 
-              <div>
-                <Label htmlFor="password" className="text-[12px] font-medium">Senha</Label>
-                <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} required disabled={loading} className="mt-1" placeholder="••••••••" />
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center">
+                  <Label htmlFor="password" className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Senha</Label>
+                  {isLogin && (
+                    <button type="button" onClick={handleForgotPassword} className="text-[11px] font-bold text-primary hover:underline" disabled={loading}>
+                      Recuperar
+                    </button>
+                  )}
+                </div>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground/40" />
+                  <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} required disabled={loading} className="pl-10 h-11 border-border/60 focus:ring-primary/20 bg-muted/20" placeholder="••••••••" />
+                </div>
                 {!isLogin && <PasswordStrengthIndicator password={password} />}
               </div>
 
               <Button
                 type="submit"
-                className="w-full rounded-full text-[14px] h-12 mt-2"
+                className="w-full rounded-xl text-sm font-bold h-12 mt-4 bg-primary hover:bg-primary/90 text-white transition-all shadow-lg shadow-primary/20 gap-2"
                 disabled={loading || (!isLogin && password && validatePasswordStrength(password).score < 5)}
               >
-                {loading ? "Aguarde..." : isLogin ? "Entrar" : "Criar Conta"}
+                {loading ? "Processando..." : isLogin ? "Fazer Login" : "Criar Conta"}
+                {!loading && <ArrowRight className="h-4 w-4" />}
               </Button>
             </form>
 
-            <div className="mt-5 space-y-3 text-center">
-              {isLogin && (
-                <button type="button" onClick={handleForgotPassword} className="text-[12px] text-muted-foreground hover:text-primary transition-colors block w-full" disabled={loading}>
-                  Esqueceu a senha?
-                </button>
-              )}
-              <button type="button" onClick={() => setIsLogin(!isLogin)} className="text-[12px] text-muted-foreground hover:text-primary transition-colors" disabled={loading}>
-                {isLogin ? (
-                  <>Não tem conta? <span className="text-primary font-medium">Criar conta</span></>
-                ) : (
-                  <>Já tem conta? <span className="text-primary font-medium">Fazer login</span></>
-                )}
-              </button>
-              {isLogin && (
-                <div className="pt-3 border-t border-border/40 space-y-2">
-                  <button type="button" onClick={() => navigate("/pricing")} className="text-[12px] text-muted-foreground hover:text-primary transition-colors w-full text-center">
-                    Ver planos e preços →
-                  </button>
-                  <button type="button" onClick={() => navigate("/superadmin/login")} className="text-[12px] text-muted-foreground hover:text-primary transition-colors w-full text-center">
-                    Acessar Painel Super Admin →
-                  </button>
-                </div>
-              )}
+            <div className="relative my-8 text-center">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-border/60"></div>
+              </div>
+              <span className="relative px-4 bg-card text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Ou continue com</span>
             </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <Button variant="outline" className="rounded-xl border-border/60 h-11 text-xs font-bold gap-2 text-muted-foreground hover:bg-muted/30" disabled>
+                <Chrome className="h-4 w-4" />
+                Google
+              </Button>
+              <Button variant="outline" className="rounded-xl border-border/60 h-11 text-xs font-bold gap-2 text-muted-foreground hover:bg-muted/30" disabled>
+                <Github className="h-4 w-4" />
+                GitHub
+              </Button>
+            </div>
+
+            <p className="mt-8 text-center text-xs text-muted-foreground font-medium">
+              {isLogin ? "Não possui uma licença?" : "Já possui acesso?"}
+              <button
+                type="button"
+                onClick={() => setIsLogin(!isLogin)}
+                className="ml-1 text-primary font-bold hover:underline"
+                disabled={loading}
+              >
+                {isLogin ? "Solicitar Agora" : "Fazer Login"}
+              </button>
+            </p>
           </div>
 
-          <p className="text-center text-[11px] text-muted-foreground mt-6">
-            © {new Date().getFullYear()} HighLeads. Todos os direitos reservados.
-          </p>
+          <div className="mt-8 flex items-center justify-between text-[11px] font-bold text-muted-foreground/50 uppercase tracking-widest px-4">
+            <span>© {new Date().getFullYear()} FullBase System</span>
+            <div className="flex gap-4">
+              <button onClick={() => navigate("/pricing")} className="hover:text-primary transition-colors">Planos</button>
+              <button onClick={() => navigate("/superadmin/login")} className="hover:text-primary transition-colors">Admin</button>
+            </div>
+          </div>
         </div>
       </div>
 

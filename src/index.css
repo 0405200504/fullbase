@@ -15,126 +15,90 @@
 /* High Leads CRM - Premium Design System */
 @layer base {
   :root {
-    /* Superfícies (Dark Premium Default) */
-    --background: 210 12% 13%;
-    /* #1D2125 */
-    --foreground: 0 0% 100%;
+    /* Paleta FullBase - Clean & Professional (Light Mode Default) */
+    --background: 0 0% 100%;
     /* #FFFFFF */
+    --foreground: 220 20% 12%;
+    /* #14171B - Mais denso para contraste */
 
-    --card: 210 10% 16%;
-    --card-foreground: 0 0% 98%;
+    --card: 210 20% 99%;
+    /* #F9FAFB */
+    --card-foreground: 220 20% 12%;
 
-    /* Cor Principal (Verde Neon) */
-    --primary: 86 100% 50%;
-    /* #8FFF00 */
-    --primary-foreground: 210 12% 13%;
-    /* Dark text for contrast */
-    --primary-hover: 86 100% 45%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 12%;
 
-    /* Terciária */
-    --tertiary: 210 20% 25%;
-    --tertiary-foreground: 0 0% 100%;
+    /* Cor Principal (Azul FullBase - Premium & Vibrante) */
+    --primary: 221 95% 53%;
+    /* #1677FF - Mais saturado e vivo */
+    --primary-foreground: 0 0% 100%;
 
-    /* Secundários e Neutros */
-    --secondary: 210 10% 20%;
-    --secondary-foreground: 0 0% 90%;
-    --muted: 210 10% 20%;
-    --muted-foreground: 210 5% 65%;
+    --secondary: 210 20% 97%;
+    /* #F3F4F6 */
+    --secondary-foreground: 220 20% 12%;
 
-    /* Accent (Hover states) */
-    --accent: 210 12% 18%;
+    --muted: 210 20% 96%;
+    --muted-foreground: 220 10% 40%;
+
+    --accent: 221 95% 53%;
     --accent-foreground: 0 0% 100%;
 
-    /* Destrutivo / Secundário Call To Action (Coral) */
-    --destructive: 359 97% 73%;
-    /* #FD7577 */
-    --destructive-foreground: 0 0% 10%;
+    --destructive: 0 90% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    /* Bordas e inputs */
-    --border: 210 10% 22%;
-    --input: 210 10% 20%;
-    --ring: 86 100% 50%;
-    /* Neon ring */
+    /* Bordas e inputs (Cores mais sutis) */
+    --border: 220 13% 91%;
+    /* #E5E7EB */
+    --input: 220 13% 91%;
+    --ring: 221 83% 53%;
 
-    /* Radius global elevado para estilo pill/glass */
-    --radius: 1.5rem;
+    /* Arredondamento Profissional (8px focus) */
+    --radius: 0.5rem;
 
-    /* Popovers */
-    --popover: 210 10% 16%;
-    --popover-foreground: 0 0% 98%;
-
-    /* Sidebar - Dark */
-    --sidebar-background: 210 12% 14%;
-    --sidebar-foreground: 0 0% 70%;
-    --sidebar-active: 0 0% 95%;
-    --sidebar-active-foreground: 210 12% 13%;
-    --sidebar-border: 210 10% 20%;
-
-    /* Success */
-    --success: 86 100% 40%;
-    --success-foreground: 210 12% 13%;
-    --success-light: 86 100% 20%;
-
-    /* Warning */
+    /* Status */
+    --success: 142.1 76.2% 36.3%;
+    --success-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
-    --warning-light: 38 92% 15%;
-
-    /* Danger */
-    --danger: 359 97% 73%;
+    --danger: 0 84.2% 60.2%;
     --danger-foreground: 0 0% 100%;
-    --danger-light: 359 97% 20%;
 
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-    --shadow: 0 4px 15px -1px rgb(0 0 0 / 0.5);
-    --shadow-md: 0 8px 30px -4px rgb(0 0 0 / 0.6);
-    --shadow-lg: 0 15px 40px -6px rgb(0 0 0 / 0.8), 0 0 20px rgba(143, 255, 0, 0.05);
-    /* neon subtle glow */
+    /* Shadow Rígida e Discreta (Business Style) */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   }
 
-  /* Maintaining dark class same as root to avoid issues if ThemeProvider forces it */
   .dark {
-    --background: 220 17% 7%;
-    /* #0F1115 */
-    --foreground: 0 0% 98%;
+    --background: 222 47% 11%;
+    /* #0B1120 */
+    --foreground: 210 40% 98%;
 
-    --card: 210 12% 13%;
-    /* #1D2125 */
-    --card-foreground: 0 0% 98%;
+    --card: 217 32% 17%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 210 12% 13%;
-    /* #1D2125 */
-    --popover-foreground: 0 0% 98%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 82 100% 50%;
-    /* #8FFF00 */
-    --primary-foreground: 0 0% 0%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47% 11%;
 
-    --secondary: 210 12% 13%;
-    /* #1D2125 */
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 217 32% 17%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 210 12% 20%;
+    --muted: 217 32% 17%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 82 100% 50%;
-    --accent-foreground: 0 0% 0%;
+    --accent: 217 91% 60%;
+    --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 210 12% 20%;
-    --input: 210 12% 20%;
-    --ring: 82 100% 50%;
-
-    --success: 82 100% 50%;
-    --success-foreground: 0 0% 0%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 48 96% 89%;
-
-    --panel-white: 0 0% 100%;
-    --panel-white-foreground: 220 17% 7%;
+    --border: 217 32% 17%;
+    --input: 217 32% 17%;
+    --ring: 224.3 76.3% 48%;
   }
 }
 
@@ -162,80 +126,61 @@
 
 @layer components {
 
-  /* Metric Cards */
+  /* Metric Cards (Nova versão Clean) */
   .metric-card {
-    @apply bg-card rounded-xl border border-border/40 p-4 md:p-5 transition-all duration-300;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04);
-  }
-
-  .metric-card:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.06);
+    @apply bg-card rounded-lg border border-border p-6 shadow-sm transition-all;
   }
 
   .metric-value {
-    @apply text-2xl font-bold tracking-tight;
+    @apply text-3xl font-bold tracking-tight text-foreground;
   }
 
   .metric-label {
-    @apply text-[11px] font-medium text-muted-foreground uppercase tracking-wider;
+    @apply text-sm font-medium text-muted-foreground;
   }
 
-  /* Premium Button Variants */
-  .btn-premium {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90 font-medium rounded-xl px-6 py-2.5 transition-all duration-200;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04);
-  }
-
-  .btn-premium:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.06);
-  }
-
-  .btn-success {
-    @apply bg-success text-success-foreground hover:bg-success/90 font-medium rounded-xl px-6 py-2.5 transition-all duration-200;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04);
-  }
-
-  /* Data Tables */
+  /* Data Tables (Simplicidade e Respiro) */
   .data-table {
-    @apply w-full border-collapse bg-card rounded-xl overflow-hidden border border-border/40;
+    @apply w-full border-collapse bg-card rounded-lg overflow-hidden border border-border;
   }
 
   .data-table thead {
-    @apply bg-muted/30;
+    @apply bg-muted/50;
   }
 
   .data-table th {
-    @apply px-4 py-3 text-left text-[11px] font-semibold text-muted-foreground uppercase tracking-wider;
+    @apply px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider border-b border-border;
   }
 
   .data-table td {
-    @apply px-4 py-3 text-[13px] font-medium border-b border-border/20;
+    @apply px-6 py-4 text-sm border-b border-border/50 text-foreground/80;
   }
 
   .data-table tr:hover {
-    @apply bg-secondary/30 transition-colors duration-150;
+    @apply bg-muted/30 transition-colors duration-200;
   }
 
-  /* Status Badges */
+  /* Status Badges (Sólidos e Legíveis) */
   .badge-success {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-medium capitalize;
-    background: hsl(152 55% 42% / 0.1);
-    color: hsl(152 55% 42%);
-    border: 1px solid hsl(152 55% 42% / 0.2);
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-success/10 text-success border border-success/20;
   }
 
   .badge-warning {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-medium capitalize;
-    background: hsl(48 96% 53% / 0.1);
-    color: hsl(38 92% 40%);
-    border: 1px solid hsl(48 96% 53% / 0.2);
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-warning/10 text-warning border border-warning/20;
   }
 
   .badge-danger {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-medium capitalize;
-    background: hsl(0 65% 52% / 0.1);
-    color: hsl(0 65% 52%);
-    border: 1px solid hsl(0 65% 52% / 0.2);
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-danger/10 text-danger border border-danger/20;
+  }
+
+  /* Abas Clean */
+  .tab-trigger-clean {
+    @apply h-12 px-0 bg-transparent border-b-2 border-transparent rounded-none font-semibold text-muted-foreground transition-all hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none !important;
+  }
+
+  /* Botões de Sucesso */
+  .btn-success {
+    @apply bg-success hover:bg-success/90 text-white shadow-sm;
   }
 }
 
@@ -244,27 +189,13 @@
     text-wrap: balance;
   }
 
-  /* Apple-style shadows */
-  .apple-shadow {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04);
+  /* Shadow Patterns profissionais */
+  .shadow-soft {
+    box-shadow: var(--shadow);
   }
 
-  .apple-shadow-lg {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.06);
-  }
-
-  .apple-shadow-xl {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), 0 16px 48px rgba(0, 0, 0, 0.08);
-  }
-
-  /* Glass effects */
-  .glass {
-    @apply bg-background/70 backdrop-blur-xl border border-border/50;
-  }
-
-  .glass-card {
-    @apply bg-card/80 backdrop-blur-xl border border-border/40;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  .shadow-strong {
+    box-shadow: var(--shadow-lg);
   }
 }
 
