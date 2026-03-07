@@ -74,7 +74,7 @@ const Layout = ({ children }: LayoutProps) => {
             <div className="p-8 pb-10 flex items-center gap-3">
               <div className="flex-shrink-0 flex items-center justify-center">
                 <img
-                  src="/logo/logo fullbase.png"
+                  src="/images/fullbase_logo.png"
                   alt="FullBase Logo"
                   className="h-10 w-auto object-contain transition-transform duration-300 hover:scale-105"
                 />
@@ -148,7 +148,7 @@ const Layout = ({ children }: LayoutProps) => {
             >
               <div className="flex items-center justify-between px-8 py-8 border-b border-border/60">
                 <div className="flex items-center gap-3">
-                  <img src="/logo/logo fullbase.png" alt="FullBase Logo" className="h-8 w-auto object-contain" />
+                  <img src="/images/fullbase_logo.png" alt="FullBase Logo" className="h-8 w-auto object-contain" />
                 </div>
                 <button onClick={() => setMobileOpen(false)} className="w-10 h-10 flex items-center justify-center rounded-xl bg-muted/30 hover:bg-muted text-foreground transition-colors">
                   <X className="w-5 h-5" />
@@ -193,7 +193,7 @@ const Layout = ({ children }: LayoutProps) => {
                 <Menu className="w-6 h-6" />
               </button>
               <div className="flex items-center gap-2">
-                <img src="/logo/logo fullbase.png" alt="FullBase Logo" className="h-7 w-auto object-contain" />
+                <img src="/images/fullbase_logo.png" alt="FullBase Logo" className="h-7 w-auto object-contain" />
               </div>
               <div className="w-10 h-10 flex items-center justify-center">
                 <NotificationBell />

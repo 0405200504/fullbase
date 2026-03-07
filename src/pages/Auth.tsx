@@ -129,11 +129,11 @@ const Auth = () => {
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center p-6 bg-background transition-colors duration-300">
+      <div className="light min-h-screen flex items-center justify-center p-6 bg-background transition-colors duration-300">
         <div className="w-full max-w-[420px] relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
           {/* Logo Section */}
           <div className="flex flex-col items-center mb-10 text-center">
-            <img src="/logo/logo fullbase.png" alt="FullBase Logo" className="h-10 w-auto object-contain transition-all duration-500 hover:scale-105" />
+            <img src="/images/fullbase_logo.png" alt="FullBase Logo" className="h-10 w-auto object-contain transition-all duration-500 hover:scale-105" />
           </div>
 
           {/* Solid Card */}

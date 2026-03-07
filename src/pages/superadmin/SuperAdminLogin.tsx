@@ -75,7 +75,7 @@ const SuperAdminLogin = () => {
       <div className="rounded-2xl shadow-2xl p-8 border border-primary bg-primary-hover">
         <div className="text-center mb-10">
           <div className="flex justify-center mb-8">
-            <img alt="FullBase Logo" className="h-14 w-auto object-contain" src="/logo/logo fullbase.png" />
+            <img alt="FullBase Logo" className="h-14 w-auto object-contain" src="/images/fullbase_logo.png" />
           </div>
           <h1 className="text-2xl font-black tracking-tight text-white mb-1">Super Admin</h1>
           <p className="text-primary-foreground/60 text-sm font-medium">Acesso Restrito ao Sistema</p>

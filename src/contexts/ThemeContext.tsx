@@ -12,7 +12,8 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [theme, setTheme] = useState<Theme>(() => {
     const stored = localStorage.getItem("highleads-theme");
-    return (stored === "dark" ? "dark" : "light") as Theme;
+    if (stored) return (stored === "dark" ? "dark" : "light") as Theme;
+    return "dark"; // Default to dark
   });
 
   useEffect(() => {
