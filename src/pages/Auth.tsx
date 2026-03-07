@@ -41,8 +41,13 @@ export default function Auth() {
   const navigate = useNavigate();
   // PWA Install Prompt State
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isIOS, setIsIOS] = useState(false);
 
   useEffect(() => {
+    // Check if device is iOS
+    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    setIsIOS(isIOSDevice);
+
     const handleBeforeInstallPrompt = (e: Event) => {
       // Prevent the mini-infobar from appearing on mobile
       e.preventDefault();
@@ -160,17 +165,20 @@ export default function Auth() {
       <div className="light min-h-screen flex items-center justify-center p-6 bg-background transition-colors duration-300">
         <div className="w-full max-w-[420px] relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
           {/* Logo Section */}
-          <div className="flex flex-col items-center mb-10 text-center relative">
-            <img src="/images/fullbase_logo.png" alt="FullBase Logo" className="h-10 w-auto object-contain transition-all duration-500 hover:scale-105" />
-            {deferredPrompt && (
+          <div className="flex flex-col items-center mb-10 text-center">
+            <img src="/images/fullbase_logo.png" alt="FullBase Logo" className="h-10 w-auto object-contain transition-all duration-500 hover:scale-105 mb-4" />
+
+            {(deferredPrompt || isIOS) && (
               <Button
                 variant="outline"
                 size="sm"
-                onClick={handleInstallClick}
-                className="absolute -right-4 top-0 bg-primary/10 hover:bg-primary/20 text-primary border-primary/20 rounded-full shadow-sm animate-in fade-in zoom-in duration-500"
+                onClick={isIOS ? () => toast.info("Para salvar como App no iPhone:\n1. Toque no ícone de 'Compartilhar' (seta para cima embaixo)\n2. Role para baixo e toque em 'Adicionar à Tela de Início'.", {
+                  duration: 6000,
+                }) : handleInstallClick}
+                className="bg-primary/10 hover:bg-primary/20 text-primary border-primary/20 rounded-full shadow-sm animate-in fade-in zoom-in duration-700"
               >
-                <Download className="w-4 h-4 mr-2" />
-                Baixar App
+                <Download className="w-4 h-4 mr-2 text-primary" />
+                {isIOS ? "Instalar App por aqui" : "Baixar Aplicativo"}
               </Button>
             )}
           </div>
