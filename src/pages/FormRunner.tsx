@@ -456,8 +456,13 @@ const FormRunner = () => {
   // ===== WELCOME SCREEN =====
   if (hasWelcome) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6" style={{ backgroundColor: theme.bgColor, backgroundImage: form.background_image ? `url(${form.background_image})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center', ...containerFontStyle }}>
-        {form.background_image && <div className="fixed inset-0 z-0" style={{ backgroundColor: `rgba(0,0,0,${overlayOpacity})` }} />}
+      <div className="min-h-screen flex flex-col items-center justify-center p-6" style={{ backgroundColor: theme.bgColor, ...containerFontStyle }}>
+        {form.background_image && (
+          <>
+            <img src={form.background_image} alt="" loading="eager" className="fixed inset-0 w-full h-full object-cover -z-10" />
+            <div className="fixed inset-0 z-0" style={{ backgroundColor: `rgba(0,0,0,${overlayOpacity})` }} />
+          </>
+        )}
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-lg relative z-10 space-y-6">
           {welcomeScreen.imageUrl && <img src={welcomeScreen.imageUrl} alt="" className="max-h-48 mx-auto rounded-2xl object-cover" />}
           {form.logo && (form.logo as any).url && <img src={(form.logo as any).url} alt="Logo" className="h-10 mx-auto" />}
@@ -478,8 +483,13 @@ const FormRunner = () => {
     const tyLogo = ts?.logoUrl || (form.logo && (form.logo as any).url);
     const endingFontClass = getFontSizeClass(ts?.fontSize);
     return (
-      <div className="min-h-screen flex items-center justify-center p-6" style={{ backgroundColor: theme.bgColor, backgroundImage: tyBg ? `url(${tyBg})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center', ...containerFontStyle }}>
-        {tyBg && <div className="fixed inset-0" style={{ backgroundColor: `rgba(0,0,0,${overlayOpacity})` }} />}
+      <div className="min-h-screen flex items-center justify-center p-6" style={{ backgroundColor: theme.bgColor, ...containerFontStyle }}>
+        {tyBg && (
+          <>
+            <img src={tyBg} alt="" loading="eager" className="fixed inset-0 w-full h-full object-cover -z-10" />
+            <div className="fixed inset-0 z-0" style={{ backgroundColor: `rgba(0,0,0,${overlayOpacity})` }} />
+          </>
+        )}
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center max-w-lg relative z-10">
           {tyLogo && <img src={tyLogo} alt="Logo" className="h-12 mx-auto mb-8" />}
           <h1 className={cn("font-bold mb-4", endingFontClass)} style={txtStyle}>{renderBoldText(ts?.text || "Obrigado!")}</h1>
@@ -502,8 +512,13 @@ const FormRunner = () => {
   const inputPlaceholder: Record<string, string> = { SHORT_TEXT: "Digite sua resposta...", LONG_TEXT: "Digite sua resposta...", NUMBER: "0", EMAIL: "email@exemplo.com", DATE: "dd/mm/aaaa" };
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: theme.bgColor, backgroundImage: form.background_image ? `url(${form.background_image})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center', ...containerFontStyle }}>
-      {form.background_image && <div className="fixed inset-0 z-0" style={{ backgroundColor: `rgba(0,0,0,${overlayOpacity})` }} />}
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: theme.bgColor, ...containerFontStyle }}>
+      {form.background_image && (
+        <>
+          <img src={form.background_image} alt="" loading="eager" className="fixed inset-0 w-full h-full object-cover -z-10" />
+          <div className="fixed inset-0 z-0" style={{ backgroundColor: `rgba(0,0,0,${overlayOpacity})` }} />
+        </>
+      )}
 
       {/* Progress bar - always visible, safe area aware */}
       <div className="fixed top-0 left-0 right-0 h-1.5 z-50" style={{ backgroundColor: `${progressColor}20` }}>
