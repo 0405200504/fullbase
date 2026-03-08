@@ -459,7 +459,7 @@ const FormRunner = () => {
       <div className="min-h-screen flex flex-col items-center justify-center p-6" style={{ backgroundColor: theme.bgColor, ...containerFontStyle }}>
         {form.background_image && (
           <>
-            <img src={form.background_image} alt="" loading="eager" className="fixed inset-0 w-full h-full object-cover -z-10" />
+            <img src={form.background_image} alt="" loading="eager" className="fixed inset-0 w-full h-full object-cover z-0" />
             <div className="fixed inset-0 z-0" style={{ backgroundColor: `rgba(0,0,0,${overlayOpacity})` }} />
           </>
         )}
@@ -486,7 +486,7 @@ const FormRunner = () => {
       <div className="min-h-screen flex items-center justify-center p-6" style={{ backgroundColor: theme.bgColor, ...containerFontStyle }}>
         {tyBg && (
           <>
-            <img src={tyBg} alt="" loading="eager" className="fixed inset-0 w-full h-full object-cover -z-10" />
+            <img src={tyBg} alt="" loading="eager" className="fixed inset-0 w-full h-full object-cover z-0" />
             <div className="fixed inset-0 z-0" style={{ backgroundColor: `rgba(0,0,0,${overlayOpacity})` }} />
           </>
         )}
@@ -515,7 +515,7 @@ const FormRunner = () => {
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: theme.bgColor, ...containerFontStyle }}>
       {form.background_image && (
         <>
-          <img src={form.background_image} alt="" loading="eager" className="fixed inset-0 w-full h-full object-cover -z-10" />
+          <img src={form.background_image} alt="" loading="eager" className="fixed inset-0 w-full h-full object-cover z-0" />
           <div className="fixed inset-0 z-0" style={{ backgroundColor: `rgba(0,0,0,${overlayOpacity})` }} />
         </>
       )}
