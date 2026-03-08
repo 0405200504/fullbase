@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FONT_OPTIONS } from "@/types/formBuilder";
@@ -73,7 +74,24 @@ const loadGoogleFont = (fontFamily?: string) => {
 
 const FormRunner = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { data: formData, isLoading } = useFormBySlug(slug);
+  const { data: formData, isLoading } = useQuery({
+    queryKey: ["form-by-slug", slug],
+    queryFn: async () => {
+      if (!slug) return null;
+      const { data, error } = await supabase
+        .from("forms")
+        .select("*")
+        .eq("slug", slug)
+        .eq("active", true)
+        .limit(1)
+        .single();
+      if (error) throw error;
+      return data as unknown as FormData;
+    },
+    enabled: !!slug,
+    staleTime: 1000 * 60 * 10, // 10 minutes cache
+    gcTime: 1000 * 60 * 30, // 30 minutes garbage collection
+  });
   const submitResponse = useSubmitFormResponse();
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -245,7 +263,7 @@ const FormRunner = () => {
 
   useEffect(() => {
     if (slug) {
-      (supabase.rpc as any)("increment_form_views", { form_slug: slug }).then(() => {});
+      (supabase.rpc as any)("increment_form_views", { form_slug: slug }).then(() => { });
     }
   }, [slug]);
 
@@ -267,16 +285,16 @@ const FormRunner = () => {
   }, [fieldMappings]);
 
   const VALID_DDDS = new Set([
-    "11","12","13","14","15","16","17","18","19",
-    "21","22","24","27","28",
-    "31","32","33","34","35","37","38",
-    "41","42","43","44","45","46",
-    "47","48","49",
-    "51","53","54","55",
-    "61","62","63","64","65","66","67","68","69",
-    "71","73","74","75","77","79",
-    "81","82","83","84","85","86","87","88","89",
-    "91","92","93","94","95","96","97","98","99"
+    "11", "12", "13", "14", "15", "16", "17", "18", "19",
+    "21", "22", "24", "27", "28",
+    "31", "32", "33", "34", "35", "37", "38",
+    "41", "42", "43", "44", "45", "46",
+    "47", "48", "49",
+    "51", "53", "54", "55",
+    "61", "62", "63", "64", "65", "66", "67", "68", "69",
+    "71", "73", "74", "75", "77", "79",
+    "81", "82", "83", "84", "85", "86", "87", "88", "89",
+    "91", "92", "93", "94", "95", "96", "97", "98", "99"
   ]);
 
   const formatPhoneDisplay = (raw: string) => {
@@ -409,7 +427,25 @@ const FormRunner = () => {
     }, 300);
   }, [currentIndex, answers, questions.length, attemptEarlySave, submitFinalResponse]);
 
-  if (isLoading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>;
+  if (isLoading) return (
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-[#0a0a0a]">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="space-y-4 text-center"
+      >
+        <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center mx-auto mb-4 overflow-hidden relative">
+          <motion.div
+            className="absolute inset-0 bg-primary/40"
+            animate={{ top: ["100%", "0%", "100%"] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <span className="relative z-10 text-primary font-bold">f</span>
+        </div>
+        <p className="text-[13px] font-medium text-muted-foreground animate-pulse">Carregando formulário...</p>
+      </motion.div>
+    </div>
+  );
 
   if (!form || questions.length === 0) return (
     <div className="min-h-screen flex items-center justify-center bg-background"><p className="text-muted-foreground text-[14px]">Formulário não encontrado</p></div>
@@ -468,7 +504,7 @@ const FormRunner = () => {
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: theme.bgColor, backgroundImage: form.background_image ? `url(${form.background_image})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center', ...containerFontStyle }}>
       {form.background_image && <div className="fixed inset-0 z-0" style={{ backgroundColor: `rgba(0,0,0,${overlayOpacity})` }} />}
-      
+
       {/* Progress bar - always visible, safe area aware */}
       <div className="fixed top-0 left-0 right-0 h-1.5 z-50" style={{ backgroundColor: `${progressColor}20` }}>
         <motion.div className="h-full rounded-r-full" style={{ backgroundColor: progressColor }} animate={{ width: `${progress}%` }} transition={{ duration: 0.3 }} />
@@ -531,7 +567,7 @@ const FormRunner = () => {
 
               {isText && currentQuestion.type !== "LONG_TEXT" && (
                 <div className="mt-6">
-                   <input
+                  <input
                     type={inputType[currentQuestion.type] || "text"}
                     value={textValue}
                     onChange={e => { setTextValue(e.target.value); setValidationError(""); }}
@@ -566,11 +602,11 @@ const FormRunner = () => {
                     const letter = String.fromCharCode(65 + i);
                     const isSelected = isMultiple ? selectedChoices.includes(opt) : selectedSingle === opt;
                     return (
-                      <button key={i} onClick={() => toggleChoice(currentQuestion.id, opt, isMultiple)} className="w-full flex items-center gap-3 px-5 py-3.5 rounded-xl border-2 text-left transition-all text-[14px] font-medium" style={{ 
-                        borderColor: isSelected ? (theme.buttonBorderColor || theme.buttonColor) : `${theme.textColor}15`, 
-                        backgroundColor: isSelected ? `${theme.buttonColor}10` : (theme.optionBgColor || 'transparent'), 
-                        ...(theme.textShadow ? { textShadow: '0 2px 8px rgba(0,0,0,0.5)' } : {}), 
-                        color: theme.textColor 
+                      <button key={i} onClick={() => toggleChoice(currentQuestion.id, opt, isMultiple)} className="w-full flex items-center gap-3 px-5 py-3.5 rounded-xl border-2 text-left transition-all text-[14px] font-medium" style={{
+                        borderColor: isSelected ? (theme.buttonBorderColor || theme.buttonColor) : `${theme.textColor}15`,
+                        backgroundColor: isSelected ? `${theme.buttonColor}10` : (theme.optionBgColor || 'transparent'),
+                        ...(theme.textShadow ? { textShadow: '0 2px 8px rgba(0,0,0,0.5)' } : {}),
+                        color: theme.textColor
                       }}>
                         <span className="w-6 h-6 rounded-md flex items-center justify-center text-[11px] font-bold border" style={{ borderColor: isSelected ? (theme.buttonBorderColor || theme.buttonColor) : `${theme.textColor}30`, backgroundColor: isSelected ? theme.buttonColor : 'transparent', color: isSelected ? '#fff' : theme.textColor }}>{isSelected ? <Check className="w-3.5 h-3.5" /> : letter}</span>
                         <span>{renderBoldText(opt)}</span>

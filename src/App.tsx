@@ -108,7 +108,23 @@ const AppRoutes = () => {
         <Route path="/checkout/success" element={<motion.div initial="initial" animate="in" exit="out" variants={pageVariants} transition={pageTransition}><Suspense fallback={<DashboardSkeleton />}><CheckoutSuccess /></Suspense></motion.div>} />
 
         {/* Form Runner (public) */}
-        <Route path="/f/:slug" element={<motion.div initial="initial" animate="in" exit="out" variants={pageVariants} transition={pageTransition}><Suspense fallback={<div className="min-h-screen" />}><FormRunner /></Suspense></motion.div>} />
+        <Route path="/f/:slug" element={
+          <motion.div initial="initial" animate="in" exit="out" variants={pageVariants} transition={pageTransition}>
+            <Suspense fallback={
+              <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
+                <div className="w-16 h-1 bg-primary/20 rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-primary"
+                    animate={{ x: ["-100%", "100%"] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                  />
+                </div>
+              </div>
+            }>
+              <FormRunner />
+            </Suspense>
+          </motion.div>
+        } />
 
         {/* Subscription */}
         <Route path="/subscription" element={<ProtectedRoute><Layout><AnimatedPage skeleton={<CardGridSkeleton cards={3} />}><Subscription /></AnimatedPage></Layout></ProtectedRoute>} />
