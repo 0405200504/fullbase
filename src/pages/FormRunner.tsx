@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FONT_OPTIONS } from "@/types/formBuilder";
-import { useFormBySlug, useSubmitFormResponse } from "@/hooks/useForms";
+import { useSubmitFormResponse, type FormData as FormDataType } from "@/hooks/useForms";
 import { supabase } from "@/integrations/supabase/client";
 import { Check, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -86,7 +86,7 @@ const FormRunner = () => {
         .limit(1)
         .single();
       if (error) throw error;
-      return data as unknown as FormData;
+      return data as unknown as FormDataType;
     },
     enabled: !!slug,
     staleTime: 1000 * 60 * 10, // 10 minutes cache
