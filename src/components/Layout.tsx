@@ -203,8 +203,7 @@ const Layout = ({ children }: LayoutProps) => {
 
           <div
             className={cn(
-              "flex-1 px-4 pb-20 md:px-10 md:pb-12 max-w-7xl mx-auto w-full",
-              !isMobile && "pt-12"
+              "flex-1 px-4 pb-20 md:px-10 md:pb-12 max-w-7xl mx-auto w-full pt-8 md:pt-12",
             )}
           >
             {children}
