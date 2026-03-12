@@ -651,7 +651,48 @@ const FormEditor = ({ formId, onBack }: { formId: string; onBack: () => void }) 
   }, []);
 
   const removeOption = useCallback((qId: string, index: number) => {
-    setForm(prev => ({ ...prev, questions: prev.questions.map(q => q.id === qId ? { ...q, options: q.options.filter((_, i) => i !== index) } : q) }));
+    setForm(prev => ({
+      ...prev,
+      questions: prev.questions.map(q => {
+        if (q.id === qId) {
+          const newOptions = q.options.filter((_, i) => i !== index);
+          const newRedirects = { ...q.optionRedirects };
+          delete newRedirects[index.toString()];
+          
+          // Re-map indices for redirects after deletion
+          const processedRedirects: Record<string, string> = {};
+          Object.entries(newRedirects).forEach(([idx, url]) => {
+            const i = parseInt(idx);
+            if (i > index) {
+              processedRedirects[(i - 1).toString()] = url;
+            } else {
+              processedRedirects[idx] = url;
+            }
+          });
+
+          return { ...q, options: newOptions, optionRedirects: processedRedirects };
+        }
+        return q;
+      })
+    }));
+  }, []);
+
+  const updateOptionRedirect = useCallback((qId: string, index: number, url: string) => {
+    setForm(prev => ({
+      ...prev,
+      questions: prev.questions.map(q => {
+        if (q.id === qId) {
+          const newRedirects = { ...(q.optionRedirects || {}) };
+          if (url) {
+            newRedirects[index.toString()] = url;
+          } else {
+            delete newRedirects[index.toString()];
+          }
+          return { ...q, optionRedirects: newRedirects };
+        }
+        return q;
+      })
+    }));
   }, []);
 
   const setFieldMapping = useCallback((questionId: string, target: string, customLabel?: string) => {
@@ -798,12 +839,23 @@ const FormEditor = ({ formId, onBack }: { formId: string; onBack: () => void }) 
                         <div><Label className="text-[12px]">Opções</Label>
                           <div className="space-y-1.5 mt-2">
                             {selectedQuestion.options.map((opt, i) => (
-                              <div key={i} className="flex items-center gap-1.5">
-                                <Input value={opt} onChange={e => updateOption(selectedQuestion.id, i, e.target.value)} className="flex-1 h-8 text-[12px]" />
-                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-destructive" onClick={() => removeOption(selectedQuestion.id, i)} disabled={selectedQuestion.options.length <= 1}><Trash2 className="w-3 h-3" /></Button>
+                              <div key={i} className="space-y-1">
+                                <div className="flex items-center gap-1.5">
+                                  <Input value={opt} onChange={e => updateOption(selectedQuestion.id, i, e.target.value)} className="flex-1 h-8 text-[12px]" />
+                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-destructive" onClick={() => removeOption(selectedQuestion.id, i)} disabled={selectedQuestion.options.length <= 1}><Trash2 className="w-3 h-3" /></Button>
+                                </div>
+                                <div className="flex items-center gap-1.5 px-1">
+                                  <ExternalLink className="w-2.5 h-2.5 text-muted-foreground" />
+                                  <Input 
+                                    value={selectedQuestion.optionRedirects?.[i.toString()] || ""} 
+                                    onChange={e => updateOptionRedirect(selectedQuestion.id, i, e.target.value)} 
+                                    className="flex-1 h-6 text-[10px] bg-muted/30 border-none px-1" 
+                                    placeholder="Link de redirecionamento (opcional)" 
+                                  />
+                                </div>
                               </div>
                             ))}
-                            <Button variant="outline" size="sm" className="w-full gap-1 text-[11px] h-8" onClick={() => addOption(selectedQuestion.id)}><Plus className="w-3 h-3" /> Opção</Button>
+                            <Button variant="outline" size="sm" className="w-full gap-1 text-[11px] h-8 mt-1" onClick={() => addOption(selectedQuestion.id)}><Plus className="w-3 h-3" /> Opção</Button>
                           </div>
                         </div>
                       )}

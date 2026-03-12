@@ -221,7 +221,37 @@ const FormRunner = () => {
       setSaveState("saved");
       setSaveMessage("Formulário salvo com sucesso");
 
-      // Evaluation of conditional redirection
+      // 1. Check for Per-Option Redirection (Priority)
+      let customRedirectUrl: string | null = null;
+      
+      // Look through all chosen answers to see if any has a redirect URL
+      questions.forEach(q => {
+        const answer = currentAnswers[q.id];
+        if (!answer || !q.optionRedirects) return;
+
+        if (Array.isArray(answer)) {
+          // Multiple choice: find first selected option that has a redirect
+          answer.forEach(val => {
+            const optIdx = q.options.indexOf(val);
+            if (optIdx !== -1 && q.optionRedirects[optIdx.toString()]) {
+              customRedirectUrl = q.optionRedirects[optIdx.toString()];
+            }
+          });
+        } else {
+          // Single choice: check selected option
+          const optIdx = q.options.indexOf(answer);
+          if (optIdx !== -1 && q.optionRedirects[optIdx.toString()]) {
+            customRedirectUrl = q.optionRedirects[optIdx.toString()];
+          }
+        }
+      });
+
+      if (customRedirectUrl) {
+        window.location.href = customRedirectUrl;
+        return;
+      }
+
+      // 2. Evaluation of global conditional redirection (Fallback)
       const lq = (form as any).lead_qualification;
       if (lq?.conditionalRedirectEnabled && lq.conditionField && lq.conditionOperator && lq.conditionValue && lq.successRedirectUrl) {
         const valueStr = mappedData[lq.conditionField];
@@ -247,7 +277,7 @@ const FormRunner = () => {
       setSaveState("error");
       setSaveMessage(error?.message || "Erro ao finalizar envio");
     }
-  }, [form, buildMappedData, buildFinalAnswers, earlyResponseId, submitResponse]);
+  }, [form, questions, buildMappedData, buildFinalAnswers, earlyResponseId, submitResponse]);
 
   // Dynamic theme-color meta tag based on form button color
   useEffect(() => {

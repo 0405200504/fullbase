@@ -31,6 +31,7 @@ export interface FormQuestion {
   description?: string;
   required: boolean;
   options: string[];
+  optionRedirects?: Record<string, string>; // Maps option index as string to redirect URL
 }
 
 export type FormFontFamily = 'inter' | 'poppins' | 'montserrat' | 'playfair' | 'roboto' | 'raleway' | 'oswald' | 'lato' | 'dm-sans' | 'space-grotesk';
