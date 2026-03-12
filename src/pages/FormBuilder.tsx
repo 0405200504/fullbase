@@ -909,6 +909,98 @@ const FormEditor = ({ formId, onBack }: { formId: string; onBack: () => void }) 
                           Todas as respostas serão salvas como lead automaticamente (desde que tenham nome ou e-mail ou telefone mapeados).
                         </p>
                       )}
+
+                      {/* Conditional Redirection */}
+                      <div className="pt-3 border-t border-border/10 space-y-3">
+                        <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Redirecionamento Inteligente</p>
+                        <p className="text-[10px] text-muted-foreground">Encaminhe o usuário para um link diferente com base no valor de uma resposta (ex: Renda {">"} 5000).</p>
+                        
+                        <div className="flex items-center justify-between">
+                          <Label className="text-[12px]">Ativar redirecionamento condicional</Label>
+                          <Switch 
+                            checked={form.leadQualification.conditionalRedirectEnabled || false} 
+                            onCheckedChange={v => setForm(prev => ({ 
+                              ...prev, 
+                              leadQualification: { ...prev.leadQualification, conditionalRedirectEnabled: v } 
+                            }))} 
+                          />
+                        </div>
+
+                        {form.leadQualification.conditionalRedirectEnabled && (
+                          <div className="space-y-3 p-3 bg-muted/30 rounded-lg border border-border/40">
+                            <div className="space-y-1.5">
+                              <Label className="text-[11px]">Se o campo...</Label>
+                              <Select 
+                                value={form.leadQualification.conditionField || ""} 
+                                onValueChange={v => setForm(prev => ({ 
+                                  ...prev, 
+                                  leadQualification: { ...prev.leadQualification, conditionField: v as any } 
+                                }))}
+                              >
+                                <SelectTrigger className="h-8 text-[11px]">
+                                  <SelectValue placeholder="Selecione um campo mapeado" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {form.fieldMappings.filter(m => m.target !== 'custom').map(m => (
+                                    <SelectItem key={m.target} value={m.target}>
+                                      {FIELD_MAPPING_PRESETS.find(p => p.value === m.target)?.label || m.target}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-2">
+                              <div className="space-y-1.5">
+                                <Label className="text-[11px]">For...</Label>
+                                <Select 
+                                  value={form.leadQualification.conditionOperator || "greater_than"} 
+                                  onValueChange={v => setForm(prev => ({ 
+                                    ...prev, 
+                                    leadQualification: { ...prev.leadQualification, conditionOperator: v as any } 
+                                  }))}
+                                >
+                                  <SelectTrigger className="h-8 text-[11px]">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="greater_than">Maior que ({">"})</SelectItem>
+                                    <SelectItem value="less_than">Menor que ({"<"})</SelectItem>
+                                    <SelectItem value="equal">Igual (==)</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              <div className="space-y-1.5">
+                                <Label className="text-[11px]">Valor</Label>
+                                <Input 
+                                  type="number"
+                                  value={form.leadQualification.conditionValue || ""} 
+                                  onChange={e => setForm(prev => ({ 
+                                    ...prev, 
+                                    leadQualification: { ...prev.leadQualification, conditionValue: e.target.value } 
+                                  }))}
+                                  className="h-8 text-[11px]" 
+                                  placeholder="Ex: 5000" 
+                                />
+                              </div>
+                            </div>
+
+                            <div className="space-y-1.5 pt-1">
+                              <Label className="text-[11px] font-bold text-primary">Redirecionar para:</Label>
+                              <Input 
+                                value={form.leadQualification.successRedirectUrl || ""} 
+                                onChange={e => setForm(prev => ({ 
+                                  ...prev, 
+                                  leadQualification: { ...prev.leadQualification, successRedirectUrl: e.target.value } 
+                                }))}
+                                className="h-8 text-[11px] border-primary/20" 
+                                placeholder="https://calendly.com/seu-link" 
+                              />
+                              <p className="text-[9px] text-muted-foreground">Link do seu calendário ou página de vendas VIP.</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )}
 

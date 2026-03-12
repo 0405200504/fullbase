@@ -220,6 +220,27 @@ const FormRunner = () => {
 
       setSaveState("saved");
       setSaveMessage("Formulário salvo com sucesso");
+
+      // Evaluation of conditional redirection
+      const lq = (form as any).lead_qualification;
+      if (lq?.conditionalRedirectEnabled && lq.conditionField && lq.conditionOperator && lq.conditionValue && lq.successRedirectUrl) {
+        const valueStr = mappedData[lq.conditionField];
+        const numericValue = Number(valueStr);
+        const threshold = Number(lq.conditionValue);
+        
+        if (!isNaN(numericValue) && !isNaN(threshold)) {
+          let met = false;
+          if (lq.conditionOperator === 'greater_than') met = numericValue > threshold;
+          else if (lq.conditionOperator === 'less_than') met = numericValue < threshold;
+          else if (lq.conditionOperator === 'equal') met = numericValue === threshold;
+
+          if (met) {
+            window.location.href = lq.successRedirectUrl;
+            return;
+          }
+        }
+      }
+
       setCompleted(true);
     } catch (error: any) {
       console.error("Erro ao finalizar envio:", error);

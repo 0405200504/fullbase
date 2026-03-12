@@ -83,6 +83,12 @@ export interface FormThankYouScreen {
 export interface LeadQualification {
   enabled: boolean; // If false, always create lead
   requiredFields: FieldMappingTarget[]; // Which mapped fields must be present
+  // New conditional logic fields
+  conditionalRedirectEnabled?: boolean;
+  conditionField?: FieldMappingTarget; // e.g. 'renda_mensal'
+  conditionOperator?: 'greater_than' | 'less_than' | 'equal';
+  conditionValue?: string; // numeric value as string
+  successRedirectUrl?: string; // URL if condition met
 }
 
 export interface FormWelcomeScreen {
