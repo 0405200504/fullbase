@@ -313,13 +313,24 @@ const FormResponsesView = ({ formId, onBack }: { formId: string; onBack: () => v
 
   const handleDeleteResponse = async (id: string) => {
     if (!window.confirm("Tem certeza que deseja excluir esta resposta? Esta ação não pode ser desfeita.")) return;
-    deleteResponse.mutate(id, {
-      onSuccess: () => {
-        if (currentIndex >= responses.length - 1) {
-          setCurrentIndex(Math.max(0, responses.length - 2));
-        }
-      }
+    
+    const promise = deleteResponse.mutateAsync(id);
+    
+    toast.promise(promise, {
+      loading: 'Excluindo resposta...',
+      success: 'Resposta excluída!',
+      error: 'Erro ao excluir'
     });
+
+    try {
+      await promise;
+      // Adjust index if we deleted the last item
+      if (currentIndex >= responses.length - 1) {
+        setCurrentIndex(Math.max(0, responses.length - 2));
+      }
+    } catch (e) {
+      // Error handled by toast.promise
+    }
   };
 
   const questions = (form?.questions || []) as any[];
@@ -463,93 +474,109 @@ const FormResponsesView = ({ formId, onBack }: { formId: string; onBack: () => v
       ) : (
         <div className="space-y-4 max-w-2xl mx-auto">
           <div className="flex items-center justify-between bg-background p-4 rounded-xl border border-border/40 shadow-sm sticky top-0 z-10">
-            <div className="flex items-center gap-4">
-              <Button 
-                variant="outline" 
-                size="icon" 
-                className="h-8 w-8" 
-                onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))} 
-                disabled={currentIndex === 0}
-              >
-                <ArrowLeft className="w-4 h-4" />
-              </Button>
-              <div className="text-center">
-                <p className="text-[13px] font-bold">{currentIndex + 1} de {responses.length}</p>
-                <p className="text-[10px] text-muted-foreground uppercase tracking-widest">RESPOSTA</p>
-              </div>
-              <Button 
-                variant="outline" 
-                size="icon" 
-                className="h-8 w-8" 
-                onClick={() => setCurrentIndex(prev => Math.min(responses.length - 1, prev + 1))} 
-                disabled={currentIndex === responses.length - 1}
-              >
-                <ChevronRight className="w-4 h-4" />
-              </Button>
-            </div>
-            <div className="text-right flex items-center gap-2">
-              <div>
-                <p className="text-[11px] font-medium">{format(new Date(currentResponse.created_at), "dd 'de' MMMM, HH:mm")}</p>
-                <Badge className="text-[9px] h-5 bg-primary/10 text-primary border-primary/20">#{responses.length - currentIndex}</Badge>
-              </div>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-8 w-8 text-destructive hover:bg-destructive/10" 
-                onClick={() => handleDeleteResponse(currentResponse.id)}
-                disabled={deleteResponse.isPending}
-              >
-                {deleteResponse.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-              </Button>
-            </div>
+            {currentResponse ? (
+              <>
+                <div className="flex items-center gap-4">
+                  <Button 
+                    variant="outline" 
+                    size="icon" 
+                    className="h-8 w-8" 
+                    onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))} 
+                    disabled={currentIndex === 0}
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                  </Button>
+                  <div className="text-center">
+                    <p className="text-[13px] font-bold">{currentIndex + 1} de {responses.length}</p>
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-widest">RESPOSTA</p>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    size="icon" 
+                    className="h-8 w-8" 
+                    onClick={() => setCurrentIndex(prev => Math.min(responses.length - 1, prev + 1))} 
+                    disabled={currentIndex === responses.length - 1}
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                </div>
+                <div className="text-right flex items-center gap-2">
+                  <div>
+                    <p className="text-[11px] font-medium">{format(new Date(currentResponse.created_at), "dd 'de' MMMM, HH:mm")}</p>
+                    <Badge className="text-[9px] h-5 bg-primary/10 text-primary border-primary/20">#{responses.length - currentIndex}</Badge>
+                  </div>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 text-destructive hover:bg-destructive/10" 
+                    onClick={() => handleDeleteResponse(currentResponse.id)}
+                    disabled={deleteResponse.isPending}
+                  >
+                    {deleteResponse.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <div className="w-full text-center py-2 text-[12px] text-muted-foreground">Nenhuma resposta disponível</div>
+            )}
           </div>
 
           <div className="space-y-3">
-            {questions.map((q, idx) => {
-              const rAnswers = Array.isArray(currentResponse?.answers) ? currentResponse.answers : [];
-              const ans = rAnswers.find((a: any) => a.questionId === q.id) as any;
-              const value = ans?.value;
-              return (
-                <Card key={q.id} className="border-border/40 overflow-hidden group hover:border-primary/20 transition-colors">
-                  <div className="px-4 py-3 bg-muted/10 border-b border-border/10 flex items-center justify-between">
-                    <p className="text-[11px] font-bold text-muted-foreground uppercase">{idx + 1}. {q.title}</p>
-                    <Badge variant="outline" className="text-[8px] h-4">{questionTypeLabels[q.type as QuestionType]?.label}</Badge>
-                  </div>
-                  <CardContent className="p-4">
-                    <div className="text-[14px] font-medium leading-relaxed">
-                      {Array.isArray(value) ? (
-                        <div className="flex flex-wrap gap-1.5">
-                          {value.map((v, vi) => (
-                            <Badge key={vi} variant="secondary" className="bg-primary/5 text-primary border-primary/10 rounded-md font-normal">{v}</Badge>
-                          ))}
-                        </div>
-                      ) : value ? (
-                        <p className="text-foreground">{value}</p>
-                      ) : (
-                        <p className="text-muted-foreground/30 italic font-normal">Não respondida</p>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-            
-            {currentResponse.mapped_data && Object.keys(currentResponse.mapped_data).length > 0 && (
-              <Card className="border-border/40 bg-primary/5 mt-6 border-dashed">
-                <CardHeader className="p-4 pb-2">
-                  <CardTitle className="text-[11px] font-bold uppercase tracking-widest text-primary flex items-center gap-2">
-                    <CheckSquare className="w-3.5 h-3.5" /> Atributos do Lead
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-4 pt-0">
-                  <div className="grid grid-cols-2 gap-3">
-                    {Object.entries(currentResponse.mapped_data).map(([key, val]) => (
-                      <div key={key} className="p-2 rounded bg-background/50 border border-primary/10">
-                        <p className="text-[9px] text-muted-foreground uppercase font-bold">{key.replace(/_/g, ' ')}</p>
-                        <p className="text-[12px] font-medium truncate">{String(val || "—")}</p>
+            {currentResponse ? (
+              <>
+                {questions.map((q, idx) => {
+                  const rAnswers = Array.isArray(currentResponse?.answers) ? currentResponse.answers : [];
+                  const ans = rAnswers.find((a: any) => a.questionId === q.id) as any;
+                  const value = ans?.value;
+                  return (
+                    <Card key={q.id} className="border-border/40 overflow-hidden group hover:border-primary/20 transition-colors">
+                      <div className="px-4 py-3 bg-muted/10 border-b border-border/10 flex items-center justify-between">
+                        <p className="text-[11px] font-bold text-muted-foreground uppercase">{idx + 1}. {q.title}</p>
+                        <Badge variant="outline" className="text-[8px] h-4">{questionTypeLabels[q.type as QuestionType]?.label}</Badge>
                       </div>
-                    ))}
-                  </div>
+                      <CardContent className="p-4">
+                        <div className="text-[14px] font-medium leading-relaxed">
+                          {Array.isArray(value) ? (
+                            <div className="flex flex-wrap gap-1.5">
+                              {value.map((v, vi) => (
+                                <Badge key={vi} variant="secondary" className="bg-primary/5 text-primary border-primary/10 rounded-md font-normal">{v}</Badge>
+                              ))}
+                            </div>
+                          ) : value ? (
+                            <p className="text-foreground">{value}</p>
+                          ) : (
+                            <p className="text-muted-foreground/30 italic font-normal">Não respondida</p>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+                
+                {currentResponse.mapped_data && Object.keys(currentResponse.mapped_data).length > 0 && (
+                  <Card className="border-border/40 bg-primary/5 mt-6 border-dashed">
+                    <CardHeader className="p-4 pb-2">
+                      <CardTitle className="text-[11px] font-bold uppercase tracking-widest text-primary flex items-center gap-2">
+                        <CheckSquare className="w-3.5 h-3.5" /> Atributos do Lead
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-4 pt-0">
+                      <div className="grid grid-cols-2 gap-3">
+                        {Object.entries(currentResponse.mapped_data).map(([key, val]) => (
+                          <div key={key} className="p-2 rounded bg-background/50 border border-primary/10">
+                            <p className="text-[9px] text-muted-foreground uppercase font-bold">{key.replace(/_/g, ' ')}</p>
+                            <p className="text-[12px] font-medium truncate">{String(val || "—")}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </>
+            ) : (
+              <Card className="border-border/40 bg-muted/20">
+                <CardContent className="p-20 text-center">
+                  <p className="text-muted-foreground italic">Nenhuma resposta disponível para exibir.</p>
                 </CardContent>
               </Card>
             )}

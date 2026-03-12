@@ -161,13 +161,17 @@ export const useDeleteFormResponse = () => {
         .delete()
         .eq("id", id);
       if (error) throw error;
+      return id;
     },
-    onSuccess: (_, id) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["form-responses"] });
       queryClient.invalidateQueries({ queryKey: ["forms"] });
-      toast.success("Resposta excluída!");
+      queryClient.invalidateQueries({ queryKey: ["all-form-responses"] });
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => {
+      console.error("Delete response error:", e);
+      toast.error("Erro ao excluir resposta: " + e.message);
+    },
   });
 };
 
