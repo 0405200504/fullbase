@@ -152,6 +152,25 @@ export const useDeleteForms = () => {
   });
 };
 
+export const useDeleteFormResponse = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from("form_responses")
+        .delete()
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: ["form-responses"] });
+      queryClient.invalidateQueries({ queryKey: ["forms"] });
+      toast.success("Resposta excluída!");
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+};
+
 export const useSubmitFormResponse = () => {
   return useMutation({
     mutationFn: async (payload: {

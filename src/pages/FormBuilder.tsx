@@ -13,7 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { Plus, Type, AlignLeft, CircleDot, CheckSquare, Trash2, GripVertical, Copy, ExternalLink, FileText, Monitor, Smartphone, ArrowLeft, Upload, X, Loader2, Hash, Mail, Phone, CalendarDays, Check, Eye, BarChart3, ChevronRight } from "lucide-react";
 import { Form, FormQuestion, QuestionType, FIELD_MAPPING_PRESETS, FONT_OPTIONS } from "@/types/formBuilder";
-import { useForms, useCreateForm, useUpdateForm, useDeleteForms, useFormResponses, FormData } from "@/hooks/useForms";
+import { useForms, useCreateForm, useUpdateForm, useDeleteForms, useFormResponses, useDeleteFormResponse, FormData } from "@/hooks/useForms";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -307,8 +307,20 @@ const FormResponsesView = ({ formId, onBack }: { formId: string; onBack: () => v
   const { data: forms = [] } = useForms();
   const form = forms.find(f => f.id === formId);
   const { data: responses = [], isLoading } = useFormResponses(formId);
+  const deleteResponse = useDeleteFormResponse();
   const [activeTab, setActiveTab] = useState<"summary" | "individual">("summary");
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const handleDeleteResponse = async (id: string) => {
+    if (!window.confirm("Tem certeza que deseja excluir esta resposta? Esta ação não pode ser desfeita.")) return;
+    deleteResponse.mutate(id, {
+      onSuccess: () => {
+        if (currentIndex >= responses.length - 1) {
+          setCurrentIndex(Math.max(0, responses.length - 2));
+        }
+      }
+    });
+  };
 
   const questions = (form?.questions || []) as any[];
 
@@ -475,9 +487,20 @@ const FormResponsesView = ({ formId, onBack }: { formId: string; onBack: () => v
                 <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
-            <div className="text-right">
-              <p className="text-[11px] font-medium">{format(new Date(currentResponse.created_at), "dd 'de' MMMM, HH:mm")}</p>
-              <Badge className="text-[9px] h-5 bg-primary/10 text-primary border-primary/20">#{responses.length - currentIndex}</Badge>
+            <div className="text-right flex items-center gap-2">
+              <div>
+                <p className="text-[11px] font-medium">{format(new Date(currentResponse.created_at), "dd 'de' MMMM, HH:mm")}</p>
+                <Badge className="text-[9px] h-5 bg-primary/10 text-primary border-primary/20">#{responses.length - currentIndex}</Badge>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8 text-destructive hover:bg-destructive/10" 
+                onClick={() => handleDeleteResponse(currentResponse.id)}
+                disabled={deleteResponse.isPending}
+              >
+                {deleteResponse.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+              </Button>
             </div>
           </div>
 
