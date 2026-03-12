@@ -204,10 +204,14 @@ export const useSubmitFormResponse = () => {
 
       let linkedLeadId: string | null = (response as any)?.lead_id || null;
 
+      // Only create/update lead if we have name and phone, AND we haven't already linked a lead for this response
+      // or if we want to ensure information is synced. 
+      // The RPC should ideally be idempotent.
       if (hasNome && hasTelefone) {
         const parseNullableNumber = (value?: string | null) => {
           if (!value) return null;
-          const parsed = Number(String(value).replace(",", "."));
+          const strVal = String(value).replace(/[^\d.,]/g, "").replace(",", ".");
+          const parsed = parseFloat(strVal);
           return Number.isFinite(parsed) ? parsed : null;
         };
 
@@ -226,16 +230,14 @@ export const useSubmitFormResponse = () => {
           }
         );
 
-        if (rpcError) throw rpcError;
-
-        if (leadId) {
+        if (rpcError) {
+          console.error("RPC Error:", rpcError);
+        } else if (leadId) {
           linkedLeadId = leadId;
-          const { error: updateResponseError } = await supabase
+          await supabase
             .from("form_responses")
             .update({ lead_id: leadId } as any)
             .eq("id", (response as any).id);
-
-          if (updateResponseError) throw updateResponseError;
         }
       }
 

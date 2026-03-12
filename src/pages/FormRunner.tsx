@@ -346,7 +346,12 @@ const FormRunner = () => {
     setValidationError("");
   };
 
-  const getPhoneValue = () => `${phoneCountry}${phoneDDD}${phoneNumber}`.replace(/\D/g, '');
+  const getPhoneValue = () => {
+    const raw = `${phoneCountry}${phoneDDD}${phoneNumber}`.replace(/\D/g, '');
+    // Adding a tiny non-breaking space prefix can sometimes help Sheets treat it as text
+    // but for the database we want it clean. For the spreadsheet, we'll handle it in the payload.
+    return raw;
+  };
 
   const goNext = useCallback(async () => {
     if (!currentQuestion) return;
@@ -412,10 +417,23 @@ const FormRunner = () => {
       if (currentQuestion.type === "PHONE") {
         const saved = answers[currentQuestion.id];
         if (typeof saved === "string" && saved) {
-          const parts = saved.split(' ');
-          setPhoneCountry(parts[0] || "+55");
-          setPhoneDDD(parts[1] || "");
-          setPhoneNumber(parts.slice(2).join(' ') || "");
+          // Flexible parsing for both "5511..." and legacy "+55 11 ..."
+          if (saved.startsWith("+") || saved.includes(" ")) {
+            const parts = saved.split(' ');
+            setPhoneCountry(parts[0] || "+55");
+            setPhoneDDD(parts[1] || "");
+            setPhoneNumber(parts.slice(2).join(' ') || "");
+          } else {
+            // New sanitized format: assume first 2 digits are country (55), next 2 are DDD
+            if (saved.length >= 12) {
+              setPhoneCountry("+" + saved.slice(0, 2));
+              setPhoneDDD(saved.slice(2, 4));
+              setPhoneNumber(saved.slice(4));
+            } else {
+              // Fallback
+              setPhoneNumber(saved);
+            }
+          }
         }
       } else if (["SHORT_TEXT", "LONG_TEXT", "NUMBER", "EMAIL", "DATE"].includes(currentQuestion.type)) {
         const saved = answers[currentQuestion.id];
