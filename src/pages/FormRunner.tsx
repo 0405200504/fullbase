@@ -139,7 +139,7 @@ const FormRunner = () => {
   }, [fieldMappings]);
 
   const buildFinalAnswers = useCallback((currentAnswers: Record<string, string | string[]>) => {
-    return questions.map(q => ({ questionId: q.id, value: currentAnswers[q.id] || "" }));
+    return questions.map(q => ({ questionId: q.id, title: q.title, value: currentAnswers[q.id] || "" }));
   }, [questions]);
 
   const attemptEarlySave = useCallback(async (currentAnswers: Record<string, string | string[]>) => {
