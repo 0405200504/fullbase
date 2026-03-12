@@ -18,6 +18,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 import {
   DndContext,
   closestCenter,
@@ -306,77 +307,139 @@ const FormResponsesView = ({ formId, onBack }: { formId: string; onBack: () => v
   const { data: forms = [] } = useForms();
   const form = forms.find(f => f.id === formId);
   const { data: responses = [], isLoading } = useFormResponses(formId);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"summary" | "individual">("summary");
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const questions = (form?.questions || []) as any[];
 
+  // Data aggregation for charts
+  const getQuestionStats = (qId: string, options: string[]) => {
+    const stats: Record<string, number> = {};
+    options.forEach(opt => stats[opt] = 0);
+    
+    responses.forEach((r: any) => {
+      const rAnswers = Array.isArray(r.answers) ? r.answers : [];
+      const ans = rAnswers.find((a: any) => a.questionId === qId);
+      if (ans && ans.value) {
+        if (Array.isArray(ans.value)) {
+          ans.value.forEach((v: string) => {
+            if (options.includes(v)) stats[v] = (stats[v] || 0) + 1;
+          });
+        } else if (options.includes(ans.value)) {
+          stats[ans.value] = (stats[ans.value] || 0) + 1;
+        }
+      }
+    });
+
+    return options.map(opt => ({ name: opt, value: stats[opt] }));
+  };
+
+  const COLORS = ['#4285f4', '#34a853', '#fbbc05', '#ea4335', '#9c27b0', '#00bcd4'];
+
+  const currentResponse = responses[currentIndex];
+
   return (
-    <div className="space-y-5">
-      <div className="flex items-center gap-3">
-        <Button variant="ghost" size="sm" onClick={onBack} className="h-8 w-8 p-0"><ArrowLeft className="w-4 h-4" /></Button>
-        <div>
-          <h1 className="text-lg font-bold text-foreground">Respostas: {form?.title}</h1>
-          <p className="text-[11px] text-muted-foreground">{responses.length} respostas recebidas</p>
+    <div className="space-y-5 pb-20">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="sm" onClick={onBack} className="h-8 w-8 p-0"><ArrowLeft className="w-4 h-4" /></Button>
+          <div>
+            <h1 className="text-lg font-bold text-foreground">Respostas: {form?.title}</h1>
+            <p className="text-[11px] text-muted-foreground">{responses.length} respostas recebidas</p>
+          </div>
         </div>
+        <Tabs value={activeTab} onValueChange={(v: any) => setActiveTab(v)} className="w-[300px]">
+          <TabsList className="grid w-full grid-cols-2 h-8">
+            <TabsTrigger value="summary" className="text-[11px]">Resumo</TabsTrigger>
+            <TabsTrigger value="individual" className="text-[11px]">Individual</TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-3 gap-3">
-        <div className="metric-card"><p className="metric-label mb-1">Views</p><p className="text-xl font-bold">{form?.views_count || 0}</p></div>
-        <div className="metric-card"><p className="metric-label mb-1">Submissões</p><p className="text-xl font-bold">{form?.submissions_count || 0}</p></div>
-        <div className="metric-card"><p className="metric-label mb-1">Conversão</p><p className="text-xl font-bold text-success">{form && form.views_count > 0 ? ((form.submissions_count / form.views_count) * 100).toFixed(1) : "0.0"}%</p></div>
-      </div>
+      {responses.length > 0 && (
+        <div className="grid grid-cols-3 gap-3">
+          <Card className="p-3 border-border/40 bg-primary/5">
+            <p className="text-[10px] font-bold text-primary uppercase tracking-tight">Views</p>
+            <p className="text-xl font-bold">{form?.views_count || 0}</p>
+          </Card>
+          <Card className="p-3 border-border/40 bg-green-500/5">
+            <p className="text-[10px] font-bold text-green-600 uppercase tracking-tight">Submissões</p>
+            <p className="text-xl font-bold">{form?.submissions_count || 0}</p>
+          </Card>
+          <Card className="p-3 border-border/40 bg-orange-500/5">
+            <p className="text-[10px] font-bold text-orange-600 uppercase tracking-tight">Conversão</p>
+            <p className="text-xl font-bold">{form && form.views_count > 0 ? ((form.submissions_count / form.views_count) * 100).toFixed(1) : "0.0"}%</p>
+          </Card>
+        </div>
+      )}
 
       {isLoading ? (
-        <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-20 rounded-xl bg-muted animate-pulse" />)}</div>
+        <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-24 rounded-xl bg-muted animate-pulse" />)}</div>
       ) : responses.length === 0 ? (
-        <Card className="border-border/40"><CardContent className="p-12 text-center">
-          <Eye className="w-10 h-10 mx-auto mb-3 text-muted-foreground/40" />
-          <h3 className="text-[14px] font-semibold mb-1">Nenhuma resposta ainda</h3>
-          <p className="text-[12px] text-muted-foreground">Compartilhe o formulário para receber respostas</p>
+        <Card className="border-border/40 bg-muted/20"><CardContent className="p-16 text-center">
+          <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
+            <Eye className="w-8 h-8 text-muted-foreground/40" />
+          </div>
+          <h3 className="text-base font-semibold mb-1">Aguardando Respostas</h3>
+          <p className="text-[13px] text-muted-foreground max-w-[250px] mx-auto">Assim que alguém responder seu formulário, os dados aparecerão aqui em tempo real.</p>
         </CardContent></Card>
-      ) : (
-        <div className="space-y-2">
-          {responses.map((r: any, i: number) => {
-            const answers = Array.isArray(r.answers) ? r.answers : [];
-            const mappedData = r.mapped_data || {};
-            const isExpanded = expandedId === r.id;
+      ) : activeTab === "summary" ? (
+        <div className="space-y-6">
+          {questions.map((q, idx) => {
+            const isChoice = q.type === "SINGLE_CHOICE" || q.type === "MULTIPLE_CHOICE";
+            const stats = isChoice ? getQuestionStats(q.id, q.options || []) : [];
+            const hasData = stats.some(s => s.value > 0);
+
             return (
-              <Card key={r.id} className={cn("border-border/40 transition-all cursor-pointer", isExpanded && "ring-1 ring-primary/20")} onClick={() => setExpandedId(isExpanded ? null : r.id)}>
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-[12px] font-bold text-primary">#{responses.length - i}</div>
-                      <div>
-                        <p className="text-[13px] font-medium">{mappedData.nome || mappedData.email || `Resposta #${responses.length - i}`}</p>
-                        <p className="text-[11px] text-muted-foreground">{format(new Date(r.created_at), "dd/MM/yyyy 'às' HH:mm")}</p>
-                      </div>
-                    </div>
-                    <ChevronRight className={cn("w-4 h-4 text-muted-foreground transition-transform", isExpanded && "rotate-90")} />
+              <Card key={q.id} className="border-border/40 overflow-hidden shadow-sm">
+                <CardHeader className="p-4 flex flex-row items-center justify-between bg-muted/10">
+                  <div className="flex items-center gap-2">
+                    <span className="w-6 h-6 rounded bg-primary/10 text-primary flex items-center justify-center text-[11px] font-bold">{idx + 1}</span>
+                    <CardTitle className="text-[14px] font-semibold">{q.title}</CardTitle>
                   </div>
-                  {isExpanded && (
-                    <div className="mt-4 pt-3 border-t border-border/30 space-y-3">
-                      {answers.map((a: any) => {
-                        const q = questions.find((qq: any) => qq.id === a.questionId);
+                  <Badge variant="outline" className="text-[9px] uppercase">{questionTypeLabels[q.type as QuestionType]?.label}</Badge>
+                </CardHeader>
+                <CardContent className="p-5">
+                  {isChoice ? (
+                    hasData ? (
+                      <div className="h-[250px] w-full mt-2">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart data={stats} layout="vertical" margin={{ left: 40, right: 40 }}>
+                            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#E2E8F0" />
+                            <XAxis type="number" hide />
+                            <YAxis dataKey="name" type="category" width={100} tick={{ fontSize: 11 }} />
+                            <Tooltip 
+                              cursor={{fill: 'transparent'}}
+                              contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontSize: '11px' }}
+                            />
+                            <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={24}>
+                              {stats.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} fillOpacity={0.8} />
+                              ))}
+                            </Bar>
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    ) : (
+                      <p className="text-center py-8 text-[12px] text-muted-foreground italic">Nenhuma opção selecionada ainda.</p>
+                    )
+                  ) : (
+                    <div className="space-y-2">
+                      <p className="text-[11px] text-muted-foreground mb-3 font-medium uppercase tracking-wider">Últimas 5 respostas:</p>
+                      {responses.slice(0, 5).map((r: any, ri) => {
+                        const rAnswers = Array.isArray(r.answers) ? r.answers : [];
+                        const ans = rAnswers.find((a: any) => a.questionId === q.id);
+                        const val = (ans as any)?.value;
                         return (
-                          <div key={a.questionId}>
-                            <p className="text-[11px] font-medium text-muted-foreground">{q?.title || a.questionId}</p>
-                            <p className="text-[13px] font-medium mt-0.5">{Array.isArray(a.value) ? a.value.join(", ") : a.value || "—"}</p>
+                          <div key={ri} className="p-2.5 rounded-lg bg-muted/30 border border-border/20 text-[12px]">
+                            {val || <span className="text-muted-foreground/50 italic">Sem resposta</span>}
                           </div>
                         );
                       })}
-                      {Object.keys(mappedData).length > 0 && (
-                        <div className="pt-2 border-t border-border/20">
-                          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">Dados mapeados</p>
-                          <div className="grid grid-cols-2 gap-2">
-                            {Object.entries(mappedData).map(([key, val]) => (
-                              <div key={key}>
-                                <p className="text-[10px] text-muted-foreground capitalize">{key.replace(/_/g, ' ')}</p>
-                                <p className="text-[12px] font-medium">{String(val)}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
+                      {responses.length > 5 && (
+                        <p className="text-[11px] text-primary text-center pt-2 cursor-pointer hover:underline" onClick={() => setActiveTab("individual")}>
+                          Ver todas as {responses.length} respostas no modo individual
+                        </p>
                       )}
                     </div>
                   )}
@@ -384,6 +447,90 @@ const FormResponsesView = ({ formId, onBack }: { formId: string; onBack: () => v
               </Card>
             );
           })}
+        </div>
+      ) : (
+        <div className="space-y-4 max-w-2xl mx-auto">
+          <div className="flex items-center justify-between bg-background p-4 rounded-xl border border-border/40 shadow-sm sticky top-0 z-10">
+            <div className="flex items-center gap-4">
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="h-8 w-8" 
+                onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))} 
+                disabled={currentIndex === 0}
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </Button>
+              <div className="text-center">
+                <p className="text-[13px] font-bold">{currentIndex + 1} de {responses.length}</p>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-widest">RESPOSTA</p>
+              </div>
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="h-8 w-8" 
+                onClick={() => setCurrentIndex(prev => Math.min(responses.length - 1, prev + 1))} 
+                disabled={currentIndex === responses.length - 1}
+              >
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
+            <div className="text-right">
+              <p className="text-[11px] font-medium">{format(new Date(currentResponse.created_at), "dd 'de' MMMM, HH:mm")}</p>
+              <Badge className="text-[9px] h-5 bg-primary/10 text-primary border-primary/20">#{responses.length - currentIndex}</Badge>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            {questions.map((q, idx) => {
+              const rAnswers = Array.isArray(currentResponse?.answers) ? currentResponse.answers : [];
+              const ans = rAnswers.find((a: any) => a.questionId === q.id) as any;
+              const value = ans?.value;
+              return (
+                <Card key={q.id} className="border-border/40 overflow-hidden group hover:border-primary/20 transition-colors">
+                  <div className="px-4 py-3 bg-muted/10 border-b border-border/10 flex items-center justify-between">
+                    <p className="text-[11px] font-bold text-muted-foreground uppercase">{idx + 1}. {q.title}</p>
+                    <Badge variant="outline" className="text-[8px] h-4">{questionTypeLabels[q.type as QuestionType]?.label}</Badge>
+                  </div>
+                  <CardContent className="p-4">
+                    <div className="text-[14px] font-medium leading-relaxed">
+                      {Array.isArray(value) ? (
+                        <div className="flex flex-wrap gap-1.5">
+                          {value.map((v, vi) => (
+                            <Badge key={vi} variant="secondary" className="bg-primary/5 text-primary border-primary/10 rounded-md font-normal">{v}</Badge>
+                          ))}
+                        </div>
+                      ) : value ? (
+                        <p className="text-foreground">{value}</p>
+                      ) : (
+                        <p className="text-muted-foreground/30 italic font-normal">Não respondida</p>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+            
+            {currentResponse.mapped_data && Object.keys(currentResponse.mapped_data).length > 0 && (
+              <Card className="border-border/40 bg-primary/5 mt-6 border-dashed">
+                <CardHeader className="p-4 pb-2">
+                  <CardTitle className="text-[11px] font-bold uppercase tracking-widest text-primary flex items-center gap-2">
+                    <CheckSquare className="w-3.5 h-3.5" /> Atributos do Lead
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-0">
+                  <div className="grid grid-cols-2 gap-3">
+                    {Object.entries(currentResponse.mapped_data).map(([key, val]) => (
+                      <div key={key} className="p-2 rounded bg-background/50 border border-primary/10">
+                        <p className="text-[9px] text-muted-foreground uppercase font-bold">{key.replace(/_/g, ' ')}</p>
+                        <p className="text-[12px] font-medium truncate">{String(val || "—")}</p>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </div>
       )}
     </div>
