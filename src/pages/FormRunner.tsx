@@ -143,7 +143,7 @@ const FormRunner = () => {
   }, [questions]);
 
   const attemptEarlySave = useCallback(async (currentAnswers: Record<string, string | string[]>) => {
-    if (earlySaved || earlySaving || !form) return;
+    if (earlySaving || !form) return;
 
     const mappedData = buildMappedData(currentAnswers);
     const hasNome = !!(mappedData.nome && mappedData.nome.trim());
@@ -151,12 +151,11 @@ const FormRunner = () => {
     const hasEmail = !!(mappedData.email && mappedData.email.trim());
 
     // Relaxed condition: if we have name, phone OR email, we save.
-    // This allows partial capture even if not all primary fields are filled.
     if (!hasNome && !hasTelefone && !hasEmail) return;
 
     setEarlySaving(true);
     setSaveState("saving");
-    setSaveMessage("Salvando lead...");
+    setSaveMessage("Salvando progresso...");
 
     try {
       const leadQual = (form as any).lead_qualification || null;
@@ -167,6 +166,7 @@ const FormRunner = () => {
         account_id: form.account_id,
         answers: partialAnswers,
         mapped_data: mappedData,
+        response_id: earlyResponseId, // Pass existing ID to update same record
         metadata: {
           user_agent: navigator.userAgent,
           submitted_at: new Date().toISOString(),
@@ -178,7 +178,9 @@ const FormRunner = () => {
       });
 
       setEarlySaved(true);
-      setEarlyResponseId(data?.id || null);
+      if (data?.id && !earlyResponseId) {
+        setEarlyResponseId(data.id);
+      }
       setSaveState("saved");
       setSaveMessage("Lead salvo no pipeline");
     } catch (error: any) {
