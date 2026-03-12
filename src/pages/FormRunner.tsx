@@ -346,7 +346,7 @@ const FormRunner = () => {
     setValidationError("");
   };
 
-  const getPhoneValue = () => `${phoneCountry} ${phoneDDD} ${phoneNumber}`.trim();
+  const getPhoneValue = () => `${phoneCountry}${phoneDDD}${phoneNumber}`.replace(/\D/g, '');
 
   const goNext = useCallback(async () => {
     if (!currentQuestion) return;

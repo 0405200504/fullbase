@@ -839,23 +839,51 @@ const FormEditor = ({ formId, onBack }: { formId: string; onBack: () => void }) 
                         <div><Label className="text-[12px]">Opções</Label>
                           <div className="space-y-1.5 mt-2">
                             {selectedQuestion.options.map((opt, i) => (
-                              <div key={i} className="space-y-1">
-                                <div className="flex items-center gap-1.5">
-                                  <Input value={opt} onChange={e => updateOption(selectedQuestion.id, i, e.target.value)} className="flex-1 h-8 text-[12px]" />
-                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-destructive" onClick={() => removeOption(selectedQuestion.id, i)} disabled={selectedQuestion.options.length <= 1}><Trash2 className="w-3 h-3" /></Button>
+                              <div key={i} className="group relative p-3 rounded-xl border border-secondary/50 bg-secondary/5 hover:bg-secondary/10 hover:border-secondary transition-all duration-200">
+                                <div className="flex items-center gap-3">
+                                  <div className="flex-1">
+                                    <Label className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1 block">Rótulo da Opção</Label>
+                                    <Input 
+                                      value={opt} 
+                                      onChange={e => updateOption(selectedQuestion.id, i, e.target.value)} 
+                                      className="h-9 text-[13px] bg-background border-none shadow-sm font-medium" 
+                                      placeholder={`Opção ${i + 1}`}
+                                    />
+                                  </div>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="h-9 w-9 p-0 text-destructive/60 hover:text-destructive hover:bg-destructive/10 transition-colors mt-5" 
+                                    onClick={() => removeOption(selectedQuestion.id, i)} 
+                                    disabled={selectedQuestion.options.length <= 1}
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
                                 </div>
-                                <div className="flex items-center gap-1.5 px-1">
-                                  <ExternalLink className="w-2.5 h-2.5 text-muted-foreground" />
+                                <div className="mt-3 pt-3 border-t border-secondary/20">
+                                  <div className="flex items-center gap-2 mb-1.5">
+                                    <div className="bg-primary/10 p-1 rounded">
+                                      <ExternalLink className="w-3 h-3 text-primary" />
+                                    </div>
+                                    <Label className="text-[10px] text-primary/80 font-bold uppercase tracking-tight">Redirecionamento Inteligente</Label>
+                                  </div>
                                   <Input 
                                     value={selectedQuestion.optionRedirects?.[i.toString()] || ""} 
                                     onChange={e => updateOptionRedirect(selectedQuestion.id, i, e.target.value)} 
-                                    className="flex-1 h-6 text-[10px] bg-muted/30 border-none px-1" 
-                                    placeholder="Link de redirecionamento (opcional)" 
+                                    className="h-8 text-[11px] bg-primary/5 border-primary/10 focus-visible:ring-primary/30 placeholder:text-muted-foreground/40" 
+                                    placeholder="Ex: https://calendly.com/seu-link" 
                                   />
                                 </div>
                               </div>
                             ))}
-                            <Button variant="outline" size="sm" className="w-full gap-1 text-[11px] h-8 mt-1" onClick={() => addOption(selectedQuestion.id)}><Plus className="w-3 h-3" /> Opção</Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="w-full gap-2 text-[12px] h-10 border-dashed hover:border-primary hover:text-primary transition-all bg-transparent" 
+                              onClick={() => addOption(selectedQuestion.id)}
+                            >
+                              <Plus className="w-4 h-4" /> Adicionar Nova Escolha
+                            </Button>
                           </div>
                         </div>
                       )}
