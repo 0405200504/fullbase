@@ -148,8 +148,11 @@ const FormRunner = () => {
     const mappedData = buildMappedData(currentAnswers);
     const hasNome = !!(mappedData.nome && mappedData.nome.trim());
     const hasTelefone = !!(mappedData.telefone && mappedData.telefone.trim());
+    const hasEmail = !!(mappedData.email && mappedData.email.trim());
 
-    if (!hasNome || !hasTelefone) return;
+    // Relaxed condition: if we have name, phone OR email, we save.
+    // This allows partial capture even if not all primary fields are filled.
+    if (!hasNome && !hasTelefone && !hasEmail) return;
 
     setEarlySaving(true);
     setSaveState("saving");
@@ -203,6 +206,8 @@ const FormRunner = () => {
 
     try {
       const leadQual = (form as any).lead_qualification || null;
+      // MutateAsync returns a promise that resolves when the mutation and 
+      // its effects (like our updated webhook fetch) are complete.
       await submitResponse.mutateAsync({
         form_id: form.id,
         account_id: form.account_id,

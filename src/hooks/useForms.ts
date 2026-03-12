@@ -230,7 +230,7 @@ export const useSubmitFormResponse = () => {
       // Only create/update lead if we have name and phone, AND we haven't already linked a lead for this response
       // or if we want to ensure information is synced. 
       // The RPC should ideally be idempotent.
-      if (hasNome && hasTelefone) {
+      if (hasNome && hasTelefone && !linkedLeadId) {
         const parseNullableNumber = (value?: string | null) => {
           if (!value) return null;
           const strVal = String(value).replace(/[^\d.,]/g, "").replace(",", ".");
@@ -267,9 +267,12 @@ export const useSubmitFormResponse = () => {
       // Trigger webhook if configured
       if (payload.webhook_url) {
         try {
-          fetch(payload.webhook_url, {
+          // Use await and keepalive: true to ensure the request is completed 
+          // even if the page is being unloaded (due to redirection)
+          await fetch(payload.webhook_url, {
             method: "POST",
             mode: "no-cors",
+            keepalive: true,
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               form_id: payload.form_id,
@@ -279,7 +282,7 @@ export const useSubmitFormResponse = () => {
               mapped_data: md,
               metadata: payload.metadata
             })
-          }).catch(err => console.error("Webhook Error:", err));
+          });
         } catch (e) {
           console.error("Failed to trigger webhook", e);
         }
