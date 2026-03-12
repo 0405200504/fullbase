@@ -16,6 +16,7 @@ export interface FormData {
   thank_you_screen: { text: string; videoUrl?: string; redirectUrl?: string; ctaText?: string };
   field_mappings: any[];
   lead_qualification: LeadQualification | null;
+  webhook_url: string | null;
   active: boolean;
   views_count: number;
   submissions_count: number;
@@ -160,18 +161,40 @@ export const useSubmitFormResponse = () => {
       mapped_data: Record<string, string>;
       metadata?: Record<string, any>;
       lead_qualification?: LeadQualification | null;
+      webhook_url?: string | null;
+      response_id?: string | null; // Added for updates
     }) => {
-      const { data: response, error } = await supabase
-        .from("form_responses")
-        .insert({
-          form_id: payload.form_id,
-          account_id: payload.account_id,
-          answers: payload.answers as any,
-          mapped_data: payload.mapped_data as any,
-          metadata: (payload.metadata || {}) as any,
-        } as any)
-        .select()
-        .single();
+      let response;
+      let error;
+
+      if (payload.response_id) {
+        const { data, error: updateError } = await supabase
+          .from("form_responses")
+          .update({
+            answers: payload.answers as any,
+            mapped_data: payload.mapped_data as any,
+            metadata: (payload.metadata || {}) as any,
+          } as any)
+          .eq("id", payload.response_id)
+          .select()
+          .single();
+        response = data;
+        error = updateError;
+      } else {
+        const { data, error: insertError } = await supabase
+          .from("form_responses")
+          .insert({
+            form_id: payload.form_id,
+            account_id: payload.account_id,
+            answers: payload.answers as any,
+            mapped_data: payload.mapped_data as any,
+            metadata: (payload.metadata || {}) as any,
+          } as any)
+          .select()
+          .single();
+        response = data;
+        error = insertError;
+      }
 
       if (error) throw error;
 
@@ -179,7 +202,7 @@ export const useSubmitFormResponse = () => {
       const hasNome = !!(md.nome && md.nome.trim());
       const hasTelefone = !!(md.telefone && md.telefone.trim());
 
-      let linkedLeadId: string | null = null;
+      let linkedLeadId: string | null = (response as any)?.lead_id || null;
 
       if (hasNome && hasTelefone) {
         const parseNullableNumber = (value?: string | null) => {
@@ -213,6 +236,27 @@ export const useSubmitFormResponse = () => {
             .eq("id", (response as any).id);
 
           if (updateResponseError) throw updateResponseError;
+        }
+      }
+
+      // Trigger webhook if configured
+      if (payload.webhook_url) {
+        try {
+          fetch(payload.webhook_url, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              form_id: payload.form_id,
+              response_id: (response as any).id,
+              lead_id: linkedLeadId,
+              answers: payload.answers,
+              mapped_data: md,
+              metadata: payload.metadata
+            })
+          }).catch(err => console.error("Webhook Error:", err));
+        } catch (e) {
+          console.error("Failed to trigger webhook", e);
         }
       }
 

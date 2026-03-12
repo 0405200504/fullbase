@@ -105,6 +105,7 @@ export interface Form {
   welcomeScreen: FormWelcomeScreen;
   fieldMappings: FieldMapping[];
   leadQualification: LeadQualification;
+  webhookUrl?: string;
 }
 
 export interface FormAnswer {

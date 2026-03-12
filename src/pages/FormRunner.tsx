@@ -171,6 +171,7 @@ const FormRunner = () => {
           capture_status: "partial",
         },
         lead_qualification: leadQual,
+        webhook_url: (form as any).webhook_url,
       });
 
       setEarlySaved(true);
@@ -201,37 +202,21 @@ const FormRunner = () => {
     setSaveMessage("Finalizando envio...");
 
     try {
-      if (earlySaved && earlyResponseId) {
-        const { error } = await supabase
-          .from("form_responses")
-          .update({
-            answers: finalAnswers as any,
-            mapped_data: mappedData as any,
-            metadata: {
-              user_agent: navigator.userAgent,
-              submitted_at: new Date().toISOString(),
-              updated: true,
-              capture_status: "completed",
-            } as any,
-          } as any)
-          .eq("id", earlyResponseId);
-
-        if (error) throw error;
-      } else {
-        const leadQual = (form as any).lead_qualification || null;
-        await submitResponse.mutateAsync({
-          form_id: form.id,
-          account_id: form.account_id,
-          answers: finalAnswers,
-          mapped_data: mappedData,
-          metadata: {
-            user_agent: navigator.userAgent,
-            submitted_at: new Date().toISOString(),
-            capture_status: "completed",
-          },
-          lead_qualification: leadQual,
-        });
-      }
+      const leadQual = (form as any).lead_qualification || null;
+      await submitResponse.mutateAsync({
+        form_id: form.id,
+        account_id: form.account_id,
+        answers: finalAnswers,
+        mapped_data: mappedData,
+        metadata: {
+          user_agent: navigator.userAgent,
+          submitted_at: new Date().toISOString(),
+          capture_status: "completed",
+        },
+        lead_qualification: leadQual,
+        webhook_url: (form as any).webhook_url,
+        response_id: earlyResponseId,
+      });
 
       setSaveState("saved");
       setSaveMessage("Formulário salvo com sucesso");
@@ -241,7 +226,7 @@ const FormRunner = () => {
       setSaveState("error");
       setSaveMessage(error?.message || "Erro ao finalizar envio");
     }
-  }, [form, buildMappedData, buildFinalAnswers, earlySaved, earlyResponseId, submitResponse]);
+  }, [form, buildMappedData, buildFinalAnswers, earlyResponseId, submitResponse]);
 
   // Dynamic theme-color meta tag based on form button color
   useEffect(() => {

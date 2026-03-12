@@ -589,6 +589,7 @@ const FormEditor = ({ formId, onBack }: { formId: string; onBack: () => void }) 
     questions: [], thankYouScreen: { text: "Obrigado! 🎉", ctaText: "Voltar" }, fieldMappings: [],
     welcomeScreen: { enabled: false, title: "", buttonText: "Começar" },
     leadQualification: { enabled: false, requiredFields: [] },
+    webhookUrl: "",
   });
   const [selectedQuestionId, setSelectedQuestionId] = useState<string | null>(null);
   const [settingsTab, setSettingsTab] = useState("pergunta");
@@ -613,6 +614,7 @@ const FormEditor = ({ formId, onBack }: { formId: string; onBack: () => void }) 
         welcomeScreen: (existingForm as any).welcome_screen || { enabled: false, title: "", buttonText: "Começar" },
         fieldMappings: existingForm.field_mappings || [],
         leadQualification: (existingForm as any).lead_qualification || { enabled: false, requiredFields: [] },
+        webhookUrl: existingForm.webhook_url || "",
       });
     }
   }, [existingForm]);
@@ -684,6 +686,7 @@ const FormEditor = ({ formId, onBack }: { formId: string; onBack: () => void }) 
       welcome_screen: form.welcomeScreen,
       field_mappings: form.fieldMappings,
       lead_qualification: form.leadQualification,
+      webhook_url: form.webhookUrl,
     }, { onSuccess: () => toast.success("Formulário salvo!") });
   };
 
@@ -766,9 +769,9 @@ const FormEditor = ({ formId, onBack }: { formId: string; onBack: () => void }) 
             <Tabs value={settingsTab} onValueChange={setSettingsTab}>
               <CardHeader className="pb-0 border-b border-border/20 px-3 pt-3">
                 <TabsList className="bg-transparent w-full justify-start gap-0 h-auto p-0">
-                  {["pergunta","mapeamento","design","welcome","finalizacao","publicacao"].map(t => (
+                  {["pergunta","mapeamento","design","welcome","finalizacao","integracao","publicacao"].map(t => (
                     <TabsTrigger key={t} value={t} className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-2 py-2 text-[10px]">
-                      {t === "pergunta" ? "Pergunta" : t === "mapeamento" ? "Dados" : t === "design" ? "Design" : t === "welcome" ? "Início" : t === "finalizacao" ? "Ending" : "Link"}
+                      {t === "pergunta" ? "Pergunta" : t === "mapeamento" ? "Dados" : t === "design" ? "Design" : t === "welcome" ? "Início" : t === "finalizacao" ? "Ending" : t === "integracao" ? "Conexão" : "Link"}
                     </TabsTrigger>
                   ))}
                 </TabsList>
@@ -1032,6 +1035,43 @@ const FormEditor = ({ formId, onBack }: { formId: string; onBack: () => void }) 
                   <div><Label className="text-[12px]">URL de Redirecionamento</Label><Input value={form.thankYouScreen.redirectUrl || ""} onChange={e => setForm(prev => ({ ...prev, thankYouScreen: { ...prev.thankYouScreen, redirectUrl: e.target.value } }))} className="mt-1 h-8 text-[12px]" placeholder="https://..." /></div>
                   <ImageUploadField label="Imagem de Fundo (Ending)" hint="Sobrescreve o fundo na tela final" value={form.thankYouScreen.backgroundImage} onChange={url => setForm(prev => ({ ...prev, thankYouScreen: { ...prev.thankYouScreen, backgroundImage: url || undefined } }))} />
                   <ImageUploadField label="Logo (Ending)" hint="Logo específica da tela final" value={form.thankYouScreen.logoUrl} onChange={url => setForm(prev => ({ ...prev, thankYouScreen: { ...prev.thankYouScreen, logoUrl: url || undefined } }))} />
+                </TabsContent>
+
+                {/* Integrations Tab */}
+                <TabsContent value="integracao" className="mt-0 space-y-4">
+                  <div className="space-y-3">
+                    <div className="p-3 bg-primary/5 rounded-xl border border-primary/10">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="p-1.5 rounded-lg bg-primary/20 text-primary">
+                          <ExternalLink className="w-4 h-4" />
+                        </div>
+                        <p className="text-[12px] font-bold">Google Sheets & Webhooks</p>
+                      </div>
+                      <p className="text-[11px] text-muted-foreground leading-relaxed">
+                        Envie os dados das respostas em tempo real para uma planilha ou outro sistema externo.
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="text-[12px]">URL do Webhook</Label>
+                      <Input 
+                        value={form.webhookUrl || ""} 
+                        onChange={e => setForm(prev => ({ ...prev, webhookUrl: e.target.value }))} 
+                        className="h-9 text-[12px]" 
+                        placeholder="https://script.google.com/macros/s/..." 
+                      />
+                      <p className="text-[10px] text-muted-foreground">
+                        Insira a URL do seu Google Apps Script ou serviço de automação (Zapier, Make, etc).
+                      </p>
+                    </div>
+
+                    <div className="p-3 bg-muted/40 rounded-lg border border-border/40">
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Dica de configuração</p>
+                      <p className="text-[10px] text-muted-foreground">
+                        Utilize um script no Google Sheets para receber o JSON enviado via POST com os campos: `form_id`, `answers`, `mapped_data` e `metadata`.
+                      </p>
+                    </div>
+                  </div>
                 </TabsContent>
 
                 {/* Publish Tab */}
