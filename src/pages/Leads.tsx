@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus, Search, Filter, Flame, Archive, Upload, Star, Trash2 } from "lucide-react";
+import { Plus, Search, Filter, Flame, Archive, Upload, Star, Trash2, Copy, Check } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -43,6 +43,7 @@ const Leads = () => {
   const [selectedLeadIds, setSelectedLeadIds] = useState<string[]>([]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [leadToDelete, setLeadToDelete] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const { data: leads = [], isLoading } = useLeads(showArchived);
   const { data: etapas = [] } = useEtapasFunil();
@@ -123,6 +124,14 @@ const Leads = () => {
     if (selectedLeadIds.length === 0) return;
     setLeadToDelete(null);
     setDeleteDialogOpen(true);
+  };
+
+  const handleCopyPhone = (telefone: string, leadId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(telefone);
+    setCopiedId(leadId);
+    setTimeout(() => setCopiedId(null), 2000);
+    toast.success("Telefone copiado!");
   };
 
   const confirmDelete = async () => {
@@ -353,7 +362,20 @@ const Leads = () => {
                                 </Badge>
                               )}
                             </div>
-                            <p className="text-xs text-muted-foreground mt-0.5">{lead.telefone}</p>
+                            <div className="flex items-center gap-1.5 mt-0.5">
+                              <p className="text-xs text-muted-foreground">{lead.telefone}</p>
+                              <button
+                                onClick={(e) => handleCopyPhone(lead.telefone, lead.id, e)}
+                                className="text-muted-foreground hover:text-primary transition-all p-0.5 rounded-md hover:bg-primary/5"
+                                title="Copiar número"
+                              >
+                                {copiedId === lead.id ? (
+                                  <Check className="h-3 w-3 text-success animate-in zoom-in" />
+                                ) : (
+                                  <Copy className="h-3 w-3" />
+                                )}
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </td>
